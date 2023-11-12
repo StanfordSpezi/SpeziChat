@@ -6,20 +6,14 @@
 # SPDX-License-Identifier: MIT
 #
 
-name: Pull Request
+name: Monthly Markdown Link Check
 
 on:
-  pull_request:
-  workflow_dispatch:
+  # Runs at midnight on the first of every month
+  schedule:
+    - cron: "0 0 1 * *"
 
 jobs:
-  reuse_action:
-    name: REUSE Compliance Check
-    uses: StanfordSpezi/.github/.github/workflows/reuse.yml@v2
-  swiftlint:
-    name: SwiftLint
-    uses: StanfordSpezi/.github/.github/workflows/swiftlint.yml@v2
   markdown_link_check:
     name: Markdown Link Check
     uses: StanfordBDHG/.github/.github/workflows/markdown-link-check.yml@v2
-  

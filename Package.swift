@@ -1,9 +1,9 @@
-// swift-tools-version:5.8
+// swift-tools-version:5.9
 
 //
-// This source file is part of the TemplatePackage open source project
+// This source file is part of the Stanford Spezi open source project
 // 
-// SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 // 
 // SPDX-License-Identifier: MIT
 //
@@ -12,22 +12,31 @@ import PackageDescription
 
 
 let package = Package(
-    name: "TemplatePackage",
+    name: "SpeziChat",
+    defaultLocalization: "en",
     platforms: [
-        .iOS(.v16),
-        .watchOS(.v9)
+        .iOS(.v17)
     ],
     products: [
-        .library(name: "TemplatePackage", targets: ["TemplatePackage"])
+        .library(name: "SpeziChat", targets: ["SpeziChat"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.8.0"))
     ],
     targets: [
         .target(
-            name: "TemplatePackage"
+            name: "SpeziChat",
+            dependencies: [
+                .product(name: "Spezi", package: "Spezi")
+            ],
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
-            name: "TemplatePackageTests",
+            name: "SpeziChatTests",
             dependencies: [
-                .target(name: "TemplatePackage")
+                .target(name: "SpeziChat")
             ]
         )
     ]
