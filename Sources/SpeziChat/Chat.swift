@@ -38,5 +38,5 @@ import Spezi
 @Observable
 public class Chat: Module, DefaultInitializable {
     /// Creates an instance of a ``Chat`` component.
-    required public init() { }
+    public required init() { }
 }
