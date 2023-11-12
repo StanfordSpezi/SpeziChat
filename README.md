@@ -32,12 +32,12 @@ You need to add the Spezi Chat Swift package to
 [Swift package](https://developer.apple.com/documentation/xcode/creating-a-standalone-swift-package-with-xcode#Add-a-dependency-on-another-Swift-package).
 
 > [!IMPORTANT]  
-> If your application is not yet configured to use Spezi, follow the [Spezi setup article](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/setup) setup the core Spezi infrastructure.
+> If your application is not yet configured to use Spezi, follow the [Spezi setup article](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/initial-setup) setup the core Spezi infrastructure.
 
 
-### 2. Register the Component
+### 2. Register the Module
 
-The [`Chat`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chat) component needs to be registered in a Spezi-based application using the 
+The `Chat` module needs to be registered in a Spezi-based application using the 
 [`configuration`](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/speziappdelegate/configuration) in a
 [`SpeziAppDelegate`](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/speziappdelegate):
 ```swift
@@ -52,7 +52,7 @@ class ExampleAppDelegate: SpeziAppDelegate {
 ```
 
 > [!NOTE]  
-> You can learn more about a [`Component` in the Spezi documentation](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/component).
+> You can learn more about a [`Module` in the Spezi documentation](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/module).
 
 
 ## Example
@@ -63,7 +63,7 @@ class ExampleAppDelegate: SpeziAppDelegate {
 ...
 ```
 
-For more information, please refer to the [API documentation](https://swiftpackageindex.com/StanfordSpezi/SpeziChat/documentation).
+For more information, please refer to the API documentation.
 
 
 ## Contributing
