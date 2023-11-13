@@ -6,21 +6,16 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
 import SwiftUI
 
 
 @main
 struct UITestsApp: App {
-    @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
-    
-    
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                Text("Spezi Chat")
+                ChatTestView()
             }
-                .spezi(appDelegate)
         }
     }
 }

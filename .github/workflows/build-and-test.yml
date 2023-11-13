@@ -22,6 +22,7 @@ jobs:
     with:
       runsonlabels: '["macOS", "self-hosted"]'
       scheme: SpeziChat
+      xcodeversion: 15.0
       artifactname: SpeziChat.xcresult
   ios:
     name: Build and Test iOS
@@ -30,10 +31,33 @@ jobs:
       runsonlabels: '["macOS", "self-hosted"]'
       path: 'Tests/UITests'
       scheme: TestApp
+      xcodeversion: 15.0
       artifactname: TestApp.xcresult
+  ipados:
+    name: Build and Test iPadOS
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      path: 'Tests/UITests'
+      scheme: TestApp
+      xcodeversion: 15.0
+      resultBundle: TestAppiPadOS.xcresult
+      destination: 'platform=iOS Simulator,name=iPad mini (6th generation)'
+      artifactname: TestAppiPadOS.xcresult
+  codeql:
+    name: CodeQL
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      codeql: true
+      xcodeversion: 15.0
+      scheme: SpeziChat
+    permissions:
+      security-events: write
+      actions: read
   uploadcoveragereport:
     name: Upload Coverage Report
-    needs: [packageios, ios]
+    needs: [packageios, ios, ipados]
     uses: StanfordSpezi/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
-      coveragereports: SpeziChat.xcresult TestApp.xcresult
+      coveragereports: SpeziChat.xcresult TestApp.xcresult TestAppiPadOS.xcresult
