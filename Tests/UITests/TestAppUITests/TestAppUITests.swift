@@ -25,11 +25,11 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
         
-        try app.textViews.element.enter(value: "User Message!")
-        XCTAssert(app.buttons["sendMessageButton"].waitForExistence(timeout: 5))
-        app.buttons["sendMessageButton"].tap()
+        try app.textViews["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
+        XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
+        app.buttons["Send Message"].tap()
         
-        XCTAssert(app.staticTexts["User Message!\n"].waitForExistence(timeout: 5))
+        XCTAssert(app.staticTexts["User Message!"].waitForExistence(timeout: 5))
         
         sleep(1)
         

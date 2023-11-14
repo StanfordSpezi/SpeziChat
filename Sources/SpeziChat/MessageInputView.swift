@@ -86,7 +86,7 @@ public struct MessageInputView: View {
                         .onAppear {
                             messageViewHeight = proxy.size.height
                         }
-                        .onChange(of: message) { _, _ in
+                        .onChange(of: message) {
                             messageViewHeight = proxy.size.height
                         }
                 }
@@ -102,7 +102,6 @@ public struct MessageInputView: View {
             label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .accessibilityLabel(String(localized: "SEND_MESSAGE", bundle: .module))
-                    .accessibilityIdentifier("sendMessageButton")
                     .font(.title)
                     .foregroundColor(
                         message.isEmpty ? Color(.systemGray5) : .accentColor
