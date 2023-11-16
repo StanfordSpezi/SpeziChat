@@ -25,7 +25,9 @@ The `SpeziChat` module provides views that can be used to implement chat-based u
 |:--:|:--:|:--:|
 |[`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview)|[`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview)|[`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview)|
 
+
 ## Setup
+
 
 ### Add Spezi Chat as a Dependency
 
@@ -127,7 +129,9 @@ For more information, please refer to the [API documentation](https://swiftpacka
 
 Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/StanfordSpezi/.github/blob/main/CONTRIBUTING.md) and the [contributor covenant code of conduct](https://github.com/StanfordSpezi/.github/blob/main/CODE_OF_CONDUCT.md) first.
 
+
 ## License
+
 This project is licensed under the MIT License. See [Licenses](https://github.com/StanfordSpezi/SpeziChat/tree/main/LICENSES) for more information.
 
 ![Spezi Footer](https://raw.githubusercontent.com/StanfordSpezi/.github/main/assets/FooterLight.png#gh-light-mode-only)
