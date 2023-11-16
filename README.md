@@ -12,11 +12,10 @@ SPDX-License-Identifier: MIT
 
 [![Build and Test](https://github.com/StanfordSpezi/SpeziChat/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziChat/actions/workflows/build-and-test.yml)
 [![codecov](https://codecov.io/gh/StanfordSpezi/SpeziChat/graph/badge.svg?token=b2Dn0r9eo6)](https://codecov.io/gh/StanfordSpezi/SpeziChat)
-[![DOI](https://zenodo.org/badge/573230182.svg)](https://zenodo.org/badge/latestdoi/573230182)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziChat%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordSpezi/SpeziChat)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziChat%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordSpezi/SpeziChat)
+
 
 Provides UI components for building chat-based applications.
+
 
 ## Overview
 
@@ -118,6 +117,8 @@ struct MessageInputTestView: View {
 }
 ```
 
+For more information, please refer to the [API documentation](https://swiftpackageindex.com/StanfordSpezi/SpeziChat/documentation).
+
 ## Applications using Spezi Chat
 
 [HealthGPT](https://github.com/StanfordBDHG/HealthGPT) and [LLMonFHIR](https://github.com/StanfordBDHG/LLMonFHIR) provide a great starting points and examples using the `SpeziChat` module.
@@ -128,11 +129,6 @@ Contributions to this project are welcome. Please make sure to read the [contrib
 
 ## License
 This project is licensed under the MIT License. See [Licenses](https://github.com/StanfordSpezi/SpeziChat/tree/main/LICENSES) for more information.
-
-
-## Contributors
-This project is developed as part of the Stanford Byers Center for Biodesign at Stanford University.
-See [CONTRIBUTORS.md](https://github.com/StanfordSpezi/SpeziChat/tree/main/CONTRIBUTORS.md) for a full list of all SpeziChat contributors.
 
 ![Spezi Footer](https://raw.githubusercontent.com/StanfordSpezi/.github/main/assets/FooterLight.png#gh-light-mode-only)
 ![Spezi Footer](https://raw.githubusercontent.com/StanfordSpezi/.github/main/assets/FooterDark.png#gh-dark-mode-only)
