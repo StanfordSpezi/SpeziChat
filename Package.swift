@@ -21,7 +21,7 @@ let package = Package(
         .library(name: "SpeziChat", targets: ["SpeziChat"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", branch: "feat/init-setup")    // .upToNextMinor(from: "0.1.0")
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", .upToNextMinor(from: "0.1.0"))
     ],
     targets: [
         .target(
