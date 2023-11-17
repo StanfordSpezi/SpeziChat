@@ -42,7 +42,7 @@ You need to add the Spezi Chat Swift package to
 
 ### Chat View
 
-The [`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview) provides a basic reusable chat view which includes a message input field. The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text.
+The [`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview) provides a basic reusable chat view which includes a message input field. The input can be either typed out via the keyboard or provided as voice input and transcribed into written text.
 
 ```swift
 struct ChatTestView: View {
