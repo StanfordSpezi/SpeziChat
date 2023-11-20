@@ -12,6 +12,9 @@ SPDX-License-Identifier: MIT
 
 [![Build and Test](https://github.com/StanfordSpezi/SpeziChat/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziChat/actions/workflows/build-and-test.yml)
 [![codecov](https://codecov.io/gh/StanfordSpezi/SpeziChat/graph/badge.svg?token=b2Dn0r9eo6)](https://codecov.io/gh/StanfordSpezi/SpeziChat)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10161087.svg)](https://doi.org/10.5281/zenodo.10161087)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziChat%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordSpezi/SpeziChat)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziChat%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordSpezi/SpeziChat)
 
 
 Provides UI components for building chat-based applications.
@@ -19,7 +22,7 @@ Provides UI components for building chat-based applications.
 
 ## Overview
 
-The `SpeziChat` module provides views that can be used to implement chat-based use cases, such as a message view or a voice input field.
+The [SpeziChat](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) module provides views that can be used to implement chat-based use cases, such as a message view or a voice input field.
 
 |![Screenshot displaying the regular chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView.png#gh-light-mode-only) ![Screenshot displaying the regular chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView~dark.png#gh-dark-mode-only)|![Screenshot displaying the text input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+TextInput.png#gh-light-mode-only) ![Screenshot displaying the text input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+TextInput~dark.png#gh-dark-mode-only)|![Screenshot displaying the voice input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+VoiceInput.png#gh-light-mode-only) ![Screenshot displaying the voice input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+VoiceInput~dark.png#gh-dark-mode-only)
 |:--:|:--:|:--:|
@@ -29,7 +32,7 @@ The `SpeziChat` module provides views that can be used to implement chat-based u
 ## Setup
 
 
-### Add Spezi Chat as a Dependency
+### 1. Add Spezi Chat as a Dependency
 
 You need to add the Spezi Chat Swift package to
 [your app in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app#) or
@@ -37,6 +40,17 @@ You need to add the Spezi Chat Swift package to
 
 > [!IMPORTANT]  
 > If your application is not yet configured to use Spezi, follow the [Spezi setup article](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/initial-setup) to setup the core Spezi infrastructure.
+
+### 2. Configure target properties
+
+As [SpeziChat](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) is utilizing the [SpeziSpeech](https://github.com/StanfordSpezi/SpeziSpeech) module under the hood for speech interaction capabilities, one needs to ensure that your application has the necessary permissions for microphone access and speech recognition. Follow the steps below to configure the target properties within your Xcode project:
+
+- Open your project settings in Xcode by selecting *PROJECT_NAME > TARGET_NAME > Info* tab.
+- You will need to add two entries to the `Custom iOS Target Properties` (so the `Info.plist` file) to provide descriptions for why your app requires these permissions:
+   - Add a key named `Privacy - Microphone Usage Description` and provide a string value that describes why your application needs access to the microphone. This description will be displayed to the user when the app first requests microphone access.
+   - Add another key named `Privacy - Speech Recognition Usage Description` with a string value that explains why your app requires the speech recognition capability. This will be presented to the user when the app first attempts to perform speech recognition.
+
+These entries are mandatory for apps that utilize microphone and speech recognition features. Failing to provide them will result in your app being unable to access these features. 
    
 ## Examples
 
