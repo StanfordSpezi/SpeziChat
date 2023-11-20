@@ -36,13 +36,24 @@ The ``SpeziChat`` module provides views that can be used to implement chat-based
 
 ## Setup
 
-### Add Spezi Chat as a Dependency
+### 1. Add Spezi Chat as a Dependency
 
 You need to add the Spezi Chat Swift package to
 [your app in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app#) or
 [Swift package](https://developer.apple.com/documentation/xcode/creating-a-standalone-swift-package-with-xcode#Add-a-dependency-on-another-Swift-package).
 
 > Important: If your application is not yet configured to use Spezi, follow the [Spezi setup article](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/initial-setup) to setup the core Spezi infrastructure.
+
+### 2. Configure target properties
+
+As ``SpeziChat`` is utilizing the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module under the hood for speech interaction capabilities, one needs to ensure that your application has the necessary permissions for microphone access and speech recognition. Follow the steps below to configure the target properties within your Xcode project:
+
+- Open your project settings in Xcode by selecting *PROJECT_NAME > TARGET_NAME > Info* tab.
+- You will need to add two entries to the `Custom iOS Target Properties` (so the `Info.plist` file) to provide descriptions for why your app requires these permissions:
+   - Add a key named `Privacy - Microphone Usage Description` and provide a string value that describes why your application needs access to the microphone. This description will be displayed to the user when the app first requests microphone access.
+   - Add another key named `Privacy - Speech Recognition Usage Description` with a string value that explains why your app requires the speech recognition capability. This will be presented to the user when the app first attempts to perform speech recognition.
+
+These entries are mandatory for apps that utilize microphone and speech recognition features. Failing to provide them will result in your app being unable to access these features. 
 
 ## Examples
 
