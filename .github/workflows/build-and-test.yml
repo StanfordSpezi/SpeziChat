@@ -31,9 +31,19 @@ jobs:
       path: 'Tests/UITests'
       scheme: TestApp
       artifactname: TestApp.xcresult
+  ipados:
+    name: Build and Test iPadOS
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      path: 'Tests/UITests'
+      scheme: TestApp
+      resultBundle: TestAppiPadOS.xcresult
+      destination: 'platform=iOS Simulator,name=iPad mini (6th generation)'
+      artifactname: TestAppiPadOS.xcresult
   uploadcoveragereport:
     name: Upload Coverage Report
-    needs: [packageios, ios]
+    needs: [packageios, ios, ipados]
     uses: StanfordSpezi/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
-      coveragereports: SpeziChat.xcresult TestApp.xcresult
+      coveragereports: SpeziChat.xcresult TestApp.xcresult TestAppiPadOS.xcresult

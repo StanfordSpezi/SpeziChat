@@ -6,12 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-@testable import SpeziChat
-import XCTest
-
-
-final class SpeziChatTests: XCTestCase {
-    func testSpeziChat() throws {
-        XCTAssert(true)
-    }
-}
+/// Represents all necessary content of a typical text-based chat between the user and system(s).
+/// Consists of an ordered array of ``ChatEntity``s
+public typealias Chat = [ChatEntity]
