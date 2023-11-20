@@ -46,7 +46,7 @@ You need to add the Spezi Chat Swift package to
 
 ### 2. Configure target properties
 
-As ``SpeziChat`` is utilizing the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module under the hood for speech interaction capabilities, one needs to ensure that your application has the necessary permissions for microphone access and speech recognition. Follow the steps below to configure the target properties within your Xcode project:
+As ``SpeziChat`` is utilizing the [SpeziSpeech](https://github.com/StanfordSpezi/SpeziSpeech) module under the hood for speech interaction capabilities, one needs to ensure that your application has the necessary permissions for microphone access and speech recognition. Follow the steps below to configure the target properties within your Xcode project:
 
 - Open your project settings in Xcode by selecting *PROJECT_NAME > TARGET_NAME > Info* tab.
 - You will need to add two entries to the `Custom iOS Target Properties` (so the `Info.plist` file) to provide descriptions for why your app requires these permissions:

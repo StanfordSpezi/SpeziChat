@@ -22,7 +22,7 @@ Provides UI components for building chat-based applications.
 
 ## Overview
 
-The [`SpeziChat`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) module provides views that can be used to implement chat-based use cases, such as a message view or a voice input field.
+The [SpeziChat](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) module provides views that can be used to implement chat-based use cases, such as a message view or a voice input field.
 
 |![Screenshot displaying the regular chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView.png#gh-light-mode-only) ![Screenshot displaying the regular chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView~dark.png#gh-dark-mode-only)|![Screenshot displaying the text input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+TextInput.png#gh-light-mode-only) ![Screenshot displaying the text input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+TextInput~dark.png#gh-dark-mode-only)|![Screenshot displaying the voice input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+VoiceInput.png#gh-light-mode-only) ![Screenshot displaying the voice input chat view.](Sources/SpeziChat/SpeziChat.docc/Resources/ChatView+VoiceInput~dark.png#gh-dark-mode-only)
 |:--:|:--:|:--:|
@@ -43,7 +43,7 @@ You need to add the Spezi Chat Swift package to
 
 ### 2. Configure target properties
 
-As [`SpeziChat`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) is utilizing the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module under the hood for speech interaction capabilities, one needs to ensure that your application has the necessary permissions for microphone access and speech recognition. Follow the steps below to configure the target properties within your Xcode project:
+As [SpeziChat](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) is utilizing the [SpeziSpeech](https://github.com/StanfordSpezi/SpeziSpeech) module under the hood for speech interaction capabilities, one needs to ensure that your application has the necessary permissions for microphone access and speech recognition. Follow the steps below to configure the target properties within your Xcode project:
 
 - Open your project settings in Xcode by selecting *PROJECT_NAME > TARGET_NAME > Info* tab.
 - You will need to add two entries to the `Custom iOS Target Properties` (so the `Info.plist` file) to provide descriptions for why your app requires these permissions:
