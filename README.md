@@ -12,6 +12,9 @@ SPDX-License-Identifier: MIT
 
 [![Build and Test](https://github.com/StanfordSpezi/SpeziChat/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/StanfordSpezi/SpeziChat/actions/workflows/build-and-test.yml)
 [![codecov](https://codecov.io/gh/StanfordSpezi/SpeziChat/graph/badge.svg?token=b2Dn0r9eo6)](https://codecov.io/gh/StanfordSpezi/SpeziChat)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10161087.svg)](https://doi.org/10.5281/zenodo.10161087)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziChat%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordSpezi/SpeziChat)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziChat%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordSpezi/SpeziChat)
 
 
 Provides UI components for building chat-based applications.
