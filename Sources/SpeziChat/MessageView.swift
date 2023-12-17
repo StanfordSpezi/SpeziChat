@@ -65,22 +65,7 @@ public struct MessageView: View {
                     Spacer(minLength: 32)
                 }
                 Text(chat.content)
-                    .multilineTextAlignment(multilineTextAllignment)
-                    .frame(idealWidth: .infinity)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
-                    .foregroundColor(foregroundColor)
-                    .background(backgroundColor)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .overlay(
-                        Image(systemName: "arrowtriangle.left.fill")
-                            .accessibilityHidden(true)
-                            .foregroundColor(backgroundColor)
-                            .rotationEffect(arrowRotation)
-                            .offset(x: arrowAllignment),
-                        alignment: chat.alignment == .leading ? .bottomLeading : .bottomTrailing
-                    )
-                    .padding(.horizontal, 4)
+                    .chatMessageStyle(alignment: chat.alignment)
                 if chat.alignment == .leading {
                     Spacer(minLength: 32)
                 }
