@@ -55,7 +55,7 @@ import SwiftUI
 /// ```
 public struct ChatView: View {
     @Binding var chat: Chat
-    @Binding var disableInput: Bool
+    var disableInput: Bool
     let exportFormat: ChatExportFormat?
     let messagePlaceholder: String?
     
@@ -125,12 +125,12 @@ public struct ChatView: View {
     ///   - messagePlaceholder: Placeholder text that should be added in the input field.
     public init(
         _ chat: Binding<Chat>,
-        disableInput: Binding<Bool> = .constant(false),
+        disableInput: Bool = false,
         exportFormat: ChatExportFormat? = nil,
         messagePlaceholder: String? = nil
     ) {
         self._chat = chat
-        self._disableInput = disableInput
+        self.disableInput = disableInput
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
     }
