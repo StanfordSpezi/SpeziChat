@@ -54,9 +54,9 @@ import SwiftUI
 /// }
 /// ```
 public struct ChatView: View {
-    let exportFormat: ChatExportFormat?
     @Binding var chat: Chat
     @Binding var disableInput: Bool
+    let exportFormat: ChatExportFormat?
     let messagePlaceholder: String?
     
     @State var messageInputHeight: CGFloat = 0
