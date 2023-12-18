@@ -60,7 +60,7 @@ public struct ChatView: View {
     let messagePlaceholder: String?
     
     @State var messageInputHeight: CGFloat = 0
-    @State private var showShareSheet: Bool = false
+    @State private var showShareSheet = false
     
     
     public var body: some View {
@@ -108,6 +108,7 @@ public struct ChatView: View {
             } else {
                 ProgressView()
                     .padding()
+                    .presentationDetents([.medium])
             }
         }
     }

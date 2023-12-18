@@ -11,13 +11,15 @@ import SwiftUI
 
 
 extension ChatView {
+    /// Provides an iOS-typical Share Sheet (also called Activity View: https://developer.apple.com/design/human-interface-guidelines/activity-views) SwiftUI wrapper 
+    /// for exporting the ``Chat`` content of the ``ChatView`` without the downsides of the SwiftUI `ShareLink` such as unnecessary reevaluations of the to-be shared content.
     struct ShareSheet: UIViewControllerRepresentable {
         let sharedItem: Data
         let sharedItemType: ChatExportFormat
 
         
         func makeUIViewController(context: Context) -> UIActivityViewController {
-            /// Note: Need to write down the data to storage as in-memory PDFs are not recognized properly
+            // Note: Need to write down the data to storage as in-memory shared content is not recognized properly (e.g., PDFs)
             var temporaryPath = FileManager.default.temporaryDirectory.appendingPathComponent("Exported Chat")
             
             switch sharedItemType {
@@ -25,6 +27,7 @@ extension ChatView {
             case .text: temporaryPath = temporaryPath.appendingPathExtension("txt")
             case .pdf: temporaryPath = temporaryPath.appendingPathExtension("pdf")
             }
+            
             try? sharedItem.write(to: temporaryPath)
             
             let controller = UIActivityViewController(

@@ -36,27 +36,7 @@ public struct MessageView: View {
     
     private let chat: ChatEntity
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
-
     
-    private var foregroundColor: Color {
-        chat.alignment == .leading ? .primary : .white
-    }
-    
-    private var backgroundColor: Color {
-        chat.alignment == .leading ? Color(.secondarySystemBackground) : .accentColor
-    }
-    
-    private var multilineTextAllignment: TextAlignment {
-        chat.alignment == .leading ? .leading : .trailing
-    }
-    
-    private var arrowRotation: Angle {
-        .degrees(chat.alignment == .leading ? -50 : -130)
-    }
-    
-    private var arrowAllignment: CGFloat {
-        chat.alignment == .leading ? -7 : 7
-    }
     
     public var body: some View {
         if !hideMessagesWithRoles.contains(chat.role) {

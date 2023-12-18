@@ -13,7 +13,7 @@ import SwiftUI
 
 
 extension ChatView {
-    /// Output format of the exported ``Chat`` via a share button in the ``ChatView``.
+    /// Output format of the to-be exported ``Chat``.
     public enum ChatExportFormat {
         /// JSON representation of the ``Chat``
         case json
@@ -31,7 +31,7 @@ extension ChatView {
         
         
         var body: some View {
-            VStack(spacing: 8) {    // Sadly, the SwiftUI `ImageRenderer` doesn't support SwiftUI `List`s
+            VStack(spacing: 8) {    // The SwiftUI `ImageRenderer` doesn't support SwiftUI `List`s
                 ForEach(chat, id: \.self) { chatEntity in
                     HStack {
                         if chatEntity.alignment == .trailing {
@@ -50,7 +50,6 @@ extension ChatView {
                             Spacer(minLength: 32)
                         }
                     }
-                     
                 }
                 
                 Spacer()
@@ -120,7 +119,7 @@ extension ChatView {
         // Width from US Letter, height requested by the view
         // Reason: Splitting a view in multiple PDF pages is complex!
         let size = CGSize(
-            width: 72 * 8.5,
+            width: 72 * 8.5,    // US Letter width
             height: proposedHeight
         )
          

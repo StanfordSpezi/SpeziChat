@@ -60,6 +60,7 @@ These entries are mandatory for apps that utilize microphone and speech recognit
 ### Chat View
 
 The ``ChatView`` provides a basic reusable chat view which includes a message input field. The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text.
+In addition, the ``ChatView`` provides functionality to export the visualized ``Chat`` as a PDF document, JSON representation, or textual UTF-8 file (see ``ChatView/ChatExportFormat``) via a Share Sheet (or Activity View).
 
 ```swift
 struct ChatTestView: View {
@@ -69,7 +70,7 @@ struct ChatTestView: View {
 
     
     var body: some View {
-        ChatView($chat)
+        ChatView($chat, exportFormat: .pdf)
             .navigationTitle("SpeziChat")
     }
 }

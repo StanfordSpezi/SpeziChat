@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-
+/// Provides styling for the visualization of a textual ``ChatEntity`` within the ``ChatView``.
 struct MessageStyleModifier: ViewModifier {
     let chatAlignment: ChatEntity.Alignment
 
@@ -41,7 +41,6 @@ struct MessageStyleModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .multilineTextAlignment(multilineTextAlignment)
-            //.frame(maxWidth: .infinity)
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .foregroundColor(foregroundColor)
@@ -61,6 +60,24 @@ struct MessageStyleModifier: ViewModifier {
 
 
 extension View {
+    /// Attach this modifier to `Text`-based content in SwiftUI to format it as a typical chat bubble within a chat view.
+    /// The modifier handles text alignment, paddings, colourings, background, as well as the typical chat bubble visualization.
+    ///
+    /// ### Usage
+    ///
+    /// A minimal example can be found below.
+    /// See the ``MessageView`` for a more complete example.
+    ///
+    /// ```swift
+    /// struct ChatMessageView: View {
+    ///     let chatEntity: ChatEntity
+    ///
+    ///     var body: some View {
+    ///         Text(chatEntity.content)
+    ///             .chatMessageStyle(alignment: chatEntity.alignment)
+    ///     }
+    /// }
+    /// ```
     func chatMessageStyle(alignment: ChatEntity.Alignment) -> some View {
         self.modifier(MessageStyleModifier(chatAlignment: alignment))
     }
