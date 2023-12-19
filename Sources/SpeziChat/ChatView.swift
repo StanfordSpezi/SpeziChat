@@ -30,6 +30,7 @@ import SwiftUI
 public struct ChatView: View {
     @Binding var chat: Chat
     @Binding var disableInput: Bool
+    @Binding var displayTypingIndicator: Bool
     let messagePlaceholder: String?
     
     @State var messageInputHeight: CGFloat = 0
@@ -38,7 +39,7 @@ public struct ChatView: View {
     public var body: some View {
         ZStack {
             VStack {
-                MessagesView($chat, bottomPadding: $messageInputHeight)
+                MessagesView($chat, displayProgressIndicator: $displayTypingIndicator, bottomPadding: $messageInputHeight)
                     .gesture(
                         TapGesture().onEnded {
                             UIApplication.shared.sendAction(
@@ -69,10 +70,12 @@ public struct ChatView: View {
     public init(
         _ chat: Binding<Chat>,
         disableInput: Binding<Bool> = .constant(false),
+        displayProgressIndicator: Binding<Bool> = .constant(false),
         messagePlaceholder: String? = nil
     ) {
         self._chat = chat
         self._disableInput = disableInput
+        self._displayTypingIndicator = displayProgressIndicator
         self.messagePlaceholder = messagePlaceholder
     }
 }
@@ -87,5 +90,5 @@ public struct ChatView: View {
             ChatEntity(role: .assistant, content: "Assistant Message!"),
             ChatEntity(role: .function, content: "Function Message!")
         ]
-    ))
+    ), displayProgressIndicator: .constant(true))
 }

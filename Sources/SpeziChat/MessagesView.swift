@@ -34,6 +34,8 @@ public struct MessagesView: View {
     
     @Binding private var chat: Chat
     @Binding private var bottomPadding: CGFloat
+    @Binding private var displayTypingIndicator: Bool
+    @State private var isAnimating: Bool = false
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
     
     
@@ -61,6 +63,29 @@ public struct MessagesView: View {
                     ForEach(Array(chat.enumerated()), id: \.offset) { _, message in
                         MessageView(message, hideMessagesWithRoles: hideMessagesWithRoles)
                     }
+                    if displayTypingIndicator {
+                        MessageView(ChatEntity(role: .assistant, content: "")) {
+                            HStack(spacing: 3) {
+                                ForEach(0..<3) { index in
+                                    Circle()
+                                        .opacity(self.isAnimating ? 1 : 0)
+                                        .foregroundStyle(.tertiary)
+                                        .animation(
+                                            Animation
+                                                .easeInOut(duration: 0.6)
+                                                .repeatForever(autoreverses: true)
+                                                .delay(0.2 * Double(index)),
+                                            value: self.isAnimating
+                                        )
+                                }
+                            }
+                            .frame(width: 42, height: 12)
+                            .padding(.vertical, 4)
+                            .onAppear {
+                                self.isAnimating = true
+                            }
+                        }
+                    }
                     Spacer()
                         .frame(height: bottomPadding)
                         .id(MessagesView.bottomSpacerIdentifier)
@@ -86,11 +111,13 @@ public struct MessagesView: View {
     ///   - hideMessagesWithRoles: The .system and .function roles are hidden from message view
     public init(
         _ chat: Chat,
-        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
+        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView<Text>.Defaults.hideMessagesWithRoles,
+        displayProgressIndicator: Bool = false,
         bottomPadding: CGFloat = 0
     ) {
         self._chat = .constant(chat)
         self.hideMessagesWithRoles = hideMessagesWithRoles
+        self._displayTypingIndicator = .constant(displayProgressIndicator)
         self._bottomPadding = .constant(bottomPadding)
     }
 
@@ -100,11 +127,13 @@ public struct MessagesView: View {
     ///   - hideMessagesWithRoles: Defines which messages should be hidden based on the passed in message roles.
     public init(
         _ chat: Binding<Chat>,
-        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
+        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView<Text>.Defaults.hideMessagesWithRoles,
+        displayProgressIndicator: Binding<Bool> = .constant(false),
         bottomPadding: Binding<CGFloat> = .constant(0)
     ) {
         self._chat = chat
         self.hideMessagesWithRoles = hideMessagesWithRoles
+        self._displayTypingIndicator = displayProgressIndicator
         self._bottomPadding = bottomPadding
     }
 
@@ -126,5 +155,5 @@ public struct MessagesView: View {
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
-    )
+    , displayProgressIndicator: true)
 }

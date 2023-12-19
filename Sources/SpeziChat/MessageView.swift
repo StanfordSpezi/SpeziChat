@@ -26,17 +26,19 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-public struct MessageView: View {
+public struct MessageView<Content: View>: View {
     /// Contains default values of configurable properties of the ``MessageView``.
     public enum Defaults {
         /// ``ChatEntity`` ``ChatEntity/Role``s that should be hidden by default
-        public static let hideMessagesWithRoles: Set<ChatEntity.Role> = [.system, .function]
+        public static var hideMessagesWithRoles: Set<ChatEntity.Role> {
+            [.system, .function]
+        }
     }
     
     
     private let chat: ChatEntity
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
-
+    private let content: Content?
     
     private var foregroundColor: Color {
         chat.alignment == .leading ? .primary : .white
@@ -64,7 +66,7 @@ public struct MessageView: View {
                 if chat.alignment == .trailing {
                     Spacer(minLength: 32)
                 }
-                Text(chat.content)
+                content
                     .multilineTextAlignment(multilineTextAllignment)
                     .frame(idealWidth: .infinity)
                     .padding(.horizontal, 10)
@@ -92,9 +94,18 @@ public struct MessageView: View {
     /// - Parameters:
     ///   - chat: The chat message that should be displayed.
     ///   - hideMessagesWithRoles: If .system and/or .function messages should be hidden from the chat overview.
-    public init(_ chat: ChatEntity, hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles) {
+    public init(_ chat: ChatEntity, hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles) where Content == Text {
         self.chat = chat
         self.hideMessagesWithRoles = hideMessagesWithRoles
+        self.content = Text(chat.content)
+    }
+}
+
+extension MessageView {
+    init(_ chat: ChatEntity, @ViewBuilder content: () -> Content) {
+        self.chat = chat
+        self.hideMessagesWithRoles = MessageView.Defaults.hideMessagesWithRoles
+        self.content = content()
     }
 }
 
@@ -102,11 +113,11 @@ public struct MessageView: View {
 #Preview {
     ScrollView {
         VStack {
-            MessageView(ChatEntity(role: .system, content: "System Message!"), hideMessagesWithRoles: [])
-            MessageView(ChatEntity(role: .system, content: "System Message (hidden)!"))
-            MessageView(ChatEntity(role: .function, content: "Function Message!"), hideMessagesWithRoles: [.system])
-            MessageView(ChatEntity(role: .user, content: "User Message!"))
-            MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
+            MessageView<Text>(ChatEntity(role: .system, content: "System Message!"), hideMessagesWithRoles: [])
+            MessageView<Text>(ChatEntity(role: .system, content: "System Message (hidden)!"))
+            MessageView<Text>(ChatEntity(role: .function, content: "Function Message!"), hideMessagesWithRoles: [.system])
+            MessageView<Text>(ChatEntity(role: .user, content: "User Message!"))
+            MessageView<Text>(ChatEntity(role: .assistant, content: "Assistant Message!"))
         }
         .padding()
     }
