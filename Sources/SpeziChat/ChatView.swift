@@ -39,7 +39,7 @@ public struct ChatView: View {
     public var body: some View {
         ZStack {
             VStack {
-                MessagesView($chat, displayProgressIndicator: $displayTypingIndicator, bottomPadding: $messageInputHeight)
+                MessagesView($chat, displayTypingIndicator: $displayTypingIndicator, bottomPadding: $messageInputHeight)
                     .gesture(
                         TapGesture().onEnded {
                             UIApplication.shared.sendAction(
@@ -66,16 +66,17 @@ public struct ChatView: View {
     /// - Parameters:
     ///   - chat: The chat that should be displayed.
     ///   - disableInput: Flag if the input view should be disabled.
+    ///   - displayTypingIndicator: Flag if the "three dots" animation should be rendered to indicate pending assistant message.
     ///   - messagePlaceholder: Placeholder text that should be added in the input field.
     public init(
         _ chat: Binding<Chat>,
         disableInput: Binding<Bool> = .constant(false),
-        displayProgressIndicator: Binding<Bool> = .constant(false),
+        displayTypingIndicator: Binding<Bool> = .constant(false),
         messagePlaceholder: String? = nil
     ) {
         self._chat = chat
         self._disableInput = disableInput
-        self._displayTypingIndicator = displayProgressIndicator
+        self._displayTypingIndicator = displayTypingIndicator
         self.messagePlaceholder = messagePlaceholder
     }
 }
@@ -90,5 +91,5 @@ public struct ChatView: View {
             ChatEntity(role: .assistant, content: "Assistant Message!"),
             ChatEntity(role: .function, content: "Function Message!")
         ]
-    ), displayProgressIndicator: .constant(true))
+    ), displayTypingIndicator: .constant(true))
 }

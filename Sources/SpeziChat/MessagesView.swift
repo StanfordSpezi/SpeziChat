@@ -108,32 +108,34 @@ public struct MessagesView: View {
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
     ///   - bottomPadding: A fixed bottom padding for the messages view.
+    ///   - displayTypingIndicator: Immutable option for rendering "three dots" animation.
     ///   - hideMessagesWithRoles: The .system and .function roles are hidden from message view
     public init(
         _ chat: Chat,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView<Text>.Defaults.hideMessagesWithRoles,
-        displayProgressIndicator: Bool = false,
+        displayTypingIndicator: Bool = false,
         bottomPadding: CGFloat = 0
     ) {
         self._chat = .constant(chat)
         self.hideMessagesWithRoles = hideMessagesWithRoles
-        self._displayTypingIndicator = .constant(displayProgressIndicator)
+        self._displayTypingIndicator = .constant(displayTypingIndicator)
         self._bottomPadding = .constant(bottomPadding)
     }
 
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
     ///   - bottomPadding: A bottom padding for the messages view.
+    ///   - displayTypingIndicator: Option for rendering "three dots" animation, indicating that the LLM has started processing the message.
     ///   - hideMessagesWithRoles: Defines which messages should be hidden based on the passed in message roles.
     public init(
         _ chat: Binding<Chat>,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView<Text>.Defaults.hideMessagesWithRoles,
-        displayProgressIndicator: Binding<Bool> = .constant(false),
+        displayTypingIndicator: Binding<Bool> = .constant(false),
         bottomPadding: Binding<CGFloat> = .constant(0)
     ) {
         self._chat = chat
         self.hideMessagesWithRoles = hideMessagesWithRoles
-        self._displayTypingIndicator = displayProgressIndicator
+        self._displayTypingIndicator = displayTypingIndicator
         self._bottomPadding = bottomPadding
     }
 
@@ -155,5 +157,5 @@ public struct MessagesView: View {
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
-    , displayProgressIndicator: true)
+    , displayTypingIndicator: true)
 }
