@@ -35,7 +35,7 @@ public struct MessagesView: View {
     @Binding private var chat: Chat
     @Binding private var bottomPadding: CGFloat
     @Binding private var displayTypingIndicator: Bool
-    @State private var isAnimating: Bool = false
+    @State private var isAnimating = false
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
     
     
@@ -65,25 +65,7 @@ public struct MessagesView: View {
                     }
                     if displayTypingIndicator {
                         MessageView(ChatEntity(role: .assistant, content: "")) {
-                            HStack(spacing: 3) {
-                                ForEach(0..<3) { index in
-                                    Circle()
-                                        .opacity(self.isAnimating ? 1 : 0)
-                                        .foregroundStyle(.tertiary)
-                                        .animation(
-                                            Animation
-                                                .easeInOut(duration: 0.6)
-                                                .repeatForever(autoreverses: true)
-                                                .delay(0.2 * Double(index)),
-                                            value: self.isAnimating
-                                        )
-                                }
-                            }
-                            .frame(width: 42, height: 12)
-                            .padding(.vertical, 4)
-                            .onAppear {
-                                self.isAnimating = true
-                            }
+                            TypingIndicator($isAnimating)
                         }
                     }
                     Spacer()
@@ -156,6 +138,7 @@ public struct MessagesView: View {
             ChatEntity(role: .function, content: "Function Message!"),
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
-        ]
-    , displayTypingIndicator: true)
+        ],
+        displayTypingIndicator: true
+    )
 }
