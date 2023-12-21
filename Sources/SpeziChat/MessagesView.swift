@@ -35,7 +35,6 @@ public struct MessagesView: View {
     @Binding private var chat: Chat
     @Binding private var bottomPadding: CGFloat
     @Binding private var displayTypingIndicator: Bool
-    @State private var isAnimating = false
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
     
     
@@ -63,11 +62,10 @@ public struct MessagesView: View {
                     ForEach(Array(chat.enumerated()), id: \.offset) { _, message in
                         MessageView(message, hideMessagesWithRoles: hideMessagesWithRoles)
                     }
-                    if displayTypingIndicator {
-                        MessageView(ChatEntity(role: .assistant, content: "")) {
-                            TypingIndicator($isAnimating)
-                        }
+                    MessageView(ChatEntity(role: .assistant, content: "")) {
+                        TypingIndicator($displayTypingIndicator)
                     }
+                    
                     Spacer()
                         .frame(height: bottomPadding)
                         .id(MessagesView.bottomSpacerIdentifier)
@@ -139,6 +137,6 @@ public struct MessagesView: View {
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ],
-        displayTypingIndicator: true
+        displayTypingIndicator: false
     )
 }
