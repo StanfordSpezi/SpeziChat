@@ -40,6 +40,7 @@ class TestAppUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
+        // Entering dummy chat value
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         try app.textViews["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
         XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
@@ -48,53 +49,50 @@ class TestAppUITests: XCTestCase {
         sleep(1)
         XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 5))
         
+        // Export chat via share sheet button
         XCTAssert(app.buttons["Export the Chat"].waitForExistence(timeout: 2))
         app.buttons["Export the Chat"].tap()
         
         // Share Sheet needs a bit to pop up
-        sleep(2)
-        
-        print(app.staticTexts.debugDescription)
-        
-        XCTAssert(app.staticTexts["Save to Files"].waitForExistence(timeout: 2))
+        sleep(1)
+
+        // Store exported chat in Files
+        XCTAssert(app.staticTexts["Save to Files"].waitForExistence(timeout: 10))
         app.staticTexts["Save to Files"].tap()
-        
         XCTAssert(app.buttons["Save"].waitForExistence(timeout: 2))
         app.buttons["Save"].tap()
         
-        sleep(1)
-        
-        if app.staticTexts["Replace Existing Items?"].waitForExistence(timeout: 2) {
+        if app.staticTexts["Replace Existing Items?"].waitForExistence(timeout: 5) {
             XCTAssert(app.buttons["Replace"].waitForExistence(timeout: 2))
             app.buttons["Replace"].tap()
         }
         
-        // Saving takes unreasonable long sometimes
-        sleep(5)
+        sleep(2)
         
-        // Go to home screen
+        // Wait until share sheet closed and back on the chat screen
+        XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 10))
+        
         XCUIDevice.shared.press(.home)
         
         // Launch the Files app
         let filesApp = XCUIApplication(bundleIdentifier: "com.apple.DocumentsApp")
         filesApp.launch()
         
-        // Handle already open PDF
+        // Handle already open files
         if filesApp.buttons["Done"].waitForExistence(timeout: 2) {
             filesApp.buttons["Done"].tap()
         }
         
         // Open File
         XCTAssert(filesApp.staticTexts["Exported Chat"].waitForExistence(timeout: 2))
-        XCTAssert(filesApp.collectionViews["File View"].waitForExistence(timeout: 2))
-        let files = filesApp.collectionViews["File View"]
+        XCTAssert(filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].waitForExistence(timeout: 2))
         
-        XCTAssert(files.cells["Exported Chat, pdf"].waitForExistence(timeout: 2))
-        files.cells["Exported Chat, pdf"].images.firstMatch.tap()
+        XCTAssert(filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.waitForExistence(timeout: 2))
+        filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.tap()
         
-        sleep(3)
+        sleep(3)    // Wait until file is opened
         
-        // Check if PDF contains certain user message
+        // Check if PDF contains certain chat message
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", "User Message!")
         let chatEntry = filesApp.otherElements.containing(predicate).firstMatch
         XCTAssert(chatEntry.waitForExistence(timeout: 2))
