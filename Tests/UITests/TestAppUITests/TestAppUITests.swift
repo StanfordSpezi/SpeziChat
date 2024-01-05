@@ -52,17 +52,14 @@ class TestAppUITests: XCTestCase {
         // Export chat via share sheet button
         XCTAssert(app.buttons["Export the Chat"].waitForExistence(timeout: 2))
         app.buttons["Export the Chat"].tap()
-        
-        // Share Sheet needs a bit to pop up
-        sleep(1)
 
         // Store exported chat in Files
         XCTAssert(app.staticTexts["Save to Files"].waitForExistence(timeout: 10))
         app.staticTexts["Save to Files"].tap()
+        sleep(1)
         XCTAssert(app.buttons["Save"].waitForExistence(timeout: 2))
         app.buttons["Save"].tap()
-        
-        sleep(3)
+        sleep(3)    // Wait until file is saved
         
         if app.staticTexts["Replace Existing Items?"].waitForExistence(timeout: 5) {
             XCTAssert(app.buttons["Replace"].waitForExistence(timeout: 2))
@@ -94,8 +91,7 @@ class TestAppUITests: XCTestCase {
         
         // Check if PDF contains certain chat message
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", "User Message!")
-        let chatEntry = filesApp.otherElements.containing(predicate).firstMatch
-        XCTAssert(chatEntry.waitForExistence(timeout: 2))
+        XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
         
         // Close File
         XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
