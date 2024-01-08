@@ -59,7 +59,7 @@ class TestAppUITests: XCTestCase {
         sleep(3)
         XCTAssert(app.buttons["Save"].waitForExistence(timeout: 2))
         app.buttons["Save"].tap()
-        sleep(3)    // Wait until file is saved
+        sleep(10)    // Wait until file is saved
         
         if app.staticTexts["Replace Existing Items?"].waitForExistence(timeout: 5) {
             XCTAssert(app.buttons["Replace"].waitForExistence(timeout: 2))
