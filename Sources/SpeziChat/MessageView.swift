@@ -30,8 +30,10 @@ public struct MessageView: View {
     /// Contains default values of configurable properties of the ``MessageView``.
     public enum Defaults {
         /// ``ChatEntity`` ``ChatEntity/Role``s that should be hidden by default
-        // Need to state a dummy associated value of the `ChatEntity/Role/function` case
-        public static let hideMessagesWithRoles: Set<ChatEntity.Role> = [.system, .function(name: "")]
+        public static let hideMessagesWithRoles: Set<ChatEntity.Role> = [
+            .system,
+            .function(name: "")     // Need to state a dummy associated value of the `ChatEntity/Role/function` case
+        ]
     }
     
     
