@@ -56,7 +56,7 @@ class TestAppUITests: XCTestCase {
         // Store exported chat in Files
         XCTAssert(app.staticTexts["Save to Files"].waitForExistence(timeout: 10))
         app.staticTexts["Save to Files"].tap()
-        sleep(1)
+        sleep(3)
         XCTAssert(app.buttons["Save"].waitForExistence(timeout: 2))
         app.buttons["Save"].tap()
         sleep(3)    // Wait until file is saved
@@ -64,6 +64,7 @@ class TestAppUITests: XCTestCase {
         if app.staticTexts["Replace Existing Items?"].waitForExistence(timeout: 5) {
             XCTAssert(app.buttons["Replace"].waitForExistence(timeout: 2))
             app.buttons["Replace"].tap()
+            sleep(3)    // Wait until file is saved
         }
         
         // Wait until share sheet closed and back on the chat screen
