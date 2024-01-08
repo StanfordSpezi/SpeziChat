@@ -55,7 +55,6 @@ import SwiftUI
 /// ```
 public struct ChatView: View {
     @Binding var chat: Chat
-    // @Binding var displayTypingIndicator: Bool
     var disableInput: Bool
     let exportFormat: ChatExportFormat?
     let messagePlaceholder: String?
@@ -134,8 +133,6 @@ public struct ChatView: View {
         self.disableInput = disableInput
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
-        self.showShareSheet = false
-        self.messageInputHeight = 0.0
     }
 }
 

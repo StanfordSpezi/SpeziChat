@@ -40,6 +40,7 @@ public struct MessageView: View {
     private let chat: ChatEntity
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
     
+    
     public var body: some View {
         // Compare raw value of `ChatEntity/Role`s as associated values present
         if !hideMessagesWithRoles.contains(where: { $0.rawValue == chat.role.rawValue }) {
@@ -65,6 +66,7 @@ public struct MessageView: View {
         self.hideMessagesWithRoles = hideMessagesWithRoles
     }
 }
+
 
 #Preview {
     ScrollView {
