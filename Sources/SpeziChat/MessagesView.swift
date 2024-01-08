@@ -30,12 +30,21 @@ import SwiftUI
 /// }
 /// ```
 public struct MessagesView: View {
+    /// Offers configuration of when to show an animation indicating a pending message from assistant:
+    /// either (a) whenever the last message in the chat is from the user but not even a partial response from the assistant has arrived,
+    /// or (b) depending on `shouldDisplay`, some explicitly stated source of truth.
+    /// Useful as a visual cue to the user that the LLM has started processing the message.
+    public enum LoadingDisplayMode {
+        case automatic
+        case manual(shouldDisplay: Binding<Bool>)
+    }
+    
     private static let bottomSpacerIdentifier = "Bottom Spacer"
     
     @Binding private var chat: Chat
     @Binding private var bottomPadding: CGFloat
-    @Binding private var displayTypingIndicator: Bool
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
+    private let loadingDisplayMode: LoadingDisplayMode
     
     
     private var keyboardPublisher: AnyPublisher<Bool, Never> {
@@ -54,6 +63,14 @@ public struct MessagesView: View {
             .eraseToAnyPublisher()
     }
     
+    private var shouldDisplayTypingIndicator: Bool {
+        switch self.loadingDisplayMode {
+        case .automatic:
+            self.chat.last?.role == .user
+        case .manual(let shouldDisplay):
+            shouldDisplay.wrappedValue
+        }
+    }
     
     public var body: some View {
         ScrollViewReader { scrollViewProxy in
@@ -62,8 +79,9 @@ public struct MessagesView: View {
                     ForEach(Array(chat.enumerated()), id: \.offset) { _, message in
                         MessageView(message, hideMessagesWithRoles: hideMessagesWithRoles)
                     }
-                    MessageView(ChatEntity(role: .assistant, content: ""))
-                    
+                    if shouldDisplayTypingIndicator {
+                        TypingIndicator()
+                    }
                     Spacer()
                         .frame(height: bottomPadding)
                         .id(MessagesView.bottomSpacerIdentifier)
@@ -86,34 +104,34 @@ public struct MessagesView: View {
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
     ///   - bottomPadding: A fixed bottom padding for the messages view.
-    ///   - displayTypingIndicator: Immutable option for rendering "three dots" animation.
+    ///   - loadingDisplayMode: Indicates whether a  "three dots" animation should be automatically or manually shown.
     ///   - hideMessagesWithRoles: The .system and .function roles are hidden from message view
     public init(
         _ chat: Chat,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
-        displayTypingIndicator: Bool = false,
+        loadingDisplayMode: LoadingDisplayMode = .automatic,
         bottomPadding: CGFloat = 0
     ) {
         self._chat = .constant(chat)
         self.hideMessagesWithRoles = hideMessagesWithRoles
-        self._displayTypingIndicator = .constant(displayTypingIndicator)
+        self.loadingDisplayMode = loadingDisplayMode
         self._bottomPadding = .constant(bottomPadding)
     }
 
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
     ///   - bottomPadding: A bottom padding for the messages view.
-    ///   - displayTypingIndicator: Option for rendering "three dots" animation, indicating that the LLM has started processing the message.
+    ///   - loadingDisplayMode: Indicates whether a  "three dots" animation should be automatically or manually shown.
     ///   - hideMessagesWithRoles: Defines which messages should be hidden based on the passed in message roles.
     public init(
         _ chat: Binding<Chat>,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
-        displayTypingIndicator: Binding<Bool> = .constant(false),
+        loadingDisplayMode: LoadingDisplayMode = .automatic,
         bottomPadding: Binding<CGFloat> = .constant(0)
     ) {
         self._chat = chat
         self.hideMessagesWithRoles = hideMessagesWithRoles
-        self._displayTypingIndicator = displayTypingIndicator
+        self.loadingDisplayMode = loadingDisplayMode
         self._bottomPadding = bottomPadding
     }
 
@@ -134,7 +152,6 @@ public struct MessagesView: View {
             ChatEntity(role: .function(name: "test_function"), content: "Function Message!"),
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
-        ],
-        displayTypingIndicator: false
+        ]
     )
 }

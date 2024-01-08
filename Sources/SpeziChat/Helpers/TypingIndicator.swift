@@ -12,30 +12,23 @@ import SwiftUI
 /// The animation consists of three dots that fade in and out in a sequential, wave-like pattern.
 /// It loops continuously as long as `isAnimating` is `true`.
 ///
-/// This view can be bound to a `Bool` value that controls whether the animation is visible (and active) or not.
-///
 /// Usage:
 /// ```swift
 /// struct ChatView: View {
-///     @State private var isTyping = true
-///
 ///     var body: some View {
 ///         VStack {
 ///             MessageView(ChatEntity(role: .user, content: "User Message!"))
-///             MessageView(ChatEntity(role: .assistant, content: "")) {
-///                 TypingIndicator($isTyping)
-///             }
+///             TypingIndicator()
 ///         }
 ///     }
 /// }
 /// ```
 ///
 public struct TypingIndicator: View {
-    @Binding var isVisible: Bool
     @State var isAnimating = false
     
     public var body: some View {
-        if isVisible {
+        HStack {
             HStack(spacing: 3) {
                 ForEach(0..<3) { index in
                     Circle()
@@ -50,23 +43,17 @@ public struct TypingIndicator: View {
                         )
                 }
             }
-            .frame(width: 42, height: 12)
+            .frame(width: 42, height: 12, alignment: .leading)
             .padding(.vertical, 4)
             .onAppear {
                 self.isAnimating = true
             }
-        } else {
-            EmptyView()
+            .chatMessageStyle(alignment: .leading)
+            Spacer(minLength: 32)
         }
-    }
-    
-    /// - Parameters
-    /// - isAnimating: A binding to a `Bool` that determines whether the animation is active.
-    init(_ isVisible: Binding<Bool>) {
-        self._isVisible = isVisible
     }
 }
 
 #Preview {
-    TypingIndicator(.constant(true))
+    TypingIndicator()
 }

@@ -67,7 +67,7 @@ public struct ChatView: View {
     public var body: some View {
         ZStack {
             VStack {
-                MessagesView($chat, displayTypingIndicator: .constant(false), bottomPadding: $messageInputHeight)
+                MessagesView($chat, bottomPadding: $messageInputHeight)
                     .gesture(
                         TapGesture().onEnded {
                             UIApplication.shared.sendAction(
