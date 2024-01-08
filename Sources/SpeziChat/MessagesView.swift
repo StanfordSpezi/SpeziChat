@@ -62,9 +62,7 @@ public struct MessagesView: View {
                     ForEach(Array(chat.enumerated()), id: \.offset) { _, message in
                         MessageView(message, hideMessagesWithRoles: hideMessagesWithRoles)
                     }
-                    MessageView(ChatEntity(role: .assistant, content: "")) {
-                        TypingIndicator($displayTypingIndicator)
-                    }
+                    MessageView(ChatEntity(role: .assistant, content: ""))
                     
                     Spacer()
                         .frame(height: bottomPadding)
@@ -92,7 +90,7 @@ public struct MessagesView: View {
     ///   - hideMessagesWithRoles: The .system and .function roles are hidden from message view
     public init(
         _ chat: Chat,
-        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView<Text>.Defaults.hideMessagesWithRoles,
+        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
         displayTypingIndicator: Bool = false,
         bottomPadding: CGFloat = 0
     ) {
@@ -109,7 +107,7 @@ public struct MessagesView: View {
     ///   - hideMessagesWithRoles: Defines which messages should be hidden based on the passed in message roles.
     public init(
         _ chat: Binding<Chat>,
-        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView<Text>.Defaults.hideMessagesWithRoles,
+        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
         displayTypingIndicator: Binding<Bool> = .constant(false),
         bottomPadding: Binding<CGFloat> = .constant(0)
     ) {
@@ -133,7 +131,7 @@ public struct MessagesView: View {
         [
             ChatEntity(role: .system, content: "System Message!"),
             ChatEntity(role: .system, content: "System Message (hidden)!"),
-            ChatEntity(role: .function, content: "Function Message!"),
+            ChatEntity(role: .function(name: "test_function"), content: "Function Message!"),
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ],
