@@ -13,11 +13,21 @@ import Foundation
 /// It consists of a ``ChatEntity/Role`` property as well as a `String`-based content property.
 public struct ChatEntity: Codable, Equatable, Hashable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
-    public enum Role: String, Codable, Equatable {
+    public enum Role: Codable, Equatable, Hashable {
         case system
         case assistant
         case user
-        case function
+        case function(name: String)
+        
+        
+        var rawValue: String {
+            switch self {
+            case .system: "system"
+            case .assistant: "assistant"
+            case .user: "user"
+            case .function: "function"
+            }
+        }
     }
     
     /// Indicates if a ``ChatEntity`` is displayed in a leading or trailing position within a SwiftUI `View`.

@@ -30,7 +30,8 @@ public struct MessageView: View {
     /// Contains default values of configurable properties of the ``MessageView``.
     public enum Defaults {
         /// ``ChatEntity`` ``ChatEntity/Role``s that should be hidden by default
-        public static let hideMessagesWithRoles: Set<ChatEntity.Role> = [.system, .function]
+        // Need to state a dummy associated value of the `ChatEntity/Role/function` case
+        public static let hideMessagesWithRoles: Set<ChatEntity.Role> = [.system, .function(name: "")]
     }
     
     
@@ -39,7 +40,8 @@ public struct MessageView: View {
     
     
     public var body: some View {
-        if !hideMessagesWithRoles.contains(chat.role) {
+        // Compare raw value of `ChatEntity/Role`s as associated values present
+        if !hideMessagesWithRoles.contains(where: { $0.rawValue == chat.role.rawValue }) {
             HStack {
                 if chat.alignment == .trailing {
                     Spacer(minLength: 32)
@@ -69,7 +71,7 @@ public struct MessageView: View {
         VStack {
             MessageView(ChatEntity(role: .system, content: "System Message!"), hideMessagesWithRoles: [])
             MessageView(ChatEntity(role: .system, content: "System Message (hidden)!"))
-            MessageView(ChatEntity(role: .function, content: "Function Message!"), hideMessagesWithRoles: [.system])
+            MessageView(ChatEntity(role: .function(name: "test_function"), content: "Function Message!"), hideMessagesWithRoles: [.system])
             MessageView(ChatEntity(role: .user, content: "User Message!"))
             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
         }
