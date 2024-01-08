@@ -17,7 +17,7 @@ struct ChatTestView: View {
     
     
     var body: some View {
-        ChatView($chat)
+        ChatView($chat, exportFormat: .pdf)
             .navigationTitle("SpeziChat")
             .padding(.top, 16)
             .onChange(of: chat) { _, newValue in

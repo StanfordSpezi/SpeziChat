@@ -122,7 +122,7 @@ public struct MessagesView: View {
         [
             ChatEntity(role: .system, content: "System Message!"),
             ChatEntity(role: .system, content: "System Message (hidden)!"),
-            ChatEntity(role: .function, content: "Function Message!"),
+            ChatEntity(role: .function(name: "test_function"), content: "Function Message!"),
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
