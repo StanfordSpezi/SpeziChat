@@ -98,4 +98,16 @@ class TestAppUITests: XCTestCase {
         XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
         filesApp.buttons["Done"].tap()
     }
+    
+    func testTypingIndicatorVisibility() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        try app.textViews["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
+        XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
+        app.buttons["Send Message"].tap()
+ 
+        let typingIndicator = app.otherElements["Pending Message Animation 0"]
+        XCTAssert(typingIndicator.waitForExistence(timeout: 2), "Typing Indicator should be present")
+    }
 }
