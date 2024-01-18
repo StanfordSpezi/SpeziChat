@@ -33,6 +33,13 @@ class TestAppUITests: XCTestCase {
         
         sleep(1)
         
+        // Run test to check if typing indicator is in the view and tag Paul
+        XCTAssert((0..<3).reduce(false, { partialResult, index in
+            return partialResult || app.otherElements["Pending Message Animation \(index)"].waitForExistence(timeout: 1)
+        }))
+        
+        sleep(4)
+        
         XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 5))
     }
     
@@ -99,7 +106,7 @@ class TestAppUITests: XCTestCase {
         filesApp.buttons["Done"].tap()
     }
     
-    func testTypingIndicatorVisibility() throws {
+    /*func testTypingIndicatorVisibility() throws {
         let app = XCUIApplication()
         app.launch()
         
@@ -109,5 +116,5 @@ class TestAppUITests: XCTestCase {
  
         let typingIndicator = app.otherElements["Pending Message Animation 0"]
         XCTAssert(typingIndicator.waitForExistence(timeout: 2), "Typing Indicator should be present")
-    }
+    }*/
 }

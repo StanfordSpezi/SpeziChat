@@ -13,7 +13,6 @@
 		971D0E1D2B005DED003AD89E /* ChatTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D0E1C2B005DED003AD89E /* ChatTestView.swift */; };
 		971D0E1F2B005E9C003AD89E /* SpeziChat in Frameworks */ = {isa = PBXBuildFile; productRef = 971D0E1E2B005E9C003AD89E /* SpeziChat */; };
 		97911AFB2B01A27D003AEEF5 /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 97911AFA2B01A27D003AEEF5 /* XCTestExtensions */; };
-		B24250272B53774B0032FA1D /* TypingIndicatorTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24250262B53774B0032FA1D /* TypingIndicatorTestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,7 +48,6 @@
 		2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
 		971D0E1C2B005DED003AD89E /* ChatTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTestView.swift; sourceTree = "<group>"; };
 		9794D9552B01BC2200DC02FB /* Speech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Speech.framework; path = System/Library/Frameworks/Speech.framework; sourceTree = SDKROOT; };
-		B24250262B53774B0032FA1D /* TypingIndicatorTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorTestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +96,6 @@
 			children = (
 				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
 				971D0E1C2B005DED003AD89E /* ChatTestView.swift */,
-				B24250262B53774B0032FA1D /* TypingIndicatorTestView.swift */,
 				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
 			);
 			path = TestApp;
@@ -229,7 +226,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B24250272B53774B0032FA1D /* TypingIndicatorTestView.swift in Sources */,
 				971D0E1D2B005DED003AD89E /* ChatTestView.swift in Sources */,
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 			);
