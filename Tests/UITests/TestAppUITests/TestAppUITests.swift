@@ -33,10 +33,7 @@ class TestAppUITests: XCTestCase {
         
         sleep(1)
         
-        // Run test to check if typing indicator is in the view and tag Paul
-        XCTAssert((0..<3).reduce(false, { partialResult, index in
-            return partialResult || app.otherElements["Pending Message Animation \(index)"].waitForExistence(timeout: 1)
-        }))
+        XCTAssert(app.otherElements["Pending Message Animation"].waitForExistence(timeout: 2))
         
         sleep(4)
         
@@ -105,16 +102,4 @@ class TestAppUITests: XCTestCase {
         XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
         filesApp.buttons["Done"].tap()
     }
-    
-    /*func testTypingIndicatorVisibility() throws {
-        let app = XCUIApplication()
-        app.launch()
-        
-        try app.textViews["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
-        XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
-        app.buttons["Send Message"].tap()
- 
-        let typingIndicator = app.otherElements["Pending Message Animation 0"]
-        XCTAssert(typingIndicator.waitForExistence(timeout: 2), "Typing Indicator should be present")
-    }*/
 }
