@@ -23,7 +23,6 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-///
 public struct TypingIndicator: View {
     @State var isAnimating = false
     
