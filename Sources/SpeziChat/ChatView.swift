@@ -88,16 +88,14 @@ public struct ChatView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
-                    showShareSheet = true
-                }) {
-                    Image(systemName: "square.and.arrow.up")
-                        .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
-                        .opacity(exportEnabled ? 1.0 : 0.0)
-                        .scaleEffect(exportEnabled ? 1.0 : 0.8)
-                        .animation(.easeInOut, value: exportEnabled)
-                        .disabled(!exportEnabled)
+            if exportEnabled {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        showShareSheet = true
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                            .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
+                    }
                 }
             }
         }
@@ -138,13 +136,18 @@ public struct ChatView: View {
 
 
 #Preview {
-    ChatView(.constant(
-        [
-            ChatEntity(role: .system, content: "System Message!"),
-            ChatEntity(role: .system, content: "System Message (hidden)!"),
-            ChatEntity(role: .user, content: "User Message!"),
-            ChatEntity(role: .assistant, content: "Assistant Message!"),
-            ChatEntity(role: .function(name: "test_function"), content: "Function Message!")
-        ]
-    ))
+    NavigationStack {
+        ChatView(
+            .constant(
+                [
+                    ChatEntity(role: .system, content: "System Message!"),
+                    ChatEntity(role: .system, content: "System Message (hidden)!"),
+                    ChatEntity(role: .user, content: "User Message!"),
+                    ChatEntity(role: .assistant, content: "Assistant Message!"),
+                    ChatEntity(role: .function(name: "test_function"), content: "Function Message!")
+                ]
+            ),
+            exportFormat: .pdf
+        )
+    }
 }
