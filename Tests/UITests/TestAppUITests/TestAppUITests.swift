@@ -40,7 +40,7 @@ class TestAppUITests: XCTestCase {
         let app = XCUIApplication()
         let filesApp = XCUIApplication(bundleIdentifier: "com.apple.DocumentsApp")
         
-        while(true) {
+        while true {
             app.launch()
             
             // Entering dummy chat value
