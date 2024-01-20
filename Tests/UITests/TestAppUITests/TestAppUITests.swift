@@ -39,8 +39,9 @@ class TestAppUITests: XCTestCase {
     func testChatExport() throws {
         let app = XCUIApplication()
         let filesApp = XCUIApplication(bundleIdentifier: "com.apple.DocumentsApp")
+        let maxRetries = 10
         
-        while true {
+        for _ in 0...maxRetries {
             app.launch()
             
             // Entering dummy chat value
