@@ -20,7 +20,7 @@ extension ChatEntity {
     /// Dependent on the ``ChatEntity/Role``, display a ``ChatEntity`` in a leading or trailing position.
     var alignment: Alignment {
         switch self.role {
-        case .user, .function:
+        case .user:
             return .trailing
         default:
             return .leading
