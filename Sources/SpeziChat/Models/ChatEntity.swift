@@ -30,12 +30,6 @@ public struct ChatEntity: Codable, Equatable, Hashable {
         }
     }
     
-    /// Indicates if a ``ChatEntity`` is displayed in a leading or trailing position within a SwiftUI `View`.
-    enum Alignment {
-        case leading
-        case trailing
-    }
-    
     
     /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
     public let role: Role
@@ -43,17 +37,6 @@ public struct ChatEntity: Codable, Equatable, Hashable {
     public let content: String
     /// The creation date of the ``ChatEntity``.
     public let date: Date
-    
-    
-    /// Dependent on the ``ChatEntity/Role``, display a ``ChatEntity`` in a leading or trailing position.
-    var alignment: Alignment {
-        switch self.role {
-        case .user:
-            return .trailing
-        default:
-            return .leading
-        }
-    }
     
     
     /// Creates a ``ChatEntity`` which is the building block of a Spezi ``Chat``.
