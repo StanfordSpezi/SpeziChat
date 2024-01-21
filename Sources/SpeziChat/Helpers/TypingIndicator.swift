@@ -55,5 +55,14 @@ public struct TypingIndicator: View {
 }
 
 #Preview {
-    TypingIndicator()
+    ScrollView {
+        VStack {
+            MessageView(ChatEntity(role: .system, content: "System Message!"), hideMessagesWithRoles: [])
+            MessageView(ChatEntity(role: .system, content: "System Message (hidden)!"))
+            MessageView(ChatEntity(role: .function(name: "test_function"), content: "Function Message!"), hideMessagesWithRoles: [.system])
+            MessageView(ChatEntity(role: .user, content: "User Message!"))
+            TypingIndicator()
+        }
+        .padding()
+    }
 }
