@@ -112,7 +112,9 @@ public struct ChatView: View {
     }
     
     private var exportEnabled: Bool {
-        exportFormat != nil && !chat.isEmpty
+        exportFormat != nil && chat.contains(where: {
+            $0.role == .assistant || $0.role == .user   // Only show export toolbar item if there are visible messages
+        })
     }
     
     
