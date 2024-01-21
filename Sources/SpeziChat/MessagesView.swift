@@ -30,13 +30,15 @@ import SwiftUI
 /// }
 /// ```
 public struct MessagesView: View {
-    /// Offers configuration of when to show an animation indicating a pending message from assistant:
-    /// either (a) whenever the last message in the chat is from the user but not even a partial response from the assistant has arrived,
-    /// or (b) depending on `shouldDisplay`, some explicitly stated source of truth.
-    /// Useful as a visual cue to the user that the LLM has started processing the message.
+    /// Represents a configuration used in the initializer of `MessagesView` to specify when to display an animation indicating a pending message from a chat participant.
+    ///
+    /// `LoadingDisplayMode` has two possible cases:
+    /// - `.automatic`: The animation is shown whenever the last message in the chat is from the user,
+    ///   and the assistant has not yet begun to respond.
+    /// - `.manual(shouldDisplay: Bool)`: The animation will be displayed  Boolean flag.
     public enum LoadingDisplayMode {
         case automatic
-        case manual(shouldDisplay: Binding<Bool>)
+        case manual(shouldDisplay: Bool)
     }
     
     private static let bottomSpacerIdentifier = "Bottom Spacer"
@@ -44,7 +46,7 @@ public struct MessagesView: View {
     @Binding private var chat: Chat
     @Binding private var bottomPadding: CGFloat
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
-    private let loadingDisplayMode: LoadingDisplayMode
+    private let loadingDisplayMode: LoadingDisplayMode?
     
     
     private var keyboardPublisher: AnyPublisher<Bool, Never> {
@@ -68,7 +70,9 @@ public struct MessagesView: View {
         case .automatic:
             self.chat.last?.role == .user
         case .manual(let shouldDisplay):
-            shouldDisplay.wrappedValue
+            shouldDisplay
+        case .none:
+            false
         }
     }
     
@@ -109,7 +113,7 @@ public struct MessagesView: View {
     public init(
         _ chat: Chat,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
-        loadingDisplayMode: LoadingDisplayMode = .automatic,
+        loadingDisplayMode: LoadingDisplayMode? = nil,
         bottomPadding: CGFloat = 0
     ) {
         self._chat = .constant(chat)
@@ -126,7 +130,7 @@ public struct MessagesView: View {
     public init(
         _ chat: Binding<Chat>,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
-        loadingDisplayMode: LoadingDisplayMode = .automatic,
+        loadingDisplayMode: LoadingDisplayMode? = nil,
         bottomPadding: Binding<CGFloat> = .constant(0)
     ) {
         self._chat = chat
