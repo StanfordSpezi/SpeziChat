@@ -40,10 +40,11 @@ public struct TypingIndicator: View {
                                 .delay(0.2 * Double(index)),
                             value: self.isAnimating
                         )
+                        .frame(width: 10)
                 }
                 .accessibilityIdentifier(String(localized: "PENDING_MESSAGE_ANIMATION", bundle: .module))
             }
-            .frame(width: 42, height: 12, alignment: .leading)
+            .frame(width: 42, height: 12, alignment: .center)
             .padding(.vertical, 4)
             .onAppear {
                 self.isAnimating = true
