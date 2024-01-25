@@ -58,10 +58,10 @@ public struct ChatView: View {
     var disableInput: Bool
     let exportFormat: ChatExportFormat?
     let messagePlaceholder: String?
+    let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
     
     @State var messageInputHeight: CGFloat = 0
     @State private var showShareSheet = false
-    @State private var messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
     
     
     public var body: some View {
