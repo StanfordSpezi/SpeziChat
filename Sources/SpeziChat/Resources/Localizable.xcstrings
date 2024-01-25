@@ -65,16 +65,6 @@
         }
       }
     },
-    "PENDING_MESSAGE_ANIMATION" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pending Message Animation"
-          }
-        }
-      }
-    },
     "SEND_MESSAGE" : {
       "localizations" : {
         "de" : {
@@ -93,6 +83,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enviar Mensaje"
+          }
+        }
+      }
+    },
+    "TYPING_INDICATOR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typing Indicator"
           }
         }
       }

@@ -61,12 +61,13 @@ public struct ChatView: View {
     
     @State var messageInputHeight: CGFloat = 0
     @State private var showShareSheet = false
+    @State private var messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
     
     
     public var body: some View {
         ZStack {
             VStack {
-                MessagesView($chat, loadingDisplayMode: .automatic, bottomPadding: $messageInputHeight)
+                MessagesView($chat, typingIndicator: messagePendingAnimation, bottomPadding: $messageInputHeight)
                     .gesture(
                         TapGesture().onEnded {
                             UIApplication.shared.sendAction(

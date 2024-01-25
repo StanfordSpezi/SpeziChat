@@ -42,7 +42,7 @@ public struct TypingIndicator: View {
                         )
                         .frame(width: 10)
                 }
-                .accessibilityIdentifier(String(localized: "PENDING_MESSAGE_ANIMATION", bundle: .module))
+                .accessibilityIdentifier(String(localized: "TYPING_INDICATOR", bundle: .module))
             }
             .frame(width: 42, height: 12, alignment: .center)
             .padding(.vertical, 4)
