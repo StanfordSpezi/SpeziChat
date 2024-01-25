@@ -124,16 +124,19 @@ public struct ChatView: View {
     ///   - disableInput: Flag if the input view should be disabled.
     ///   - exportFormat: If specified, enables the export of the ``Chat`` displayed in the ``ChatView`` via a share sheet in various formats defined in ``ChatView/ChatExportFormat``.
     ///   - messagePlaceholder: Placeholder text that should be added in the input field.
+    ///   - messagePendingAnimation: Parameter to control whether a chat bubble animation is shown.
     public init(
         _ chat: Binding<Chat>,
         disableInput: Bool = false,
         exportFormat: ChatExportFormat? = nil,
-        messagePlaceholder: String? = nil
+        messagePlaceholder: String? = nil,
+        messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode? = nil
     ) {
         self._chat = chat
         self.disableInput = disableInput
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
+        self.messagePendingAnimation = messagePendingAnimation
     }
 }
 

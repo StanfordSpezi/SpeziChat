@@ -33,7 +33,7 @@ class TestAppUITests: XCTestCase {
         
         sleep(1)
         
-        XCTAssert(app.otherElements["Pending Message Animation"].waitForExistence(timeout: 2))
+        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 2))
         
         sleep(4)
         
