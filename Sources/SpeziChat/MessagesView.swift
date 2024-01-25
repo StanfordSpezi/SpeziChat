@@ -30,12 +30,12 @@ import SwiftUI
 /// }
 /// ```
 public struct MessagesView: View {
-    /// Represents a configuration used in the initializer of `MessagesView` to specify when to display an animation indicating a pending message from a chat participant.
+    /// Represents a configuration used in the initializer of ``MessagesView`` to specify when to display an animation indicating a pending message from a chat participant.
     ///
-    /// `TypingIndicatorDisplayMode` has two possible cases:
-    /// - `.automatic`: The animation is shown whenever the last message in the chat is from the user,
+    /// ``TypingIndicatorDisplayMode`` has two possible cases:
+    /// - ``TypingIndicatorDisplayMode/automatic``: The animation is shown whenever the last message in the chat is from the user,
     ///   and the assistant has not yet begun to respond.
-    /// - `.manual(shouldDisplay: Bool)`: The animation will be displayed  Boolean flag.
+    /// - ``TypingIndicatorDisplayMode/manual(shouldDisplay:)``: The animation will be displayed based on the provided Boolean flag.
     public enum TypingIndicatorDisplayMode {
         case automatic
         case manual(shouldDisplay: Bool)
