@@ -86,6 +86,16 @@
           }
         }
       }
+    },
+    "TYPING_INDICATOR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typing Indicator"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

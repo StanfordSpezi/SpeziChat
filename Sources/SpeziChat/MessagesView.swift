@@ -30,11 +30,23 @@ import SwiftUI
 /// }
 /// ```
 public struct MessagesView: View {
+    /// Represents a configuration used in the initializer of ``MessagesView`` to specify when to display an animation indicating a pending message from a chat participant.
+    ///
+    /// ``TypingIndicatorDisplayMode`` has two possible cases:
+    /// - ``TypingIndicatorDisplayMode/automatic``: The animation is shown whenever the last message in the chat is from the user,
+    ///   and the assistant has not yet begun to respond.
+    /// - ``TypingIndicatorDisplayMode/manual(shouldDisplay:)``: The animation will be displayed based on the provided Boolean flag.
+    public enum TypingIndicatorDisplayMode {
+        case automatic
+        case manual(shouldDisplay: Bool)
+    }
+    
     private static let bottomSpacerIdentifier = "Bottom Spacer"
     
     @Binding private var chat: Chat
     @Binding private var bottomPadding: CGFloat
     private let hideMessagesWithRoles: Set<ChatEntity.Role>
+    private let typingIndicator: TypingIndicatorDisplayMode?
     
     
     private var keyboardPublisher: AnyPublisher<Bool, Never> {
@@ -53,6 +65,16 @@ public struct MessagesView: View {
             .eraseToAnyPublisher()
     }
     
+    private var shouldDisplayTypingIndicator: Bool {
+        switch self.typingIndicator {
+        case .automatic:
+            self.chat.last?.role == .user
+        case .manual(let shouldDisplay):
+            shouldDisplay
+        case .none:
+            false
+        }
+    }
     
     public var body: some View {
         ScrollViewReader { scrollViewProxy in
@@ -60,6 +82,9 @@ public struct MessagesView: View {
                 VStack {
                     ForEach(Array(chat.enumerated()), id: \.offset) { _, message in
                         MessageView(message, hideMessagesWithRoles: hideMessagesWithRoles)
+                    }
+                    if shouldDisplayTypingIndicator {
+                        TypingIndicator()
                     }
                     Spacer()
                         .frame(height: bottomPadding)
@@ -83,28 +108,34 @@ public struct MessagesView: View {
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
     ///   - bottomPadding: A fixed bottom padding for the messages view.
+    ///   - typingIndicator: Indicates whether a  "three dots" animation should be automatically or manually shown; default value of `nil` will result in no indicator being shown under any condition.
     ///   - hideMessagesWithRoles: The .system and .function roles are hidden from message view
     public init(
         _ chat: Chat,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
+        typingIndicator: TypingIndicatorDisplayMode? = nil,
         bottomPadding: CGFloat = 0
     ) {
         self._chat = .constant(chat)
         self.hideMessagesWithRoles = hideMessagesWithRoles
+        self.typingIndicator = typingIndicator
         self._bottomPadding = .constant(bottomPadding)
     }
 
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
     ///   - bottomPadding: A bottom padding for the messages view.
+    ///   - typingIndicator: Indicates whether a  "three dots" animation should be automatically or manually shown; default value of `nil` will result in no indicator being shown under any condition.
     ///   - hideMessagesWithRoles: Defines which messages should be hidden based on the passed in message roles.
     public init(
         _ chat: Binding<Chat>,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
+        typingIndicator: TypingIndicatorDisplayMode? = nil,
         bottomPadding: Binding<CGFloat> = .constant(0)
     ) {
         self._chat = chat
         self.hideMessagesWithRoles = hideMessagesWithRoles
+        self.typingIndicator = typingIndicator
         self._bottomPadding = bottomPadding
     }
 

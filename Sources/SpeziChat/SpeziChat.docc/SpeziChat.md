@@ -59,7 +59,7 @@ These entries are mandatory for apps that utilize microphone and speech recognit
 
 ### Chat View
 
-The ``ChatView`` provides a basic reusable chat view which includes a message input field. The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text.
+The ``ChatView`` provides a basic reusable chat view which includes a message input field. The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text. It accepts an additional `messagePendingAnimation` parameter to control whether a chat bubble animation is shown for a message that is currently being composed. By default, `messagePendingAnimation` has a value of `nil` and does not show.
 In addition, the ``ChatView`` provides functionality to export the visualized ``Chat`` as a PDF document, JSON representation, or textual UTF-8 file (see ``ChatView/ChatExportFormat``) via a Share Sheet (or Activity View).
 
 ```swift
@@ -80,6 +80,7 @@ struct ChatTestView: View {
 
 The ``MessagesView`` displays a ``Chat`` containing multiple ``ChatEntity``s with different ``ChatEntity/Role``s in a typical chat-like fashion.
 The `View` automatically scrolls down to the newest message that is added to the passed ``Chat`` SwiftUI `Binding`.
+The `typingIndicator` parameter controls when a typing indicator is shown onscreen for incoming messages to `Chat`.
 
 ```swift
 struct MessagesViewTestView: View {

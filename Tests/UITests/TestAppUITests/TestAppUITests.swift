@@ -33,6 +33,10 @@ class TestAppUITests: XCTestCase {
         
         sleep(1)
         
+        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 2))
+        
+        sleep(4)
+        
         XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 5))
     }
     
