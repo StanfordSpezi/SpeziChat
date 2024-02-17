@@ -76,6 +76,9 @@ struct ChatTestView: View {
 }
 ```
 
+> [!NOTE]  
+> The [`ChatEntity`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity) is able to store Markdown-based content which in turn is rendered as styled text in the `ChatView`, `MessagesView`, and `MessageView`.
+
 ### Messages View
 
 The [`MessagesView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/messagesview) displays a `Chat` containing multiple `ChatEntity`s with different `ChatEntity/Role`s in a typical chat-like fashion.
