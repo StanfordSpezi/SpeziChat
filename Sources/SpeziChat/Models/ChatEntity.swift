@@ -10,7 +10,9 @@ import Foundation
 
 
 /// Represents the basic building block of a Spezi ``Chat``.
-/// It consists of a ``ChatEntity/Role`` property as well as a `String`-based content property.
+///
+/// A ``ChatEntity`` can be thought of as a single message entity within a ``Chat``
+/// It consists of a ``ChatEntity/Role``, a timestamp in the form of a `Date` as well as an `AttributedString`-based content property, enabling the persistence of Markdown content.
 public struct ChatEntity: Codable, Equatable, Hashable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
     public enum Role: Codable, Equatable, Hashable {
@@ -33,8 +35,8 @@ public struct ChatEntity: Codable, Equatable, Hashable {
     
     /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
     public let role: Role
-    /// `String`-based content of the ``ChatEntity``.
-    public let content: String
+    /// `AttributedString`-based content of the ``ChatEntity``.
+    public let content: AttributedString
     /// The creation date of the ``ChatEntity``.
     public let date: Date
     
@@ -42,10 +44,20 @@ public struct ChatEntity: Codable, Equatable, Hashable {
     /// Creates a ``ChatEntity`` which is the building block of a Spezi ``Chat``.
     /// - Parameters:
     ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
-    ///    - content: `String`-based content of the ``ChatEntity``.
-    public init(role: Role, content: String) {
+    ///    - content: `AttributedString`-based content of the ``ChatEntity``, enabling the persistence of Markdown content.
+    public init(role: Role, content: AttributedString) {
         self.role = role
         self.content = content
+        self.date = Date()
+    }
+    
+    /// Creates a ``ChatEntity`` which is the building block of a Spezi ``Chat``.
+    /// - Parameters:
+    ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
+    ///    - content: `String`-based content of the ``ChatEntity``, stored as a `String` literal.
+    public init<Content: StringProtocol>(role: Role, content: Content) {
+        self.role = role
+        self.content = AttributedString(stringLiteral: String(content))
         self.date = Date()
     }
 }
