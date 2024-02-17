@@ -12,7 +12,9 @@ import Foundation
 /// Represents the basic building block of a Spezi ``Chat``.
 ///
 /// A ``ChatEntity`` can be thought of as a single message entity within a ``Chat``
-/// It consists of a ``ChatEntity/Role``, a timestamp in the form of a `Date` as well as an `AttributedString`-based content property, enabling the persistence of Markdown content.
+/// It consists of a ``ChatEntity/Role``, a timestamp in the form of a `Date` as well as an `AttributedString`-based content property,
+/// providing traits like visual styles for display (e.g., Markdown), accessibility for guided access, and hyperlink data for linking between data sources.
+
 public struct ChatEntity: Codable, Equatable, Hashable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
     public enum Role: Codable, Equatable, Hashable {

@@ -55,7 +55,10 @@ As ``SpeziChat`` is utilizing the [SpeziSpeech](https://github.com/StanfordSpezi
 
 These entries are mandatory for apps that utilize microphone and speech recognition features. Failing to provide them will result in your app being unable to access these features. 
 
-## Examples
+## Usage
+
+The underlying data model of ``SpeziChat`` is a ``Chat``. It represents the content of a typical text-based chat between user and system(s). A ``Chat`` is nothing more than an ordered array of ``ChatEntity``s which contain the content of the individual messages.
+A ``ChatEntity`` consists of a ``ChatEntity/Role-swift.enum``, a timestamp as well as an `AttributedString`-based content, providing traits like visual styles for display (e.g., Markdown), accessibility for guided access, and hyperlink data for linking between data sources.
 
 ### Chat View
 
@@ -75,6 +78,8 @@ struct ChatTestView: View {
     }
 }
 ```
+
+> Tip: The ``ChatEntity`` is able to store Markdown-based content which in turn is rendered as styled text in the ``ChatView``, ``MessagesView``, and ``MessageView``.
 
 ### Messages View
 
