@@ -42,7 +42,7 @@ public struct ChatEntity: Codable, Equatable, Hashable {
     
     
     /// Markdown-formatted ``ChatEntity/content`` as an `AttributedString`, required to render the text in Markdown-style within the ``MessageView``.
-    public var attributedContent: AttributedString {
+    var attributedContent: AttributedString {
         let markdownOptions = AttributedString.MarkdownParsingOptions(
             interpretedSyntax: .inlineOnlyPreservingWhitespace,
             failurePolicy: .returnPartiallyParsedIfPossible
