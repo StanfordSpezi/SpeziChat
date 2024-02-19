@@ -48,7 +48,7 @@ public struct MessageView: View {
                 if chat.alignment == .trailing {
                     Spacer(minLength: 32)
                 }
-                Text(chat.content)
+                Text(chat.attributedContent)
                     .chatMessageStyle(alignment: chat.alignment)
                 if chat.alignment == .leading {
                     Spacer(minLength: 32)
