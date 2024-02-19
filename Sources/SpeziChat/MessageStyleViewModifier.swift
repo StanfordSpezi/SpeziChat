@@ -21,10 +21,6 @@ struct MessageStyleModifier: ViewModifier {
         chatAlignment == .leading ? Color(.secondarySystemBackground) : .accentColor
     }
     
-    private var multilineTextAlignment: TextAlignment {
-        chatAlignment == .leading ? .leading : .trailing
-    }
-    
     private var arrowRotation: Angle {
         .degrees(chatAlignment == .leading ? -50 : -130)
     }
@@ -40,7 +36,6 @@ struct MessageStyleModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .multilineTextAlignment(multilineTextAlignment)
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .foregroundColor(foregroundColor)

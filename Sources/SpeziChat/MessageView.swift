@@ -76,7 +76,9 @@ public struct MessageView: View {
             MessageView(ChatEntity(role: .function(name: "test_function"), content: "Function Message!"), hideMessagesWithRoles: [.system])
             MessageView(ChatEntity(role: .user, content: "User Message!"))
             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
+            MessageView(ChatEntity(role: .user, content: "Long User Message that spans over two lines!"))
+            MessageView(ChatEntity(role: .assistant, content: "Long Assistant Message that spans over two lines!"))
         }
-        .padding()
+            .padding()
     }
 }
