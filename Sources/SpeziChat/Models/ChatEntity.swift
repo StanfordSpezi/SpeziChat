@@ -39,21 +39,9 @@ public struct ChatEntity: Codable, Equatable, Hashable {
     public let content: String
     /// The creation date of the ``ChatEntity``.
     public let date: Date
-
-    
-    /// Creates a ``ChatEntity`` which is the building block of a Spezi ``Chat``.
-    ///
-    /// - Parameters:
-    ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
-    ///    - content: `String`-based content of the ``ChatEntity``. Can contain Markdown-formatted text.
-    public init<Content: StringProtocol>(role: Role, content: Content) {
-        self.role = role
-        self.content = String(content)
-        self.date = Date()
-    }
     
     
-    /// Markdown-formatted ``ChatEntity/content`` as `AttributedString`.
+    /// Markdown-formatted ``ChatEntity/content`` as an `AttributedString`, required to render the text in Markdown-style within the ``MessageView``.
     public var attributedContent: AttributedString {
         let markdownOptions = AttributedString.MarkdownParsingOptions(
             interpretedSyntax: .inlineOnlyPreservingWhitespace,
@@ -65,5 +53,17 @@ public struct ChatEntity: Codable, Equatable, Hashable {
         } else {
             return AttributedString(stringLiteral: content)
         }
+    }
+
+    
+    /// Creates a ``ChatEntity`` which is the building block of a Spezi ``Chat``.
+    ///
+    /// - Parameters:
+    ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
+    ///    - content: `String`-based content of the ``ChatEntity``. Can contain Markdown-formatted text.
+    public init<Content: StringProtocol>(role: Role, content: Content) {
+        self.role = role
+        self.content = String(content)
+        self.date = Date()
     }
 }
