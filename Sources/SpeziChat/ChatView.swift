@@ -84,7 +84,7 @@ public struct ChatView: View {
                 MessageInputView($chat, messagePlaceholder: messagePlaceholder)
                     .disabled(disableInput)
                     .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-                        messageInputHeight = newValue + 16
+                        messageInputHeight = newValue + 12
                     }
             }
         }
