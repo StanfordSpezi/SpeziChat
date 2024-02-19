@@ -52,12 +52,18 @@ As [SpeziChat](https://swiftpackageindex.com/stanfordspezi/spezichat/documentati
 
 These entries are mandatory for apps that utilize microphone and speech recognition features. Failing to provide them will result in your app being unable to access these features. 
    
-## Examples
+## Usage
+
+The underlying data model of [SpeziChat](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) is a [`Chat`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chat). It represents the content of a typical text-based chat between user and system(s). A `Chat` is nothing more than an ordered array of [`ChatEntity`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity)s which contain the content of the individual messages.
+A `ChatEntity` consists of a [`ChatEntity/Role`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity/role-swift.enum), a timestamp as well as an `String`-based content which can contain Markdown-formatted text.
+
+> [!NOTE]  
+> The [`ChatEntity`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity) is able to store Markdown-based content which in turn is rendered as styled text in the `ChatView`, `MessagesView`, and `MessageView`.
 
 ### Chat View
 
 The [`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview) provides a basic reusable chat view which includes a message input field. The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text. It accepts an additional `messagePendingAnimation` parameter to control whether a chat bubble animation is shown for a message that is currently being composed. By default, `messagePendingAnimation` has a value of `nil` and does not show.
-In addition, the [`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview) provides functionality to export the visualized [`Chat`](https://swiftpackageindex.com/stanfordspezi/spezichat/0.1.1/documentation/spezichat/chat) as a PDF document, JSON representation, or textual UTF-8 file (see `ChatView/ChatExportFormat`) via a Share Sheet (or Activity View).
+In addition, the [`ChatView`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatview) provides functionality to export the visualized [`Chat`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chat) as a PDF document, JSON representation, or textual UTF-8 file (see `ChatView/ChatExportFormat`) via a Share Sheet (or Activity View).
 
 ```swift
 struct ChatTestView: View {

@@ -12,7 +12,7 @@ import SwiftUI
 
 struct ChatTestView: View {
     @State private var chat: Chat = [
-        ChatEntity(role: .assistant, content: "Assistant Message!")
+        ChatEntity(role: .assistant, content: "**Assistant** Message!")
     ]
     
     
@@ -27,7 +27,7 @@ struct ChatTestView: View {
                         try await Task.sleep(for: .seconds(5))
                         
                         await MainActor.run {
-                            chat.append(.init(role: .assistant, content: "Assistant Message Response!"))
+                            chat.append(.init(role: .assistant, content: "**Assistant** Message Response!"))
                         }
                     }
                 }

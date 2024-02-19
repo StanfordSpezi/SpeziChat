@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-/// Represents all necessary content of a typical text-based chat between the user and system(s).
-/// Consists of an ordered array of ``ChatEntity``s
+/// Represents the content of a typical text-based chat between user and system(s).
+///
+/// A ``Chat`` is nothing more than an ordered array of ``ChatEntity``s which contain the content of the individual messages.
 public typealias Chat = [ChatEntity]
