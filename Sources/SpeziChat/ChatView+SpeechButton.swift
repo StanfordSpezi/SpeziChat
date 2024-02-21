@@ -25,11 +25,11 @@ struct ChatViewSpeechButtonModifier: ViewModifier {
                         }) {
                             if !muted {
                                 Image(systemName: "speaker")
-                                    .accessibilityIdentifier("speaker")
+                                    .accessibilityIdentifier("Speaker")
                                     .accessibilityLabel(Text("Text to speech is enabled, press to disable text to speech.", bundle: .module))
                             } else {
                                 Image(systemName: "speaker.slash")
-                                    .accessibilityIdentifier("speaker_slash")
+                                    .accessibilityIdentifier("Speaker strikethrough")
                                     .accessibilityLabel(Text("Text to speech is disabled, press to enable text to speech.", bundle: .module))
                             }
                         }

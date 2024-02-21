@@ -118,12 +118,12 @@ class TestAppUITests: XCTestCase {
         app.launch()
         
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
-        XCTAssert(app.buttons["speaker_slash"].waitForExistence(timeout: 2))
-        XCTAssert(!app.buttons["speaker"].waitForExistence(timeout: 2))
+        XCTAssert(app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
+        XCTAssert(!app.buttons["Speaker"].waitForExistence(timeout: 2))
         
-        app.buttons["speaker_slash"].tap()
+        app.buttons["Speaker strikethrough"].tap()
         
-        XCTAssert(!app.buttons["speaker_slash"].waitForExistence(timeout: 2))
-        XCTAssert(app.buttons["speaker"].waitForExistence(timeout: 2))
+        XCTAssert(!app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
+        XCTAssert(app.buttons["Speaker"].waitForExistence(timeout: 2))
     }
 }
