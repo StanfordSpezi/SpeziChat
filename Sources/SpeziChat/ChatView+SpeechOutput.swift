@@ -10,8 +10,8 @@ import SpeziSpeechSynthesizer
 import SwiftUI
 
 
-/// The underlying `ViewModifier` of ``ChatView/speak(_:muted:)``.
-struct ChatViewSpeechModifier: ViewModifier {
+/// The underlying `ViewModifier` of `View/speak(_:muted:)`.
+private struct ChatViewSpeechModifier: ViewModifier {
     let chat: Chat
     let muted: Bool
     
@@ -53,7 +53,7 @@ struct ChatViewSpeechModifier: ViewModifier {
 }
 
 
-extension ChatView {
+extension View {
     /// Provides text-to-speech capabilities to the ``ChatView``.
     ///
     /// Attaching the modifier to a ``ChatView`` will enable the automatic speech output of the latest added ``ChatEntity/Role-swift.enum/assistant`` ``Chat`` message that is ``ChatEntity/complete``.

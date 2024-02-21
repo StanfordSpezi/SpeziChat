@@ -39,7 +39,7 @@ import SwiftUI
 /// 
 /// Speech-to-text capabilities can be activated via the `speechToText` `Bool` parameter in ``init(_:disableInput:speechToText:exportFormat:messagePlaceholder:messagePendingAnimation:)``. By default, this capability is activated and therefore a small microphone button is shown next to the text input field.
 ///
-/// Text-to-speech capabilities can be configured via the ``ChatView/speak(_:muted:)`` `ViewModifier`. If present, the latest ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/assistant`` message in the ``Chat`` will be synthesized to natural language speech.
+/// Text-to-speech capabilities can be configured via the `View/speak(_:muted:)` `ViewModifier`. If present, the latest ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/assistant`` message in the ``Chat`` will be synthesized to natural language speech.
 /// In addition, the `View/speechToolbarButton(enabled:muted:)` `ViewModifier` automatically adds a toolbar `Button` to mute or unmute the speech synthesizer, if not disabled via the `enabled` parameter.
 /// The `muted` flag enables to track the state of the `Button` or adjust it from the outside.
 ///

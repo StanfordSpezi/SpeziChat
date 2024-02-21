@@ -10,7 +10,7 @@ import SwiftUI
 
 
 /// The underlying `ViewModifier` of `View/speechToolbarButton(enabled:muted:)`.
-struct ChatViewSpeechButtonModifier: ViewModifier {
+private struct ChatViewSpeechButtonModifier: ViewModifier {
     let enabled: Bool
     @Binding var muted: Bool
     

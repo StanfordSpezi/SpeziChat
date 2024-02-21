@@ -162,7 +162,3 @@ struct MessageInputTestView: View {
 
 - ``MessageInputView``
 - ``MessageInputViewHeightKey``
-
-### Accessibility
-
-- ``ChatView/speak(_:muted:)``
