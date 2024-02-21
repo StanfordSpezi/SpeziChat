@@ -48,6 +48,8 @@ extension View {
     /// The outside `View` is able to observe taps on that `Button` via passing in a SwiftUI `Binding` as the `muted` parameter, directly tracking the state of the `Button` but also being able to modify it from the outside.
     /// In addition, the button can be programatically hidden by adjusting the `enabled` parameter at any time.
     ///
+    /// - Warning: Ensure that the ``ChatView`` resides within a SwiftUI `NavigationStack`, otherwise the added toolbar `Button` won't be shown.
+    ///
     /// ### Usage
     ///
     /// The code snipped below demonstrates a minimal example of adding a text-to-speech toolbar button that mutes or unmutes text-to-speech output generation.

@@ -35,8 +35,32 @@ import SwiftUI
 ///
 /// ### Accessibility
 ///
-/// The ``ChatView`` provides speech-to-text (recognition) as well as text-to-speech  (synthesize) capabilities out of the box via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module, facilitating seamless interaction with the content of the ``ChatView``.
+/// The ``ChatView`` provides speech-to-text (recognition) as well as text-to-speech (synthesize) capabilities out of the box via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module, facilitating seamless interaction with the content of the ``ChatView``.
 /// 
+/// Speech-to-text capabilities can be activated via the `speechToText` `Bool` parameter in ``init(_:disableInput:speechToText:exportFormat:messagePlaceholder:messagePendingAnimation:)``. By default, this capability is activated and therefore a small microphone button is shown next to the text input field.
+///
+/// Text-to-speech capabilities can be configured via the ``ChatView/speak(_:muted:)`` `ViewModifier`. If present, the latest ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/assistant`` message in the ``Chat`` will be synthesized to natural language speech.
+/// In addition, the `View/speechToolbarButton(enabled:muted:)` `ViewModifier` automatically adds a toolbar `Button` to mute or unmute the speech synthesizer, if not disabled via the `enabled` parameter.
+/// The `muted` flag enables to track the state of the `Button` or adjust it from the outside.
+///
+/// ```swift
+/// struct ChatTestView: View {
+///     @State private var chat: Chat = [
+///         ChatEntity(role: .assistant, content: "**Assistant** Message!")
+///     ]
+///     @State private var muted = true
+///
+///     var body: some View {
+///         ChatView($chat)
+///             .speak(chat, muted: muted)
+///             .speechToolbarButton(muted: $muted)
+///             .task {
+///                 // Add new completed `assistant` content to the `Chat` that is outputted via speech.
+///                 // ...
+///             }
+///     }
+/// }
+/// ```
 ///
 /// ### Export of Chat
 ///

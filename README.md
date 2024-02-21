@@ -55,7 +55,7 @@ These entries are mandatory for apps that utilize microphone and speech recognit
 ## Usage
 
 The underlying data model of [SpeziChat](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat) is a [`Chat`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chat). It represents the content of a typical text-based chat between user and system(s). A `Chat` is nothing more than an ordered array of [`ChatEntity`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity)s which contain the content of the individual messages.
-A `ChatEntity` consists of a [`ChatEntity/Role`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity/role-swift.enum), a timestamp as well as an `String`-based content which can contain Markdown-formatted text.
+A `ChatEntity` consists of a [`ChatEntity/Role`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity/role-swift.enum), a timestamp as well as an `String`-based content which can contain Markdown-formatted text. In addition, a flag indicates if the `ChatEntity` is complete and no further content will be added.
 
 > [!NOTE]  
 > The [`ChatEntity`](https://swiftpackageindex.com/stanfordspezi/spezichat/documentation/spezichat/chatentity) is able to store Markdown-based content which in turn is rendered as styled text in the `ChatView`, `MessagesView`, and `MessageView`.
@@ -78,6 +78,9 @@ struct ChatTestView: View {
     }
 }
 ```
+
+> [!NOTE]
+> The `ChatView` provides speech-to-text (recognition) as well as text-to-speech (synthesize) accessibility capabilities out-of-the-box via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module, facilitating seamless interaction with the content of the `ChatView`.
 
 ### Messages View
 

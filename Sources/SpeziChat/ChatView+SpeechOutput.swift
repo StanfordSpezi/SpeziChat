@@ -59,13 +59,13 @@ extension ChatView {
     /// Attaching the modifier to a ``ChatView`` will enable the automatic speech output of the latest added ``ChatEntity/Role-swift.enum/assistant`` ``Chat`` message that is ``ChatEntity/complete``.
     /// The text-to-speech capability can be muted via a `Bool` flag in the ``speak(_:muted:)`` modifier.
     ///
-    /// It is important to note that only the latest ``ChatEntity/Role-swift.enum/assistant`` and ``ChatEntity/complete`` ``Chat`` messages will be synthezised to natural language speech, as soon as it is persisted in the ``Chat``.
+    /// It is important to note that only the latest ``ChatEntity/Role-swift.enum/assistant`` and ``ChatEntity/complete`` ``Chat`` messages will be synthesized to natural language speech, as soon as it is persisted in the ``Chat``.
     /// The speech output is immediately stopped as soon as a ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/user`` message is added to the ``Chat``,
     /// the passed `muted` `Binding` turns to `true`, or the `View` becomes inactive or is moved to the background.
     ///
     /// ### Usage
     ///
-    /// The code snipped below demonstrates a minimal example of text-to-speech capabilities. At first, the speech output is muted, only after ten seconds the speech output of newly incoming ``Chat`` messages will be synthezised.
+    /// The code snipped below demonstrates a minimal example of text-to-speech capabilities. At first, the speech output is muted, only after ten seconds the speech output of newly incoming ``Chat`` messages will be synthesized.
     ///
     /// ```swift
     /// struct ChatTestView: View {

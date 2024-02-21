@@ -58,7 +58,7 @@ These entries are mandatory for apps that utilize microphone and speech recognit
 ## Usage
 
 The underlying data model of ``SpeziChat`` is a ``Chat``. It represents the content of a typical text-based chat between user and system(s). A ``Chat`` is nothing more than an ordered array of ``ChatEntity``s which contain the content of the individual messages.
-A ``ChatEntity`` consists of a ``ChatEntity/Role-swift.enum``, a timestamp as well as an `String`-based content which can contain Markdown-formatted text.
+A ``ChatEntity`` consists of a ``ChatEntity/Role-swift.enum``, a timestamp as well as an `String`-based content which can contain Markdown-formatted text. In addition, a flag indicates if the `ChatEntity` is complete and no further content will be added.
 
 > Tip: The ``ChatEntity`` is able to store Markdown-based content which in turn is rendered as styled text in the ``ChatView``, ``MessagesView``, and ``MessageView``.
 
@@ -80,6 +80,8 @@ struct ChatTestView: View {
     }
 }
 ```
+
+- Tip: The ``ChatView`` provides speech-to-text (recognition) as well as text-to-speech (synthesize) accessibility capabilities out-of-the-box via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module, facilitating seamless interaction with the content of the ``ChatView``.
 
 ### Messages View
 
@@ -151,12 +153,16 @@ struct MessageInputTestView: View {
 - ``MessagesView``
 - ``MessageView``
 
+### Message models
+
+- ``Chat``
+- ``ChatEntity``
+
 ### User input
 
 - ``MessageInputView``
 - ``MessageInputViewHeightKey``
 
-### Message models
+### Accessibility
 
-- ``Chat``
-- ``ChatEntity``
+- ``ChatView/speak(_:muted:)``
