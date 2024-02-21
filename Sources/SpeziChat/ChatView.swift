@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import SpeziSpeechSynthesizer
 
 
 /// Provides a basic reusable chat view which includes a message input field. The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text.
@@ -32,6 +33,11 @@ import SwiftUI
 /// }
 /// ```
 ///
+/// ### Accessibility
+///
+/// The ``ChatView`` provides speech-to-text (recognition) as well as text-to-speech  (synthesize) capabilities out of the box via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module, facilitating seamless interaction with the content of the ``ChatView``.
+/// 
+///
 /// ### Export of Chat
 ///
 /// The ``ChatView`` provides functionality to export the visualized ``Chat`` as a PDF document, JSON representation, or textual UTF-8 file (see ``ChatView/ChatExportFormat``).
@@ -55,12 +61,13 @@ import SwiftUI
 /// ```
 public struct ChatView: View {
     @Binding var chat: Chat
-    var disableInput: Bool
+    private var disableInput: Bool
+    private let speechToText: Bool
     let exportFormat: ChatExportFormat?
-    let messagePlaceholder: String?
-    let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
+    private let messagePlaceholder: String?
+    private let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
     
-    @State var messageInputHeight: CGFloat = 0
+    @State private var messageInputHeight: CGFloat = 0
     @State private var showShareSheet = false
     
     
@@ -88,28 +95,28 @@ public struct ChatView: View {
                     }
             }
         }
-        .toolbar {
-            if exportEnabled {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        showShareSheet = true
-                    }) {
-                        Image(systemName: "square.and.arrow.up")
-                            .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
+            .toolbar {
+                if exportEnabled {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button(action: {
+                            showShareSheet = true
+                        }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
+                        }
                     }
                 }
             }
-        }
-        .sheet(isPresented: $showShareSheet) {
-            if let exportedChatData, let exportFormat {
-                ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
-                    .presentationDetents([.medium])
-            } else {
-                ProgressView()
-                    .padding()
-                    .presentationDetents([.medium])
+            .sheet(isPresented: $showShareSheet) {
+                if let exportedChatData, let exportFormat {
+                    ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
+                        .presentationDetents([.medium])
+                } else {
+                    ProgressView()
+                        .padding()
+                        .presentationDetents([.medium])
+                }
             }
-        }
     }
     
     private var exportEnabled: Bool {
@@ -122,18 +129,21 @@ public struct ChatView: View {
     /// - Parameters:
     ///   - chat: The chat that should be displayed.
     ///   - disableInput: Flag if the input view should be disabled.
+    ///   - speechToText: Enables speech-to-text (recognition) capabilities of the input field, defaults to `true`.
     ///   - exportFormat: If specified, enables the export of the ``Chat`` displayed in the ``ChatView`` via a share sheet in various formats defined in ``ChatView/ChatExportFormat``.
     ///   - messagePlaceholder: Placeholder text that should be added in the input field.
     ///   - messagePendingAnimation: Parameter to control whether a chat bubble animation is shown.
     public init(
         _ chat: Binding<Chat>,
         disableInput: Bool = false,
+        speechToText: Bool = true,
         exportFormat: ChatExportFormat? = nil,
         messagePlaceholder: String? = nil,
         messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode? = nil
     ) {
         self._chat = chat
         self.disableInput = disableInput
+        self.speechToText = speechToText
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
         self.messagePendingAnimation = messagePendingAnimation
@@ -141,6 +151,7 @@ public struct ChatView: View {
 }
 
 
+#if DEBUG
 #Preview {
     NavigationStack {
         ChatView(
@@ -157,3 +168,4 @@ public struct ChatView: View {
         )
     }
 }
+#endif

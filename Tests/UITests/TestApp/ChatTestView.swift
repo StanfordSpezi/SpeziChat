@@ -14,14 +14,21 @@ struct ChatTestView: View {
     @State private var chat: Chat = [
         ChatEntity(role: .assistant, content: "**Assistant** Message!")
     ]
+    @State private var muted = true
     
     
     var body: some View {
-        ChatView($chat, exportFormat: .pdf, messagePendingAnimation: .automatic)
+        ChatView(
+            $chat,
+            exportFormat: .pdf,
+            messagePendingAnimation: .automatic
+        )
+            .speakChat(chat, muted: muted)
+            .speechToolbarButton(muted: $muted)
             .navigationTitle("SpeziChat")
             .padding(.top, 16)
             .onChange(of: chat) { _, newValue in
-                /// Append a new assistant message to the chat after sleeping for 1 second.
+                /// Append a new assistant message to the chat after sleeping for 5 seconds.
                 if newValue.last?.role == .user {
                     Task {
                         try await Task.sleep(for: .seconds(5))
@@ -36,6 +43,8 @@ struct ChatTestView: View {
 }
 
 
+#if DEBUG
 #Preview {
     ChatTestView()
 }
+#endif
