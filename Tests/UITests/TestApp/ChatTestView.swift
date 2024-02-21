@@ -23,7 +23,7 @@ struct ChatTestView: View {
             exportFormat: .pdf,
             messagePendingAnimation: .automatic
         )
-            .speakChat(chat, muted: muted)
+            .speak(chat, muted: muted)
             .speechToolbarButton(muted: $muted)
             .navigationTitle("SpeziChat")
             .padding(.top, 16)

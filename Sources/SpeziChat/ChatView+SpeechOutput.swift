@@ -10,7 +10,7 @@ import SpeziSpeechSynthesizer
 import SwiftUI
 
 
-/// The underlying `ViewModifier` of ``ChatView/speakChat(_:muted:)``.
+/// The underlying `ViewModifier` of ``ChatView/speak(_:muted:)``.
 struct ChatViewSpeechModifier: ViewModifier {
     let chat: Chat
     let muted: Bool
@@ -56,16 +56,16 @@ struct ChatViewSpeechModifier: ViewModifier {
 extension ChatView {
     /// Provides text-to-speech capabilities to the ``ChatView``.
     ///
-    /// Attaching the modifier to a ``ChatView`` will enable the automatic output of the latest added ``ChatEntity/Role-swift.enum/assistant`` chat message that is ``ChatEntity/complete`` within the passed ``Chat``.
-    /// The text-to-speech capability can be muted via a `Bool` flag in the ``speakChat(_:muted:)`` modifier.
+    /// Attaching the modifier to a ``ChatView`` will enable the automatic speech output of the latest added ``ChatEntity/Role-swift.enum/assistant`` ``Chat`` message that is ``ChatEntity/complete``.
+    /// The text-to-speech capability can be muted via a `Bool` flag in the ``speak(_:muted:)`` modifier.
     ///
-    /// It is important to note that only the latest ``ChatEntity/Role-swift.enum/assistant`` and ``ChatEntity/complete`` ``Chat`` messages will be synthezised to natural language speech.
+    /// It is important to note that only the latest ``ChatEntity/Role-swift.enum/assistant`` and ``ChatEntity/complete`` ``Chat`` messages will be synthezised to natural language speech, as soon as it is persisted in the ``Chat``.
     /// The speech output is immediately stopped as soon as a ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/user`` message is added to the ``Chat``,
-    /// the passed in `muted` `Binding` turns to `true`, or the `View` is inactive or in the background.
+    /// the passed `muted` `Binding` turns to `true`, or the `View` becomes inactive or is moved to the background.
     ///
     /// ### Usage
     ///
-    /// The code snipped below demonstrates a minimal example of text-to-speech capabilities. At first, the speech output is muted, only after ten seconds speech output of newly incoming ``Chat`` messages will be synthezised.
+    /// The code snipped below demonstrates a minimal example of text-to-speech capabilities. At first, the speech output is muted, only after ten seconds the speech output of newly incoming ``Chat`` messages will be synthezised.
     ///
     /// ```swift
     /// struct ChatTestView: View {
@@ -74,10 +74,9 @@ extension ChatView {
     ///     ]
     ///     @State private var muted = true
     ///
-    ///
     ///     var body: some View {
     ///         ChatView($chat)
-    ///             .speakChat(chat, muted: muted)
+    ///             .speak(chat, muted: muted)
     ///             .task {
     ///                 try? await Task.sleep(for: .seconds(10))
     ///                 muted = false
@@ -88,7 +87,7 @@ extension ChatView {
     ///     }
     /// }
     /// ```
-    public func speakChat(
+    public func speak(
         _ chat: Chat,
         muted: Bool
     ) -> some View {
@@ -130,7 +129,7 @@ extension ChatView {
     
     return NavigationStack {
         ChatView($chat)
-            .speakChat(chat, muted: muted)
+            .speak(chat, muted: muted)
     }
 }
 
@@ -145,7 +144,7 @@ extension ChatView {
     
     return NavigationStack {
         ChatView($chat)
-            .speakChat(chat, muted: muted)
+            .speak(chat, muted: muted)
     }
 }
 #endif

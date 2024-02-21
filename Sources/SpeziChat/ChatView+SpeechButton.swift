@@ -41,7 +41,7 @@ struct ChatViewSpeechButtonModifier: ViewModifier {
 
 
 extension View {
-    /// Adds a toolbar `Button` to enable or disable text-to-speech capabilities.
+    /// Adds a toolbar `Button` to mute or unmute text-to-speech capabilities.
     ///
     /// When attaching the ``speechToolbarButton(enabled:muted:)`` modifier to a `View` that resides within a SwiftUI `NavigationStack`,
     /// a `Button` is added to the toolbar that enables text-to-speech capabilities.
@@ -59,10 +59,9 @@ extension View {
     ///     ]
     ///     @State private var muted = true
     ///
-    ///
     ///     var body: some View {
     ///         ChatView($chat)
-    ///             .speakChat(chat, muted: muted)
+    ///             .speak(chat, muted: muted)
     ///             .speechToolbarButton(muted: $muted)
     ///             .task {
     ///                 // Add new completed `assistant` content to the `Chat` that is outputted via speech.
@@ -101,7 +100,7 @@ extension View {
     
     return NavigationStack {
         ChatView($chat)
-            .speakChat(chat, muted: muted)
+            .speak(chat, muted: muted)
             .speechToolbarButton(muted: $muted)
     }
 }
