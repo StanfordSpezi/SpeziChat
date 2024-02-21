@@ -112,4 +112,18 @@ class TestAppUITests: XCTestCase {
         XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
         filesApp.buttons["Done"].tap()
     }
+    
+    func testChatSpeechOutput() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
+        XCTAssert(app.buttons["speaker_slash"].waitForExistence(timeout: 2))
+        XCTAssert(!app.buttons["speaker"].waitForExistence(timeout: 2))
+        
+        app.buttons["speaker_slash"].tap()
+        
+        XCTAssert(!app.buttons["speaker_slash"].waitForExistence(timeout: 2))
+        XCTAssert(app.buttons["speaker"].waitForExistence(timeout: 2))
+    }
 }

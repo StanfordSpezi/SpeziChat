@@ -6,10 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SwiftUI
 import SpeziSpeechSynthesizer
+import SwiftUI
 
 
+/// The underlying `ViewModifier` of ``ChatView/speakChat(_:muted:)``.
 struct ChatViewSpeechModifier: ViewModifier {
     let chat: Chat
     let muted: Bool
@@ -22,7 +23,7 @@ struct ChatViewSpeechModifier: ViewModifier {
         content
             // Output speech when new complete assistant message is the last message
             // Cancel speech output as soon as new message arrives with user role
-            .onChange(of: chat, initial: true) { _, newValue in
+            .onChange(of: chat, initial: true) { _, _ in
                 guard !muted,
                       let lastChatEntity = chat.last,
                       lastChatEntity.complete else {
@@ -53,6 +54,40 @@ struct ChatViewSpeechModifier: ViewModifier {
 
 
 extension ChatView {
+    /// Provides text-to-speech capabilities to the ``ChatView``.
+    ///
+    /// Attaching the modifier to a ``ChatView`` will enable the automatic output of the latest added ``ChatEntity/Role-swift.enum/assistant`` chat message that is ``ChatEntity/complete`` within the passed ``Chat``.
+    /// The text-to-speech capability can be muted via a `Bool` flag in the ``speakChat(_:muted:)`` modifier.
+    ///
+    /// It is important to note that only the latest ``ChatEntity/Role-swift.enum/assistant`` and ``ChatEntity/complete`` ``Chat`` messages will be synthezised to natural language speech.
+    /// The speech output is immediately stopped as soon as a ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/user`` message is added to the ``Chat``,
+    /// the passed in `muted` `Binding` turns to `true`, or the `View` is inactive or in the background.
+    ///
+    /// ### Usage
+    ///
+    /// The code snipped below demonstrates a minimal example of text-to-speech capabilities. At first, the speech output is muted, only after ten seconds speech output of newly incoming ``Chat`` messages will be synthezised.
+    ///
+    /// ```swift
+    /// struct ChatTestView: View {
+    ///     @State private var chat: Chat = [
+    ///         ChatEntity(role: .assistant, content: "**Assistant** Message!")
+    ///     ]
+    ///     @State private var muted = true
+    ///
+    ///
+    ///     var body: some View {
+    ///         ChatView($chat)
+    ///             .speakChat(chat, muted: muted)
+    ///             .task {
+    ///                 try? await Task.sleep(for: .seconds(10))
+    ///                 muted = false
+    ///
+    ///                 // Add new completed `assistant` content to the `Chat` that is outputted via speech.
+    ///                 // ...
+    ///             }
+    ///     }
+    /// }
+    /// ```
     public func speakChat(
         _ chat: Chat,
         muted: Bool
@@ -80,10 +115,7 @@ extension ChatView {
     )
     
     return NavigationStack {
-        ChatView(
-            $chat,
-            exportFormat: .pdf
-        )
+        ChatView($chat)
     }
 }
 
@@ -97,10 +129,7 @@ extension ChatView {
     
     
     return NavigationStack {
-        ChatView(
-            $chat,
-            exportFormat: .pdf
-        )
+        ChatView($chat)
             .speakChat(chat, muted: muted)
     }
 }
@@ -115,10 +144,7 @@ extension ChatView {
     
     
     return NavigationStack {
-        ChatView(
-            $chat,
-            exportFormat: .pdf
-        )
+        ChatView($chat)
             .speakChat(chat, muted: muted)
     }
 }

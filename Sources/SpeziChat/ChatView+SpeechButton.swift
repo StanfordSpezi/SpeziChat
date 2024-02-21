@@ -7,15 +7,12 @@
 //
 
 import SwiftUI
-import SpeziSpeechSynthesizer
 
 
+/// The underlying `ViewModifier` of `View/speechToolbarButton(enabled:muted:)`.
 struct ChatViewSpeechButtonModifier: ViewModifier {
     let enabled: Bool
     @Binding var muted: Bool
-    
-    @Environment(\.scenePhase) private var scenePhase
-    @State private var speechSynthesizer = SpeechSynthesizer()
     
     
     func body(content: Content) -> some View {
@@ -28,9 +25,11 @@ struct ChatViewSpeechButtonModifier: ViewModifier {
                         }) {
                             if !muted {
                                 Image(systemName: "speaker")
+                                    .accessibilityIdentifier("speaker")
                                     .accessibilityLabel(Text("Text to speech is enabled, press to disable text to speech.", bundle: .module))
                             } else {
                                 Image(systemName: "speaker.slash")
+                                    .accessibilityIdentifier("speaker_slash")
                                     .accessibilityLabel(Text("Text to speech is disabled, press to enable text to speech.", bundle: .module))
                             }
                         }
@@ -42,7 +41,37 @@ struct ChatViewSpeechButtonModifier: ViewModifier {
 
 
 extension View {
-    public func speechToolbarButton(
+    /// Adds a toolbar `Button` to enable or disable text-to-speech capabilities.
+    ///
+    /// When attaching the ``speechToolbarButton(enabled:muted:)`` modifier to a `View` that resides within a SwiftUI `NavigationStack`,
+    /// a `Button` is added to the toolbar that enables text-to-speech capabilities.
+    /// The outside `View` is able to observe taps on that `Button` via passing in a SwiftUI `Binding` as the `muted` parameter, directly tracking the state of the `Button` but also being able to modify it from the outside.
+    /// In addition, the button can be programatically hidden by adjusting the `enabled` parameter at any time.
+    ///
+    /// ### Usage
+    ///
+    /// The code snipped below demonstrates a minimal example of adding a text-to-speech toolbar button that mutes or unmutes text-to-speech output generation.
+    ///
+    /// ```swift
+    /// struct ChatTestView: View {
+    ///     @State private var chat: Chat = [
+    ///         ChatEntity(role: .assistant, content: "**Assistant** Message!")
+    ///     ]
+    ///     @State private var muted = true
+    ///
+    ///
+    ///     var body: some View {
+    ///         ChatView($chat)
+    ///             .speakChat(chat, muted: muted)
+    ///             .speechToolbarButton(muted: $muted)
+    ///             .task {
+    ///                 // Add new completed `assistant` content to the `Chat` that is outputted via speech.
+    ///                 // ...
+    ///             }
+    ///     }
+    /// }
+    /// ```
+    public func speechToolbarButton(    // swiftlint:disable:this function_default_parameter_at_end
         enabled: Bool = true,
         muted: Binding<Bool>
     ) -> some View {
@@ -71,10 +100,7 @@ extension View {
     
     
     return NavigationStack {
-        ChatView(
-            $chat,
-            exportFormat: .pdf
-        )
+        ChatView($chat)
             .speakChat(chat, muted: muted)
             .speechToolbarButton(muted: $muted)
     }
