@@ -33,7 +33,7 @@ public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
         }
     }
     
-    /// Unique identifier of the ``ChatEntity``
+    /// Unique identifier of the ``ChatEntity``.
     public let id: UUID
     /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
     public let role: Role
