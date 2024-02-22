@@ -33,16 +33,16 @@ public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
         }
     }
     
-    /// Unique identifier of the ``ChatEntity``.
-    public let id: UUID
     /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
     public let role: Role
     /// `String`-based content of the ``ChatEntity``.
     public let content: String
-    /// The creation date of the ``ChatEntity``.
-    public let date: Date
     /// Indicates if the ``ChatEntity`` is complete and will not receive any additional content.
     public let complete: Bool
+    /// Unique identifier of the ``ChatEntity``.
+    public let id: UUID
+    /// The creation date of the ``ChatEntity``.
+    public let date: Date
     
     
     /// Markdown-formatted ``ChatEntity/content`` as an `AttributedString`, required to render the text in Markdown-style within the ``MessageView``.
@@ -66,11 +66,19 @@ public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
     ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
     ///    - content: `String`-based content of the ``ChatEntity``. Can contain Markdown-formatted text.
     ///    - complete: Indicates if the content of the ``ChatEntity`` is complete and will not receive any additional content. Defaults to `true`.
-    public init<Content: StringProtocol>(role: Role, content: Content, complete: Bool = true) {
-        self.id = UUID()
+    ///    - id: Unique identifier of the ``ChatEntity``, defaults to a randomly assigned id.
+    ///    - date: Timestamp on when the ``ChatEntity`` was originally created, defaults to the current time.
+    public init<Content: StringProtocol>(
+        role: Role,
+        content: Content,
+        complete: Bool = true,
+        id: UUID = .init(),
+        date: Date = .now
+    ) {
         self.role = role
         self.content = String(content)
         self.complete = complete
-        self.date = Date()
+        self.id = id
+        self.date = date
     }
 }
