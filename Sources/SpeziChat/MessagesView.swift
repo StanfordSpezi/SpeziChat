@@ -16,6 +16,7 @@ import SwiftUI
 /// Depending on the parameters, ``ChatEntity``s with certain ``ChatEntity/Role``s are hidden from the `View`.
 /// The ``MessagesView`` is shifted from the bottom by a configurable parameter which is important for input fields, e.g., ``MessageInputView``.
 ///
+/// ### Usage
 ///
 /// ```swift
 /// struct MessagesViewTestView: View {
@@ -68,7 +69,10 @@ public struct MessagesView: View {
     private var shouldDisplayTypingIndicator: Bool {
         switch self.typingIndicator {
         case .automatic:
-            self.chat.last?.role == .user
+            switch self.chat.last?.role {
+            case .user, .function: true
+            default: false
+            }
         case .manual(let shouldDisplay):
             shouldDisplay
         case .none:
@@ -148,6 +152,7 @@ public struct MessagesView: View {
 }
 
 
+#if DEBUG
 #Preview {
     MessagesView(
         [
@@ -159,3 +164,4 @@ public struct MessagesView: View {
         ]
     )
 }
+#endif

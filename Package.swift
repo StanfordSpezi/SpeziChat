@@ -27,7 +27,8 @@ let package = Package(
         .target(
             name: "SpeziChat",
             dependencies: [
-                .product(name: "SpeziSpeechRecognizer", package: "SpeziSpeech")
+                .product(name: "SpeziSpeechRecognizer", package: "SpeziSpeech"),
+                .product(name: "SpeziSpeechSynthesizer", package: "SpeziSpeech")
             ]
         ),
         .testTarget(

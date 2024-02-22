@@ -26,6 +26,7 @@ import SwiftUI
 public struct TypingIndicator: View {
     @State var isAnimating = false
     
+    
     public var body: some View {
         HStack {
             HStack(spacing: 3) {
@@ -42,19 +43,22 @@ public struct TypingIndicator: View {
                         )
                         .frame(width: 10)
                 }
-                .accessibilityIdentifier(String(localized: "TYPING_INDICATOR", bundle: .module))
+                    .accessibilityIdentifier(String(localized: "TYPING_INDICATOR", bundle: .module))
             }
-            .frame(width: 42, height: 12, alignment: .center)
-            .padding(.vertical, 4)
-            .onAppear {
-                self.isAnimating = true
-            }
-            .chatMessageStyle(alignment: .leading)
+                .frame(width: 42, height: 12, alignment: .center)
+                .padding(.vertical, 4)
+                .onAppear {
+                    self.isAnimating = true
+                }
+                .chatMessageStyle(alignment: .leading)
+            
             Spacer(minLength: 32)
         }
     }
 }
 
+
+#if DEBUG
 #Preview {
     ScrollView {
         VStack {
@@ -67,3 +71,4 @@ public struct TypingIndicator: View {
         .padding()
     }
 }
+#endif

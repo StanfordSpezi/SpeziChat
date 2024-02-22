@@ -13,6 +13,7 @@ import SwiftUI
 ///
 /// Messages with specific system ``ChatEntity/Role``s are hidden. Those ``ChatEntity/Role``s are configurable via a parameter.
 /// 
+/// ### Usage
 ///
 /// ```swift
 /// struct MessageViewTestView: View {
@@ -68,6 +69,7 @@ public struct MessageView: View {
 }
 
 
+#if DEBUG
 #Preview {
     ScrollView {
         VStack {
@@ -82,3 +84,4 @@ public struct MessageView: View {
             .padding()
     }
 }
+#endif

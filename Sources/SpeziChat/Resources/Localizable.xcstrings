@@ -87,6 +87,12 @@
         }
       }
     },
+    "Text to speech is disabled, press to enable text to speech." : {
+
+    },
+    "Text to speech is enabled, press to disable text to speech." : {
+
+    },
     "TYPING_INDICATOR" : {
       "localizations" : {
         "en" : {

@@ -15,10 +15,11 @@ import SwiftUI
 /// A reusable SwiftUI `View` to handle text-based or speech-based user input.
 /// The provided message is attached to the passed ``Chat`` via a SwiftUI `Binding`.
 ///
-/// The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text.
+/// The input can be either typed out via the iOS keyboard or, if enabled (which is the case by default), provided as voice input and transcribed into written text via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module.
 ///
 /// One can get the size of the typed message, which can vary dependent on the message length, via the ``MessageInputViewHeightKey`` SwiftUI PreferenceKey`.
 ///
+/// ### Usage
 ///
 /// ```swift
 /// struct MessageInputTestView: View {
@@ -44,6 +45,7 @@ import SwiftUI
 public struct MessageInputView: View {
     @Binding private var chat: Chat
     private let messagePlaceholder: String
+    private let speechToText: Bool
     
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var message: String = ""
@@ -68,7 +70,9 @@ public struct MessageInputView: View {
                 }
                 .lineLimit(1...5)
             Group {
-                if speechRecognizer.isAvailable && (message.isEmpty || speechRecognizer.isRecording) {
+                if speechToText,
+                   speechRecognizer.isAvailable,
+                   message.isEmpty || speechRecognizer.isRecording {
                     microphoneButton
                 } else {
                     sendButton
@@ -138,12 +142,15 @@ public struct MessageInputView: View {
     /// - Parameters:
     ///   - chat: The chat that should be appended to.
     ///   - messagePlaceholder: Placeholder text that should be added in the input field
+    ///   - speechToText: Enables speech-to-text (recognition) capabilities of the input field.
     public init(
         _ chat: Binding<Chat>,
-        messagePlaceholder: String? = nil
+        messagePlaceholder: String? = nil,
+        speechToText: Bool = true
     ) {
         self._chat = chat
         self.messagePlaceholder = messagePlaceholder ?? "Message"
+        self.speechToText = speechToText
     }
     
     
@@ -173,6 +180,7 @@ public struct MessageInputView: View {
 }
 
 
+#if DEBUG
 #Preview {
     @State var chat = [
         ChatEntity(role: .system, content: "System Message!"),
@@ -195,3 +203,4 @@ public struct MessageInputView: View {
             }
     }
 }
+#endif
