@@ -12,7 +12,7 @@ import Foundation
 /// Represents the basic building block of a Spezi ``Chat``.
 ///
 /// A ``ChatEntity`` can be thought of as a single message entity within a ``Chat``
-/// It consists of a ``ChatEntity/Role``, a timestamp in the form of a `Date` as well as an `String`-based ``ChatEntity/content`` property which can contain Markdown-formatted text.
+/// It consists of a ``ChatEntity/Role``, a unique identifier, a timestamp in the form of a `Date` as well as an `String`-based ``ChatEntity/content`` property which can contain Markdown-formatted text.
 /// Furthermore, the ``ChatEntity/complete`` flag indicates if the current state of the ``ChatEntity`` is final and the content will not be updated anymore.
 public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
