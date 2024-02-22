@@ -14,7 +14,7 @@ import Foundation
 /// A ``ChatEntity`` can be thought of as a single message entity within a ``Chat``
 /// It consists of a ``ChatEntity/Role``, a timestamp in the form of a `Date` as well as an `String`-based ``ChatEntity/content`` property which can contain Markdown-formatted text.
 /// Furthermore, the ``ChatEntity/complete`` flag indicates if the current state of the ``ChatEntity`` is final and the content will not be updated anymore.
-public struct ChatEntity: Codable, Equatable, Hashable {
+public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
     public enum Role: Codable, Equatable, Hashable {
         case system
@@ -33,7 +33,8 @@ public struct ChatEntity: Codable, Equatable, Hashable {
         }
     }
     
-    
+    /// Unique identifier of the ``ChatEntity``
+    public let id: UUID
     /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
     public let role: Role
     /// `String`-based content of the ``ChatEntity``.
@@ -66,6 +67,7 @@ public struct ChatEntity: Codable, Equatable, Hashable {
     ///    - content: `String`-based content of the ``ChatEntity``. Can contain Markdown-formatted text.
     ///    - complete: Indicates if the content of the ``ChatEntity`` is complete and will not receive any additional content. Defaults to `true`.
     public init<Content: StringProtocol>(role: Role, content: Content, complete: Bool = true) {
+        self.id = UUID()
         self.role = role
         self.content = String(content)
         self.complete = complete

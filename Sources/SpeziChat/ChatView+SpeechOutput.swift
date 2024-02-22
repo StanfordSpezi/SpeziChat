@@ -87,9 +87,13 @@ extension View {
     ///     }
     /// }
     /// ```
+    ///
+    /// - Parameters:
+    ///    - chat: The ``Chat`` which should be used for generating the speech output.
+    ///    - muted: Indicates if the speech output is currently muted, defaults to `false`.
     public func speak(
         _ chat: Chat,
-        muted: Bool
+        muted: Bool = false
     ) -> some View {
         modifier(
             ChatViewSpeechModifier(
