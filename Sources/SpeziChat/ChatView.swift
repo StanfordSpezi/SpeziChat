@@ -48,7 +48,7 @@ import SwiftUI
 ///     @State private var chat: Chat = [
 ///         ChatEntity(role: .assistant, content: "**Assistant** Message!")
 ///     ]
-///     @State private var muted = true
+///     @State private var muted = false
 ///
 ///     var body: some View {
 ///         ChatView($chat)
@@ -112,7 +112,7 @@ public struct ChatView: View {
             }
             VStack {
                 Spacer()
-                MessageInputView($chat, messagePlaceholder: messagePlaceholder)
+                MessageInputView($chat, messagePlaceholder: messagePlaceholder, speechToText: speechToText)
                     .disabled(disableInput)
                     .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
                         messageInputHeight = newValue + 12
