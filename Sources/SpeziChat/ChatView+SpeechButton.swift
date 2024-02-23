@@ -40,7 +40,7 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
 extension View {
     /// Adds a toolbar `Button` to mute or unmute text-to-speech capabilities.
     ///
-    /// When attaching the ``speechToolbarButton(enabled:muted:)`` modifier to a `View` that resides within a SwiftUI `NavigationStack`,
+    /// When attaching the ``speechToolbarButton(muted:)`` modifier to a `View` that resides within a SwiftUI `NavigationStack`,
     /// a `Button` is added to the toolbar that enables text-to-speech capabilities.
     /// The outside `View` is able to observe taps on that `Button` via passing in a SwiftUI `Binding` as the `muted` parameter, directly tracking the state of the `Button` but also being able to modify it from the outside.
     /// In addition, the button can be programatically hidden by adjusting the `enabled` parameter at any time.
