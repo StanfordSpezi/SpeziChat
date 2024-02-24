@@ -30,7 +30,7 @@ jobs:
             resultBundle: SpeziChat-iOS-Release.xcresult
     with:
       runsonlabels: '["macOS", "self-hosted"]'
-      scheme: SpeziChat-Package
+      scheme: SpeziChat
       buildConfig: ${{ matrix.buildConfig }}
       resultBundle: ${{ matrix.resultBundle }}
       artifactname: ${{ matrix.artifactname }}
@@ -48,7 +48,7 @@ jobs:
             resultBundle: SpeziChat-visionOS-Release.xcresult
     with:
       runsonlabels: '["macOS", "self-hosted"]'
-      scheme: SpeziChat-Package
+      scheme: SpeziChat
       destination: 'platform=visionOS Simulator,name=Apple Vision Pro'
       buildConfig: ${{ matrix.buildConfig }}
       resultBundle: ${{ matrix.resultBundle }}
@@ -67,7 +67,7 @@ jobs:
             resultBundle: SpeziChat-macOS-Release.xcresult
     with:
       runsonlabels: '["macOS", "self-hosted"]'
-      scheme: SpeziChat-Package
+      scheme: SpeziChat
       destination: 'platform=macOS,arch=arm64'
       buildConfig: ${{ matrix.buildConfig }}
       resultBundle: ${{ matrix.resultBundle }}
