@@ -61,7 +61,11 @@ public struct MessageInputView: View {
                 .padding(.vertical, 8)
                 .background {
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color(UIColor.systemGray2), lineWidth: 0.2)
+                        #if os(macOS)
+                        .stroke(Color(.secondarySystemFill), lineWidth: 0.2)
+                        #else
+                        .stroke(Color(.systemGray2), lineWidth: 0.2)
+                        #endif
                         .background {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.white.opacity(0.2))
@@ -98,6 +102,14 @@ public struct MessageInputView: View {
             .messageInputViewHeight(messageViewHeight)
     }
     
+    private var sendButtonForegroundColor: Color {
+        #if os(macOS)
+        message.isEmpty ? Color(.gray) : .accentColor
+        #else
+        message.isEmpty ? Color(.systemGray5) : .accentColor
+        #endif
+    }
+    
     private var sendButton: some View {
         Button(
             action: {
@@ -107,12 +119,18 @@ public struct MessageInputView: View {
                 Image(systemName: "arrow.up.circle.fill")
                     .accessibilityLabel(String(localized: "SEND_MESSAGE", bundle: .module))
                     .font(.title)
-                    .foregroundColor(
-                        message.isEmpty ? Color(.systemGray5) : .accentColor
-                    )
+                    .foregroundColor(sendButtonForegroundColor)
             }
         )
             .offset(x: -2, y: -3)
+    }
+    
+    private var microphoneForegroundColor: Color {
+        #if os(macOS)
+        message.isEmpty ? Color(.gray) : .accentColor
+        #else
+        speechRecognizer.isRecording ? .red : Color(.systemGray2)
+        #endif
     }
     
     private var microphoneButton: some View {
@@ -124,9 +142,7 @@ public struct MessageInputView: View {
                 Image(systemName: "mic.fill")
                     .accessibilityLabel(String(localized: "MICROPHONE_BUTTON", bundle: .module))
                     .font(.title2)
-                    .foregroundColor(
-                        speechRecognizer.isRecording ? .red : Color(.systemGray2)
-                    )
+                    .foregroundColor(microphoneForegroundColor)
                     .scaleEffect(speechRecognizer.isRecording ? 1.2 : 1.0)
                     .opacity(speechRecognizer.isRecording ? 0.7 : 1.0)
                     .animation(
@@ -192,8 +208,14 @@ public struct MessageInputView: View {
     
     
     return ZStack {
+        #if os(macOS)
+        Color(.secondarySystemFill)
+            .ignoresSafeArea()
+        #else
         Color(.secondarySystemBackground)
             .ignoresSafeArea()
+        #endif
+        
         VStack {
             MessagesView($chat)
             MessageInputView($chat)

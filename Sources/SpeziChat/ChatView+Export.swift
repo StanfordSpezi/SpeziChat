@@ -109,7 +109,13 @@ extension ChatView {
     @MainActor private var pdfChatData: Data? {
         let renderer = ImageRenderer(content: ChatExportPDFView(chat: chat))
 
-        guard let proposedHeight = renderer.uiImage?.size.height else {
+        #if !os(macOS)
+        var proposedHeightOptional = renderer.uiImage?.size.height
+        #else
+        var proposedHeightOptional = renderer.nsImage?.size.height
+        #endif
+
+        guard let proposedHeight = proposedHeightOptional else {
             Self.logger.error("""
             The to be exported chat couldn't be rendered as a PDF as the height of the rendered page couldn't be determined!
             """)
@@ -125,8 +131,14 @@ extension ChatView {
          
         renderer.proposedSize = .init(size)
         
+        #if !os(macOS)
+        proposedHeightOptional = renderer.uiImage?.size.height
+        #else
+        proposedHeightOptional = renderer.nsImage?.size.height
+        #endif
+        
         // Need to fetch page height again as it is adjusted after setting the `proposedSize` on the `ImageRenderer`
-        guard let proposedHeight = renderer.uiImage?.size.height else {
+        guard let proposedHeight = proposedHeightOptional else {
             Self.logger.error("""
             The to be exported chat couldn't be rendered as a PDF as the height of the rendered page couldn't be determined!
             """)

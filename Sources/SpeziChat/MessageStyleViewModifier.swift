@@ -18,7 +18,13 @@ struct MessageStyleModifier: ViewModifier {
     }
     
     private var backgroundColor: Color {
+        #if os(macOS)
+        chatAlignment == .leading ? Color(.secondarySystemFill) : .accentColor
+        #elseif os(visionOS)
         chatAlignment == .leading ? Color(.secondarySystemBackground) : .accentColor
+        #else
+        chatAlignment == .leading ? Color(.secondarySystemBackground) : .accentColor
+        #endif
     }
     
     private var arrowRotation: Angle {

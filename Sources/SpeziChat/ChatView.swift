@@ -99,6 +99,7 @@ public struct ChatView: View {
         ZStack {
             VStack {
                 MessagesView($chat, typingIndicator: messagePendingAnimation, bottomPadding: $messageInputHeight)
+                    #if !os(macOS)
                     .gesture(
                         TapGesture().onEnded {
                             UIApplication.shared.sendAction(
@@ -109,6 +110,7 @@ public struct ChatView: View {
                             )
                         }
                     )
+                    #endif
             }
             VStack {
                 Spacer()
@@ -133,14 +135,29 @@ public struct ChatView: View {
             }
             .sheet(isPresented: $showShareSheet) {
                 if let exportedChatData, let exportFormat {
+                    #if !os(macOS)
                     ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
                         .presentationDetents([.medium])
+                    #endif
                 } else {
                     ProgressView()
                         .padding()
                         .presentationDetents([.medium])
                 }
             }
+            #if os(macOS)
+            .onChange(of: showShareSheet) { _, isPresented in
+                if isPresented, let exportedChatData, let exportFormat {
+                    // Instantiate your MacOSShareSheet and call showSharePicker
+                    let shareSheet = ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
+                    shareSheet.showShareSheet()
+                    
+                    // Optionally, reset the showShareSheet flag if needed
+                    // This might not be necessary if your sharing action automatically dismisses the view or if you handle the state differently.
+                    showShareSheet = false
+                }
+            }
+            #endif
     }
     
     private var exportEnabled: Bool {
