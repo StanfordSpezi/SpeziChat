@@ -15,7 +15,9 @@ let package = Package(
     name: "SpeziChat",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v17)
+        .iOS(.v17),
+        .visionOS(.v1),
+        .macOS(.v14)
     ],
     products: [
         .library(name: "SpeziChat", targets: ["SpeziChat"])
