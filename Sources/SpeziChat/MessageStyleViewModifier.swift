@@ -10,8 +10,8 @@ import SwiftUI
 
 /// Provides styling for the visualization of a textual ``ChatEntity`` within the ``ChatView``.
 struct MessageStyleModifier: ViewModifier {
-    let chatAlignment: ChatEntity.Alignment
-    let backgroundColorUserChat: Color
+    private let chatAlignment: ChatEntity.Alignment
+    private let backgroundColorUserChat: Color
 
     
     private var foregroundColor: Color {
@@ -71,8 +71,8 @@ extension View {
     /// Attach this modifier to `Text`-based content in SwiftUI to format it as a typical chat bubble within a chat view.
     /// The modifier handles text alignment, paddings, colourings, background, as well as the typical chat bubble visualization.
     ///
-    /// As visionOS doesn't properly set the `.accentColor` (always "white" in our testing)
-    /// during chat export via the `ImageRenderer`, we enable to pass a custom background color for chat user messages.
+    /// As visionOS doesn't properly set the `.accentColor`during chat export via the `ImageRenderer` (always "white" in our testing),
+    /// we enable to pass a custom background color for chat user messages.
     ///
     /// ### Usage
     ///
