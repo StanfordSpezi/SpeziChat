@@ -11,6 +11,7 @@ import SwiftUI
 /// Provides styling for the visualization of a textual ``ChatEntity`` within the ``ChatView``.
 struct MessageStyleModifier: ViewModifier {
     let chatAlignment: ChatEntity.Alignment
+    let backgroundColorUserChat: Color
 
     
     private var foregroundColor: Color {
@@ -21,7 +22,7 @@ struct MessageStyleModifier: ViewModifier {
         #if os(macOS)
         chatAlignment == .leading ? Color(.secondarySystemFill) : .accentColor
         #elseif os(visionOS)
-        chatAlignment == .leading ? Color(.secondarySystemBackground) : .accentColor
+        chatAlignment == .leading ? Color(.lightGray) : backgroundColorUserChat
         #else
         chatAlignment == .leading ? Color(.secondarySystemBackground) : .accentColor
         #endif
@@ -37,6 +38,12 @@ struct MessageStyleModifier: ViewModifier {
     
     private var overlayAlignment: Alignment {
         chatAlignment == .leading ? .bottomLeading : .bottomTrailing
+    }
+    
+    
+    init(chatAlignment: ChatEntity.Alignment, backgroundColorUserChat: Color) {
+        self.chatAlignment = chatAlignment
+        self.backgroundColorUserChat = backgroundColorUserChat
     }
     
 
@@ -64,6 +71,9 @@ extension View {
     /// Attach this modifier to `Text`-based content in SwiftUI to format it as a typical chat bubble within a chat view.
     /// The modifier handles text alignment, paddings, colourings, background, as well as the typical chat bubble visualization.
     ///
+    /// As visionOS doesn't properly set the `.accentColor` (always "white" in our testing)
+    /// during chat export via the `ImageRenderer`, we enable to pass a custom background color for chat user messages.
+    ///
     /// ### Usage
     ///
     /// A minimal example can be found below.
@@ -79,7 +89,9 @@ extension View {
     ///     }
     /// }
     /// ```
-    func chatMessageStyle(alignment: ChatEntity.Alignment) -> some View {
-        self.modifier(MessageStyleModifier(chatAlignment: alignment))
+    func chatMessageStyle(alignment: ChatEntity.Alignment, backgroundColorUserChat: Color = .accentColor) -> some View {
+        self.modifier(
+            MessageStyleModifier(chatAlignment: alignment, backgroundColorUserChat: backgroundColorUserChat)
+        )
     }
 }

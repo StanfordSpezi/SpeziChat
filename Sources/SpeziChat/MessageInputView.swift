@@ -50,6 +50,7 @@ public struct MessageInputView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var message: String = ""
     @State private var messageViewHeight: CGFloat = 0
+    @FocusState private var inputFieldFocus: Bool
     
     
     public var body: some View {
@@ -58,21 +59,35 @@ public struct MessageInputView: View {
                 .accessibilityLabel(String(localized: "MESSAGE_INPUT_TEXTFIELD", bundle: .module))
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 12)
+                #if !os(visionOS)
                 .padding(.vertical, 8)
+                #else
+                .padding(.vertical, 12)
+                #endif
                 .background {
                     RoundedRectangle(cornerRadius: 20)
-                        #if os(macOS)
-                        .stroke(Color(.secondarySystemFill), lineWidth: 0.2)
-                        #else
+                        #if !os(macOS)
                         .stroke(Color(.systemGray2), lineWidth: 0.2)
+                        #else
+                        .stroke(Color(.secondarySystemFill), lineWidth: 0.2)
                         #endif
                         .background {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.white.opacity(0.2))
                         }
+                        #if os(iOS)
+                        // Place speech / send button within message text box on iOS
                         .padding(.trailing, -42)
+                        #endif
                 }
                 .lineLimit(1...5)
+                #if os(visionOS)
+                // Workaround on visionOS as UI tests are not able to properly set focus on `TextField`
+                .focused($inputFieldFocus)
+                .onTapGesture {
+                    inputFieldFocus = true
+                }
+                #endif
             Group {
                 if speechToText,
                    speechRecognizer.isAvailable,
@@ -100,15 +115,14 @@ public struct MessageInputView: View {
                 }
             }
             .messageInputViewHeight(messageViewHeight)
+            #if os(macOS)
+            .onSubmit {
+                sendMessageButtonPressed()
+            }
+            #endif
     }
     
-    private var sendButtonForegroundColor: Color {
-        #if os(macOS)
-        message.isEmpty ? Color(.gray) : .accentColor
-        #else
-        message.isEmpty ? Color(.systemGray5) : .accentColor
-        #endif
-    }
+    
     
     private var sendButton: some View {
         Button(
@@ -123,14 +137,6 @@ public struct MessageInputView: View {
             }
         )
             .offset(x: -2, y: -3)
-    }
-    
-    private var microphoneForegroundColor: Color {
-        #if os(macOS)
-        message.isEmpty ? Color(.gray) : .accentColor
-        #else
-        speechRecognizer.isRecording ? .red : Color(.systemGray2)
-        #endif
     }
     
     private var microphoneButton: some View {
@@ -154,6 +160,21 @@ public struct MessageInputView: View {
             .offset(x: -4, y: -6)
     }
     
+    private var sendButtonForegroundColor: Color {
+        #if !os(macOS)
+        message.isEmpty ? Color(.systemGray5) : .accentColor
+        #else
+        message.isEmpty ? Color(.gray) : .accentColor
+        #endif
+    }
+    
+    private var microphoneForegroundColor: Color {
+        #if !os(macOS)
+        speechRecognizer.isRecording ? .red : Color(.systemGray2)
+        #else
+        message.isEmpty ? Color(.gray) : .accentColor
+        #endif
+    }
     
     /// - Parameters:
     ///   - chat: The chat that should be appended to.
@@ -208,11 +229,11 @@ public struct MessageInputView: View {
     
     
     return ZStack {
-        #if os(macOS)
-        Color(.secondarySystemFill)
+        #if !os(macOS)
+        Color(.secondarySystemBackground)
             .ignoresSafeArea()
         #else
-        Color(.secondarySystemBackground)
+        Color(.secondarySystemFill)
             .ignoresSafeArea()
         #endif
         

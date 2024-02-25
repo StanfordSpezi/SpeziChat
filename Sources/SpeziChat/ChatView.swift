@@ -52,12 +52,9 @@ import SwiftUI
 ///
 ///     var body: some View {
 ///         ChatView($chat)
+///             // Output new completed `assistant` content within the `Chat` via speech
 ///             .speak(chat, muted: muted)
 ///             .speechToolbarButton(muted: $muted)
-///             .task {
-///                 // Add new completed `assistant` content to the `Chat` that is outputted via speech.
-///                 // ...
-///             }
 ///     }
 /// }
 /// ```
@@ -148,13 +145,19 @@ public struct ChatView: View {
             #if os(macOS)
             .onChange(of: showShareSheet) { _, isPresented in
                 if isPresented, let exportedChatData, let exportFormat {
-                    // Instantiate your MacOSShareSheet and call showSharePicker
                     let shareSheet = ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
-                    shareSheet.showShareSheet()
+                    shareSheet.show()
                     
-                    // Optionally, reset the showShareSheet flag if needed
-                    // This might not be necessary if your sharing action automatically dismisses the view or if you handle the state differently.
                     showShareSheet = false
+                }
+            }
+            // `NSSharingServicePicker` doesn't provide a completion handler as `UIActivityViewController` does,
+            // therefore necessitating the deletion of the temporary file on disappearing.
+            .onDisappear {
+                if let exportFormat {
+                    try? FileManager.default.removeItem(
+                        at: Self.temporaryExportFilePath(sharedItemType: exportFormat)
+                    )
                 }
             }
             #endif

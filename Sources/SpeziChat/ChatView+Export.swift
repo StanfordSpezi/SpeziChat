@@ -38,9 +38,15 @@ extension ChatView {
                             Spacer(minLength: 32)
                         }
                         VStack(alignment: chatEntity.alignment == .leading ? .leading : .trailing) {
-                            Text(chatEntity.content)
+                            Text(chatEntity.attributedContent)
                                 .fixedSize(horizontal: false, vertical: true)
+                                #if !os(visionOS)
                                 .chatMessageStyle(alignment: chatEntity.alignment)
+                                #else
+                                // Workaround setting the user background color to blue
+                                // for visionOS as .accentColor isn't properly set during export with the `ImageRenderer`
+                                .chatMessageStyle(alignment: chatEntity.alignment, backgroundColorUserChat: .blue)
+                                #endif
                             
                             Text("\(chatEntity.role.rawValue.capitalized): \(chatEntity.date.formatted())")
                                 .font(.caption)
