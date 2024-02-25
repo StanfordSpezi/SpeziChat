@@ -54,7 +54,7 @@ public struct MessageInputView: View {
     
     
     public var body: some View {
-        HStack(alignment: .bottom) {
+        HStack(alignment: .bottom) {    // swiftlint:disable:this closure_body_length
             TextField(messagePlaceholder, text: $message, axis: .vertical)
                 .accessibilityLabel(String(localized: "MESSAGE_INPUT_TEXTFIELD", bundle: .module))
                 .frame(maxWidth: .infinity)
@@ -121,7 +121,6 @@ public struct MessageInputView: View {
             }
             #endif
     }
-    
     
     
     private var sendButton: some View {

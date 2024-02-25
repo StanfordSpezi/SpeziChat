@@ -40,7 +40,7 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 5))
     }
     
-    func testChatExport() throws {
+    func testChatExport() throws {  // swiftlint:disable:this function_body_length
         let app = XCUIApplication()
         let filesApp = XCUIApplication(bundleIdentifier: "com.apple.DocumentsApp")
         let maxRetries = 10

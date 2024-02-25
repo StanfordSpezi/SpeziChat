@@ -14,18 +14,6 @@ import AppKit
 
 
 extension ChatView {
-    static func temporaryExportFilePath(sharedItemType: ChatExportFormat) -> URL {
-        var temporaryPath = FileManager.default.temporaryDirectory.appendingPathComponent("Exported Chat")
-        
-        switch sharedItemType {
-        case .json: temporaryPath = temporaryPath.appendingPathExtension("json")
-        case .text: temporaryPath = temporaryPath.appendingPathExtension("txt")
-        case .pdf: temporaryPath = temporaryPath.appendingPathExtension("pdf")
-        }
-        
-        return temporaryPath
-    }
-    
     /// Provides an iOS-typical Share Sheet (also called Activity View: https://developer.apple.com/design/human-interface-guidelines/activity-views) SwiftUI wrapper
     /// for exporting the ``Chat`` content of the ``ChatView`` without the downsides of the SwiftUI `ShareLink` such as unnecessary reevaluations of the to-be shared content.
     #if !os(macOS)
@@ -72,4 +60,21 @@ extension ChatView {
         }
     }
     #endif
+    
+    
+    /// Constructs the temporary file path for the exported chat file.
+    ///
+    /// - Parameters:
+    ///    - sharedItemType: The shared item type, therefore defining the file extension.
+    static func temporaryExportFilePath(sharedItemType: ChatExportFormat) -> URL {
+        var temporaryPath = FileManager.default.temporaryDirectory.appendingPathComponent("Exported Chat")
+        
+        switch sharedItemType {
+        case .json: temporaryPath = temporaryPath.appendingPathExtension("json")
+        case .text: temporaryPath = temporaryPath.appendingPathExtension("txt")
+        case .pdf: temporaryPath = temporaryPath.appendingPathExtension("pdf")
+        }
+        
+        return temporaryPath
+    }
 }
