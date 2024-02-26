@@ -50,7 +50,9 @@ public struct MessageInputView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var message: String = ""
     @State private var messageViewHeight: CGFloat = 0
+    #if os(visionOS) && TEST
     @FocusState private var inputFieldFocus: Bool
+    #endif
     
     
     public var body: some View {
@@ -81,7 +83,7 @@ public struct MessageInputView: View {
                         #endif
                 }
                 .lineLimit(1...5)
-                #if os(visionOS)
+                #if os(visionOS) && TEST
                 // Workaround on visionOS as UI tests are not able to properly set focus on `TextField`
                 .focused($inputFieldFocus)
                 .onTapGesture {
