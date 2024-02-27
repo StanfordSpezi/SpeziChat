@@ -8,7 +8,9 @@
 
 import AVFoundation
 import Speech
+import SpeziFoundation
 import SpeziSpeechRecognizer
+import SpeziViews
 import SwiftUI
 
 
@@ -50,8 +52,9 @@ public struct MessageInputView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var message: String = ""
     @State private var messageViewHeight: CGFloat = 0
-    #if os(visionOS) && TEST
+    #if os(visionOS)
     @FocusState private var inputFieldFocus: Bool
+    @ApplicationEnvironment var applicationEnvironment
     #endif
     
     
@@ -83,11 +86,14 @@ public struct MessageInputView: View {
                         #endif
                 }
                 .lineLimit(1...5)
-                #if os(visionOS) && TEST
+                #if os(visionOS)
                 // Workaround on visionOS as UI tests are not able to properly set focus on `TextField`
-                .focused($inputFieldFocus)
-                .onTapGesture {
-                    inputFieldFocus = true
+                .if(applicationEnvironment.testMode) { view in
+                    view
+                        .focused($inputFieldFocus)
+                        .onTapGesture {
+                            inputFieldFocus = true
+                        }
                 }
                 #endif
             Group {

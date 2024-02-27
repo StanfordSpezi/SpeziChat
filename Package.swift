@@ -23,14 +23,18 @@ let package = Package(
         .library(name: "SpeziChat", targets: ["SpeziChat"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", branch: "feat/platforms")
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", branch: "feat/global-state"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.0.1"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", branch: "feat/add-conditional-view-modifier")
     ],
     targets: [
         .target(
             name: "SpeziChat",
             dependencies: [
+                .product(name: "SpeziFoundation", package: "SpeziFoundation"),
                 .product(name: "SpeziSpeechRecognizer", package: "SpeziSpeech"),
-                .product(name: "SpeziSpeechSynthesizer", package: "SpeziSpeech")
+                .product(name: "SpeziSpeechSynthesizer", package: "SpeziSpeech"),
+                .product(name: "SpeziViews", package: "SpeziViews")
             ]
         ),
         .testTarget(

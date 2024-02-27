@@ -15,12 +15,15 @@ class TestAppUITests: XCTestCase {
         try super.setUpWithError()
         
         continueAfterFailure = false
+        
+        let app = XCUIApplication()
+        app.launchArguments = ["--testMode"]
+        app.launch()
     }
     
     
     func testChat() throws {
         let app = XCUIApplication()
-        app.launch()
         
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
@@ -46,6 +49,7 @@ class TestAppUITests: XCTestCase {
         let maxRetries = 10
         
         for _ in 0...maxRetries {
+            app.launchArguments = ["--testMode"]
             app.launch()
 
             XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
@@ -136,7 +140,6 @@ class TestAppUITests: XCTestCase {
     
     func testChatSpeechOutput() throws {
         let app = XCUIApplication()
-        app.launch()
         
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
