@@ -52,12 +52,9 @@ import SwiftUI
 ///
 ///     var body: some View {
 ///         ChatView($chat)
+///             // Output new completed `assistant` content within the `Chat` via speech
 ///             .speak(chat, muted: muted)
 ///             .speechToolbarButton(muted: $muted)
-///             .task {
-///                 // Add new completed `assistant` content to the `Chat` that is outputted via speech.
-///                 // ...
-///             }
 ///     }
 /// }
 /// ```
@@ -99,6 +96,7 @@ public struct ChatView: View {
         ZStack {
             VStack {
                 MessagesView($chat, typingIndicator: messagePendingAnimation, bottomPadding: $messageInputHeight)
+                    #if !os(macOS)
                     .gesture(
                         TapGesture().onEnded {
                             UIApplication.shared.sendAction(
@@ -109,6 +107,7 @@ public struct ChatView: View {
                             )
                         }
                     )
+                    #endif
             }
             VStack {
                 Spacer()
@@ -133,14 +132,35 @@ public struct ChatView: View {
             }
             .sheet(isPresented: $showShareSheet) {
                 if let exportedChatData, let exportFormat {
+                    #if !os(macOS)
                     ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
                         .presentationDetents([.medium])
+                    #endif
                 } else {
                     ProgressView()
                         .padding()
                         .presentationDetents([.medium])
                 }
             }
+            #if os(macOS)
+            .onChange(of: showShareSheet) { _, isPresented in
+                if isPresented, let exportedChatData, let exportFormat {
+                    let shareSheet = ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
+                    shareSheet.show()
+                    
+                    showShareSheet = false
+                }
+            }
+            // `NSSharingServicePicker` doesn't provide a completion handler as `UIActivityViewController` does,
+            // therefore necessitating the deletion of the temporary file on disappearing.
+            .onDisappear {
+                if let exportFormat {
+                    try? FileManager.default.removeItem(
+                        at: Self.temporaryExportFilePath(sharedItemType: exportFormat)
+                    )
+                }
+            }
+            #endif
     }
     
     private var exportEnabled: Bool {

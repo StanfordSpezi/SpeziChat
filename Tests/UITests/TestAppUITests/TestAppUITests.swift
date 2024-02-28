@@ -15,12 +15,15 @@ class TestAppUITests: XCTestCase {
         try super.setUpWithError()
         
         continueAfterFailure = false
+        
+        let app = XCUIApplication()
+        app.launchArguments = ["--testMode"]
+        app.launch()
     }
     
     
     func testChat() throws {
         let app = XCUIApplication()
-        app.launch()
         
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
@@ -40,13 +43,16 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 5))
     }
     
-    func testChatExport() throws {
+    func testChatExport() throws {  // swiftlint:disable:this function_body_length
         let app = XCUIApplication()
         let filesApp = XCUIApplication(bundleIdentifier: "com.apple.DocumentsApp")
         let maxRetries = 10
         
         for _ in 0...maxRetries {
+            app.launchArguments = ["--testMode"]
             app.launch()
+
+            XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
             
             // Entering dummy chat value
             XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
@@ -62,14 +68,27 @@ class TestAppUITests: XCTestCase {
             app.buttons["Export the Chat"].tap()
             
             // Store exported chat in Files
+            #if os(visionOS)
+            // On visionOS the "Save to files" button has no label
+            XCTAssert(app.cells["XCElementSnapshotPrivilegedValuePlaceholder"].waitForExistence(timeout: 10))
+            app.cells["XCElementSnapshotPrivilegedValuePlaceholder"].tap()
+            #else
             XCTAssert(app.staticTexts["Save to Files"].waitForExistence(timeout: 10))
             app.staticTexts["Save to Files"].tap()
+            #endif
+
             sleep(3)
             XCTAssert(app.buttons["Save"].waitForExistence(timeout: 2))
             app.buttons["Save"].tap()
             sleep(10)    // Wait until file is saved
             
             if app.staticTexts["Replace Existing Items?"].waitForExistence(timeout: 5) {
+                #if os(visionOS)
+                XCTFail("""
+                On VisionOS, replacing files is very buggy, often leading to a complete freeze of the 'Save to Files' window.
+                Please ensure that all already existing chat export files are deleted when executing the UI test.
+                """)
+                #endif
                 XCTAssert(app.buttons["Replace"].waitForExistence(timeout: 2))
                 app.buttons["Replace"].tap()
                 sleep(3)    // Wait until file is saved
@@ -77,8 +96,6 @@ class TestAppUITests: XCTestCase {
             
             // Wait until share sheet closed and back on the chat screen
             XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 10))
-            
-            XCUIDevice.shared.press(.home)
             
             // Launch the Files app
             filesApp.launch()
@@ -104,18 +121,25 @@ class TestAppUITests: XCTestCase {
         
         sleep(3)    // Wait until file is opened
         
+        #if os(visionOS)
+        let fileView = XCUIApplication(bundleIdentifier: "com.apple.MRQuickLook")
+        #else
+        let fileView = filesApp
+        #endif
+        
         // Check if PDF contains certain chat message
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", "User Message!")
-        XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
+        XCTAssert(fileView.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
         
+        #if os(iOS)
         // Close File
-        XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
-        filesApp.buttons["Done"].tap()
+        XCTAssert(fileView.buttons["Done"].waitForExistence(timeout: 2))
+        fileView.buttons["Done"].tap()
+        #endif
     }
     
     func testChatSpeechOutput() throws {
         let app = XCUIApplication()
-        app.launch()
         
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))

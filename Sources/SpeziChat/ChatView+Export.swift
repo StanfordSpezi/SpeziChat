@@ -38,9 +38,15 @@ extension ChatView {
                             Spacer(minLength: 32)
                         }
                         VStack(alignment: chatEntity.alignment == .leading ? .leading : .trailing) {
-                            Text(chatEntity.content)
+                            Text(chatEntity.attributedContent)
                                 .fixedSize(horizontal: false, vertical: true)
+                                #if !os(visionOS)
                                 .chatMessageStyle(alignment: chatEntity.alignment)
+                                #else
+                                // Workaround setting the user background color to blue
+                                // for visionOS as .accentColor isn't properly set during export with the `ImageRenderer`
+                                .chatMessageStyle(alignment: chatEntity.alignment, backgroundColorUserChat: .blue)
+                                #endif
                             
                             Text("\(chatEntity.role.rawValue.capitalized): \(chatEntity.date.formatted())")
                                 .font(.caption)
@@ -109,7 +115,13 @@ extension ChatView {
     @MainActor private var pdfChatData: Data? {
         let renderer = ImageRenderer(content: ChatExportPDFView(chat: chat))
 
-        guard let proposedHeight = renderer.uiImage?.size.height else {
+        #if !os(macOS)
+        var proposedHeightOptional = renderer.uiImage?.size.height
+        #else
+        var proposedHeightOptional = renderer.nsImage?.size.height
+        #endif
+
+        guard let proposedHeight = proposedHeightOptional else {
             Self.logger.error("""
             The to be exported chat couldn't be rendered as a PDF as the height of the rendered page couldn't be determined!
             """)
@@ -125,8 +137,14 @@ extension ChatView {
          
         renderer.proposedSize = .init(size)
         
+        #if !os(macOS)
+        proposedHeightOptional = renderer.uiImage?.size.height
+        #else
+        proposedHeightOptional = renderer.nsImage?.size.height
+        #endif
+        
         // Need to fetch page height again as it is adjusted after setting the `proposedSize` on the `ImageRenderer`
-        guard let proposedHeight = renderer.uiImage?.size.height else {
+        guard let proposedHeight = proposedHeightOptional else {
             Self.logger.error("""
             The to be exported chat couldn't be rendered as a PDF as the height of the rendered page couldn't be determined!
             """)

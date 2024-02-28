@@ -16,34 +16,124 @@ on:
   workflow_dispatch:
 
 jobs:
-  packageios:
+  buildandtest_ios:
     name: Build and Test Swift Package iOS
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    strategy:
+      matrix:
+        include:
+          - buildConfig: Debug
+            artifactname: SpeziChat-iOS.xcresult
+            resultBundle: SpeziChat-iOS.xcresult
+          - buildConfig: Release
+            artifactname: SpeziChat-iOS-Release.xcresult
+            resultBundle: SpeziChat-iOS-Release.xcresult
     with:
       runsonlabels: '["macOS", "self-hosted"]'
       scheme: SpeziChat
-      artifactname: SpeziChat.xcresult
-  ios:
-    name: Build and Test iOS
+      buildConfig: ${{ matrix.buildConfig }}
+      resultBundle: ${{ matrix.resultBundle }}
+      artifactname: ${{ matrix.artifactname }}
+  buildandtest_visionos:
+    name: Build and Test Swift Package visionOS
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    strategy:
+      matrix:
+        include:
+          - buildConfig: Debug
+            artifactname: SpeziChat-visionOS.xcresult
+            resultBundle: SpeziChat-visionOS.xcresult
+          - buildConfig: Release
+            artifactname: SpeziChat-visionOS-Release.xcresult
+            resultBundle: SpeziChat-visionOS-Release.xcresult
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      scheme: SpeziChat
+      destination: 'platform=visionOS Simulator,name=Apple Vision Pro'
+      buildConfig: ${{ matrix.buildConfig }}
+      resultBundle: ${{ matrix.resultBundle }}
+      artifactname: ${{ matrix.artifactname }}
+  buildandtest_macos:
+    name: Build and Test Swift Package macOS
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    strategy:
+      matrix:
+        include:
+          - buildConfig: Debug
+            artifactname: SpeziChat-macOS.xcresult
+            resultBundle: SpeziChat-macOS.xcresult
+          - buildConfig: Release
+            artifactname: SpeziChat-macOS-Release.xcresult
+            resultBundle: SpeziChat-macOS-Release.xcresult
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      scheme: SpeziChat
+      destination: 'platform=macOS,arch=arm64'
+      buildConfig: ${{ matrix.buildConfig }}
+      resultBundle: ${{ matrix.resultBundle }}
+      artifactname: ${{ matrix.artifactname }}
+  buildandtestuitests_ios:
+    name: Build and Test UI Tests iOS
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    strategy:
+      matrix:
+        include:
+          - buildConfig: Debug
+            resultBundle: TestApp-iOS.xcresult
+            artifactname: TestApp-iOS.xcresult
+          - buildConfig: Release
+            resultBundle: TestApp-iOS-Release.xcresult
+            artifactname: TestApp-iOS-Release.xcresult
     with:
       runsonlabels: '["macOS", "self-hosted"]'
       path: 'Tests/UITests'
       scheme: TestApp
-      artifactname: TestApp.xcresult
-  ipados:
-    name: Build and Test iPadOS
+      buildConfig: ${{ matrix.buildConfig }}
+      resultBundle: ${{ matrix.resultBundle }}
+      artifactname: ${{ matrix.artifactname }}
+  buildandtestuitests_ipad:
+    name: Build and Test UI Tests iPadOS
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    strategy:
+      matrix:
+        include:
+          - buildConfig: Debug
+            resultBundle: TestApp-iPad.xcresult
+            artifactname: TestApp-iPad.xcresult
+          - buildConfig: Release
+            resultBundle: TestApp-iPad-Release.xcresult
+            artifactname: TestApp-iPad-Release.xcresult
     with:
       runsonlabels: '["macOS", "self-hosted"]'
       path: 'Tests/UITests'
       scheme: TestApp
-      resultBundle: TestAppiPadOS.xcresult
-      destination: 'platform=iOS Simulator,name=iPad mini (6th generation)'
-      artifactname: TestAppiPadOS.xcresult
+      destination: 'platform=iOS Simulator,name=iPad Air (5th generation)'
+      buildConfig: ${{ matrix.buildConfig }}
+      resultBundle: ${{ matrix.resultBundle }}
+      artifactname: ${{ matrix.artifactname }}
+  buildandtestuitests_visionos:
+    name: Build and Test UI Tests visionOS
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    strategy:
+      matrix:
+        include:
+          - buildConfig: Debug
+            resultBundle: TestApp-visionOS.xcresult
+            artifactname: TestApp-visionOS.xcresult
+          - buildConfig: Release
+            resultBundle: TestApp-visionOS-Release.xcresult
+            artifactname: TestApp-visionOS-Release.xcresult
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      path: 'Tests/UITests'
+      scheme: TestApp
+      destination: 'platform=visionOS Simulator,name=Apple Vision Pro'
+      buildConfig: ${{ matrix.buildConfig }}
+      resultBundle: ${{ matrix.resultBundle }}
+      artifactname: ${{ matrix.artifactname }}
   uploadcoveragereport:
     name: Upload Coverage Report
-    needs: [packageios, ios, ipados]
+    needs: [buildandtest_ios, buildandtest_visionos, buildandtest_macos, buildandtestuitests_ios, buildandtestuitests_ipad, buildandtestuitests_visionos]
     uses: StanfordSpezi/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
-      coveragereports: SpeziChat.xcresult TestApp.xcresult TestAppiPadOS.xcresult
+      coveragereports: 'SpeziChat-iOS.xcresult SpeziChat-visionOS.xcresult SpeziChat-macOS.xcresult TestApp-iOS.xcresult TestApp-iPad.xcresult TestApp-visionOS.xcresult'

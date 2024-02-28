@@ -50,6 +50,7 @@ public struct MessagesView: View {
     private let typingIndicator: TypingIndicatorDisplayMode?
     
     
+    #if !os(macOS)
     private var keyboardPublisher: AnyPublisher<Bool, Never> {
         Publishers
             .Merge(
@@ -65,6 +66,7 @@ public struct MessagesView: View {
             .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
             .eraseToAnyPublisher()
     }
+    #endif
     
     private var shouldDisplayTypingIndicator: Bool {
         switch self.typingIndicator {
@@ -101,9 +103,11 @@ public struct MessagesView: View {
                     .onChange(of: chat) {
                         scrollToBottom(scrollViewProxy)
                     }
+                    #if !os(macOS)
                     .onReceive(keyboardPublisher) { _ in
                         scrollToBottom(scrollViewProxy)
                     }
+                    #endif
             }
         }
     }

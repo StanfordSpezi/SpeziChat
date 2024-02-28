@@ -8,7 +8,9 @@
 
 import AVFoundation
 import Speech
+@_spi(TestingSupport) import SpeziFoundation
 import SpeziSpeechRecognizer
+import SpeziViews
 import SwiftUI
 
 
@@ -50,25 +52,49 @@ public struct MessageInputView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var message: String = ""
     @State private var messageViewHeight: CGFloat = 0
+    #if os(visionOS)
+    @FocusState private var inputFieldFocus: Bool
+    #endif
     
     
     public var body: some View {
-        HStack(alignment: .bottom) {
+        HStack(alignment: .bottom) {    // swiftlint:disable:this closure_body_length
             TextField(messagePlaceholder, text: $message, axis: .vertical)
                 .accessibilityLabel(String(localized: "MESSAGE_INPUT_TEXTFIELD", bundle: .module))
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 12)
+                #if !os(visionOS)
                 .padding(.vertical, 8)
+                #else
+                .padding(.vertical, 12)
+                #endif
                 .background {
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color(UIColor.systemGray2), lineWidth: 0.2)
+                        #if !os(macOS)
+                        .stroke(Color(.systemGray2), lineWidth: 0.2)
+                        #else
+                        .stroke(Color(.secondarySystemFill), lineWidth: 0.2)
+                        #endif
                         .background {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.white.opacity(0.2))
                         }
+                        #if os(iOS)
+                        // Place speech / send button within message text box on iOS
                         .padding(.trailing, -42)
+                        #endif
                 }
                 .lineLimit(1...5)
+                #if os(visionOS)
+                // Workaround on visionOS as UI tests are not able to properly set focus on `TextField`
+                .if(RuntimeConfig.testMode) { view in
+                    view
+                        .focused($inputFieldFocus)
+                        .onTapGesture {
+                            inputFieldFocus = true
+                        }
+                }
+                #endif
             Group {
                 if speechToText,
                    speechRecognizer.isAvailable,
@@ -96,7 +122,13 @@ public struct MessageInputView: View {
                 }
             }
             .messageInputViewHeight(messageViewHeight)
+            #if os(macOS)
+            .onSubmit {
+                sendMessageButtonPressed()
+            }
+            #endif
     }
+    
     
     private var sendButton: some View {
         Button(
@@ -107,9 +139,7 @@ public struct MessageInputView: View {
                 Image(systemName: "arrow.up.circle.fill")
                     .accessibilityLabel(String(localized: "SEND_MESSAGE", bundle: .module))
                     .font(.title)
-                    .foregroundColor(
-                        message.isEmpty ? Color(.systemGray5) : .accentColor
-                    )
+                    .foregroundColor(sendButtonForegroundColor)
             }
         )
             .offset(x: -2, y: -3)
@@ -124,9 +154,7 @@ public struct MessageInputView: View {
                 Image(systemName: "mic.fill")
                     .accessibilityLabel(String(localized: "MICROPHONE_BUTTON", bundle: .module))
                     .font(.title2)
-                    .foregroundColor(
-                        speechRecognizer.isRecording ? .red : Color(.systemGray2)
-                    )
+                    .foregroundColor(microphoneForegroundColor)
                     .scaleEffect(speechRecognizer.isRecording ? 1.2 : 1.0)
                     .opacity(speechRecognizer.isRecording ? 0.7 : 1.0)
                     .animation(
@@ -138,6 +166,21 @@ public struct MessageInputView: View {
             .offset(x: -4, y: -6)
     }
     
+    private var sendButtonForegroundColor: Color {
+        #if !os(macOS)
+        message.isEmpty ? Color(.systemGray5) : .accentColor
+        #else
+        message.isEmpty ? Color(.gray) : .accentColor
+        #endif
+    }
+    
+    private var microphoneForegroundColor: Color {
+        #if !os(macOS)
+        speechRecognizer.isRecording ? .red : Color(.systemGray2)
+        #else
+        message.isEmpty ? Color(.gray) : .accentColor
+        #endif
+    }
     
     /// - Parameters:
     ///   - chat: The chat that should be appended to.
@@ -192,8 +235,14 @@ public struct MessageInputView: View {
     
     
     return ZStack {
+        #if !os(macOS)
         Color(.secondarySystemBackground)
             .ignoresSafeArea()
+        #else
+        Color(.secondarySystemFill)
+            .ignoresSafeArea()
+        #endif
+        
         VStack {
             MessagesView($chat)
             MessageInputView($chat)
