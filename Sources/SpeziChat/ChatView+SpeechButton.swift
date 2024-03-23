@@ -88,11 +88,9 @@ extension View {
 #Preview {
     @State var chat: Chat = .init(
         [
-            ChatEntity(role: .system, content: "System Message!"),
-            ChatEntity(role: .system, content: "System Message (hidden)!"),
             ChatEntity(role: .user, content: "User Message!"),
+            ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!"),
-            ChatEntity(role: .function(name: "test_function"), content: "Function Message!")
         ]
     )
     @State var muted = true

@@ -11,8 +11,8 @@ import SwiftUI
 
 /// A reusable SwiftUI `View` to display the contents of a ``ChatEntity`` within a typical chat message bubble. This bubble is properly aligned according to the associated ``ChatEntity/Role``.
 ///
-/// Messages with specific system ``ChatEntity/Role``s are hidden. Those ``ChatEntity/Role``s are configurable via a parameter.
-/// 
+/// Messages with the ``ChatEntity/Role/hidden(type:)`` are hidden. These ``ChatEntity/Role``s are configurable via a parameter in the ``MessageView/init(_:hideMessagesWithRoles:)``.
+///
 /// ### Usage
 ///
 /// ```swift
@@ -21,7 +21,7 @@ import SwiftUI
 ///         VStack {
 ///             MessageView(ChatEntity(role: .user, content: "User Message!"))
 ///             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
-///             MessageView(ChatEntity(role: .system, content: "System Message (hidden)!"))
+///             MessageView(ChatEntity(role: .hidden(type: "system"), content: "System Message (hidden)!"))
 ///         }
 ///             .padding()
 ///     }
@@ -32,8 +32,7 @@ public struct MessageView: View {
     public enum Defaults {
         /// ``ChatEntity`` ``ChatEntity/Role``s that should be hidden by default
         public static let hideMessagesWithRoles: Set<ChatEntity.Role> = [
-            .system,
-            .function(name: "")     // Need to state a dummy associated value of the `ChatEntity/Role/function` case
+            .hidden(type: "")
         ]
     }
     
@@ -61,7 +60,7 @@ public struct MessageView: View {
     
     /// - Parameters:
     ///   - chat: The chat message that should be displayed.
-    ///   - hideMessagesWithRoles: If .system and/or .function messages should be hidden from the chat overview.
+    ///   - hideMessagesWithRoles: ``ChatEntity/Role-swift.enum``s that should be hidden from the user.
     public init(_ chat: ChatEntity, hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles) {
         self.chat = chat
         self.hideMessagesWithRoles = hideMessagesWithRoles
@@ -73,13 +72,12 @@ public struct MessageView: View {
 #Preview {
     ScrollView {
         VStack {
-            MessageView(ChatEntity(role: .system, content: "System Message!"), hideMessagesWithRoles: [])
-            MessageView(ChatEntity(role: .system, content: "System Message (hidden)!"))
-            MessageView(ChatEntity(role: .function(name: "test_function"), content: "Function Message!"), hideMessagesWithRoles: [.system])
             MessageView(ChatEntity(role: .user, content: "User Message!"))
             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
             MessageView(ChatEntity(role: .user, content: "Long User Message that spans over two lines!"))
             MessageView(ChatEntity(role: .assistant, content: "Long Assistant Message that spans over two lines!"))
+            MessageView(ChatEntity(role: .hidden(type: "test"), content: "Hidden message! (invisible)"))
+            MessageView(ChatEntity(role: .hidden(type: "test"), content: "Hidden message! (visible)"), hideMessagesWithRoles: [])
         }
             .padding()
     }

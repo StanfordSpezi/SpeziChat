@@ -32,14 +32,14 @@ public struct TypingIndicator: View {
             HStack(spacing: 3) {
                 ForEach(0..<3) { index in
                     Circle()
-                        .opacity(self.isAnimating ? 1 : 0)
+                        .opacity(isAnimating ? 1 : 0)
                         .foregroundStyle(.tertiary)
                         .animation(
                             Animation
                                 .easeInOut(duration: 0.6)
                                 .repeatForever(autoreverses: true)
                                 .delay(0.2 * Double(index)),
-                            value: self.isAnimating
+                            value: isAnimating
                         )
                         .frame(width: 10)
                 }
@@ -47,10 +47,10 @@ public struct TypingIndicator: View {
             }
                 .frame(width: 42, height: 12, alignment: .center)
                 .padding(.vertical, 4)
-                .onAppear {
-                    self.isAnimating = true
-                }
                 .chatMessageStyle(alignment: .leading)
+                .task {
+                    isAnimating = true
+                }
             
             Spacer(minLength: 32)
         }
@@ -62,10 +62,10 @@ public struct TypingIndicator: View {
 #Preview {
     ScrollView {
         VStack {
-            MessageView(ChatEntity(role: .system, content: "System Message!"), hideMessagesWithRoles: [])
-            MessageView(ChatEntity(role: .system, content: "System Message (hidden)!"))
-            MessageView(ChatEntity(role: .function(name: "test_function"), content: "Function Message!"), hideMessagesWithRoles: [.system])
             MessageView(ChatEntity(role: .user, content: "User Message!"))
+            MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
+            MessageView(ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"))
+            MessageView(ChatEntity(role: .hidden(type: "test"), content: "Hidden Message! (still visible)"), hideMessagesWithRoles: [])
             TypingIndicator()
         }
         .padding()

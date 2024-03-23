@@ -72,7 +72,7 @@ public struct MessagesView: View {
         switch self.typingIndicator {
         case .automatic:
             switch self.chat.last?.role {
-            case .user, .function: true
+            case .user, .hidden: true
             default: false
             }
         case .manual(let shouldDisplay):
@@ -117,7 +117,7 @@ public struct MessagesView: View {
     ///   - chat: The chat messages that should be displayed.
     ///   - bottomPadding: A fixed bottom padding for the messages view.
     ///   - typingIndicator: Indicates whether a  "three dots" animation should be automatically or manually shown; default value of `nil` will result in no indicator being shown under any condition.
-    ///   - hideMessagesWithRoles: The .system and .function roles are hidden from message view
+    ///   - hideMessagesWithRoles: The ``ChatEntity/Role/hidden(type:)`` role messages are hidden from message view
     public init(
         _ chat: Chat,
         hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
@@ -160,10 +160,8 @@ public struct MessagesView: View {
 #Preview {
     MessagesView(
         [
-            ChatEntity(role: .system, content: "System Message!"),
-            ChatEntity(role: .system, content: "System Message (hidden)!"),
-            ChatEntity(role: .function(name: "test_function"), content: "Function Message!"),
             ChatEntity(role: .user, content: "User Message!"),
+            ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
     )

@@ -226,10 +226,8 @@ public struct MessageInputView: View {
 #if DEBUG
 #Preview {
     @State var chat = [
-        ChatEntity(role: .system, content: "System Message!"),
-        ChatEntity(role: .system, content: "System Message (hidden)!"),
-        ChatEntity(role: .function(name: "test_function"), content: "Function Message!"),
         ChatEntity(role: .user, content: "User Message!"),
+        ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"),
         ChatEntity(role: .assistant, content: "Assistant Message!")
     ]
     

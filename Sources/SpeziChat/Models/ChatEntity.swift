@@ -17,18 +17,16 @@ import Foundation
 public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
     public enum Role: Codable, Equatable, Hashable {
-        case system
-        case assistant
         case user
-        case function(name: String)
+        case assistant
+        case hidden(type: String)
         
         
         var rawValue: String {
             switch self {
-            case .system: "system"
-            case .assistant: "assistant"
             case .user: "user"
-            case .function: "function"
+            case .assistant: "assistant"
+            case .hidden: "hidden"
             }
         }
     }

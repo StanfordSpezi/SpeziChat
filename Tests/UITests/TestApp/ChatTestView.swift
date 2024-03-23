@@ -28,7 +28,7 @@ struct ChatTestView: View {
             .navigationTitle("SpeziChat")
             .padding(.top, 16)
             .onChange(of: chat) { _, newValue in
-                /// Append a new assistant message to the chat after sleeping for 5 seconds.
+                // Append a new assistant message to the chat after sleeping for 5 seconds.
                 if newValue.last?.role == .user {
                     Task {
                         try await Task.sleep(for: .seconds(5))
