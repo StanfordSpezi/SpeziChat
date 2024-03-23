@@ -202,8 +202,8 @@ public struct ChatView: View {
             .constant(
                 [
                     ChatEntity(role: .user, content: "User Message!"),
-                    ChatEntity(role: .assistant, content: "Assistant Message!"),
-                    ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!")
+                    ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"),
+                    ChatEntity(role: .assistant, content: "Assistant Message!")
                 ]
             ),
             exportFormat: .pdf
