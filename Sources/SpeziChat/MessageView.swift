@@ -21,7 +21,7 @@ import SwiftUI
 ///         VStack {
 ///             MessageView(ChatEntity(role: .user, content: "User Message!"))
 ///             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
-///             MessageView(ChatEntity(role: .hidden(type: "system"), content: "System Message (hidden)!"))
+///             MessageView(ChatEntity(role: .hidden(type: .unknown), content: "System Message (hidden)!"))
 ///         }
 ///             .padding()
 ///     }
@@ -54,7 +54,6 @@ public struct MessageView: View {
             return false
         }
     }
-    
     
     public var body: some View {
         if shouldDisplayMessage {

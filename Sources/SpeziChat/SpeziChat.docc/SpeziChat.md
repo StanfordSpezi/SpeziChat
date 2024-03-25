@@ -113,7 +113,7 @@ struct MessageViewTestView: View {
         VStack {
             MessageView(ChatEntity(role: .user, content: "User Message!"))
             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
-            MessageView(ChatEntity(role: .hidden(type: "system"), content: "System Message (hidden)!"))
+            MessageView(ChatEntity(role: .hidden(type: .unknown), content: "System Message (hidden)!"))
         }
             .padding()
     }
@@ -157,6 +157,8 @@ struct MessageInputTestView: View {
 
 - ``Chat``
 - ``ChatEntity``
+- ``ChatEntity/Role-swift.enum``
+- ``ChatEntity/HiddenMessageType``
 
 ### User input
 

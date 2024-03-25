@@ -36,28 +36,24 @@ private struct ChatViewSpeechModifier: ViewModifier {
                     return
                 }
                 
-                Task {
-                    if lastChatEntity.role == .assistant {
-                        speechSynthesizer.speak(lastChatEntity.content)
-                    } else if lastChatEntity.role == .user {
-                        speechSynthesizer.stop()
-                    }
+                if lastChatEntity.role == .assistant {
+                    speechSynthesizer.speak(lastChatEntity.content)
+                } else if lastChatEntity.role == .user {
+                    speechSynthesizer.stop()
                 }
             }
              
             // Cancel speech output when muted button is tapped in the toolbar
             .onChange(of: muted) { _, newValue in
                 if newValue {
-                    Task {
-                        speechSynthesizer.stop()
-                    }
+                    speechSynthesizer.stop()
                 }
             }
             
             // Cancel speech output when view disappears
             .onChange(of: scenePhase) { _, newValue in
                 switch newValue {
-                case .background, .inactive: Task { speechSynthesizer.stop() }
+                case .background, .inactive: speechSynthesizer.stop()
                 default: break
                 }
             }
