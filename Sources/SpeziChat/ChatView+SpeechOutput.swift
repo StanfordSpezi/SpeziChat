@@ -19,6 +19,12 @@ private struct ChatViewSpeechModifier: ViewModifier {
     @State private var speechSynthesizer = SpeechSynthesizer()
     
     
+    init(chat: Chat, muted: Bool) {
+        self.chat = chat
+        self.muted = muted
+    }
+    
+    
     func body(content: Content) -> some View {
         content
             // Output speech when new complete assistant message is the last message
@@ -30,22 +36,28 @@ private struct ChatViewSpeechModifier: ViewModifier {
                     return
                 }
                 
-                if lastChatEntity.role == .assistant {
-                    speechSynthesizer.speak(lastChatEntity.content)
-                } else if lastChatEntity.role == .user {
-                    speechSynthesizer.stop()
+                Task {
+                    if lastChatEntity.role == .assistant {
+                        speechSynthesizer.speak(lastChatEntity.content)
+                    } else if lastChatEntity.role == .user {
+                        speechSynthesizer.stop()
+                    }
                 }
             }
+             
             // Cancel speech output when muted button is tapped in the toolbar
             .onChange(of: muted) { _, newValue in
                 if newValue {
-                    speechSynthesizer.stop()
+                    Task {
+                        speechSynthesizer.stop()
+                    }
                 }
             }
+            
             // Cancel speech output when view disappears
             .onChange(of: scenePhase) { _, newValue in
                 switch newValue {
-                case .background, .inactive: speechSynthesizer.stop()
+                case .background, .inactive: Task { speechSynthesizer.stop() }
                 default: break
                 }
             }
@@ -110,8 +122,8 @@ extension View {
     @State var chat: Chat = .init(
         [
             ChatEntity(role: .user, content: "User Message!"),
-            ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"),
-            ChatEntity(role: .assistant, content: "Assistant Message!"),
+            ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
+            ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
     )
     

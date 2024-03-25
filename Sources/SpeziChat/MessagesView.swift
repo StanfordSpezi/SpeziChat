@@ -42,11 +42,12 @@ public struct MessagesView: View {
         case manual(shouldDisplay: Bool)
     }
     
+    
     private static let bottomSpacerIdentifier = "Bottom Spacer"
     
     @Binding private var chat: Chat
     @Binding private var bottomPadding: CGFloat
-    private let hideMessagesWithRoles: Set<ChatEntity.Role>
+    private let hideMessages: MessageView.HiddenMessages
     private let typingIndicator: TypingIndicatorDisplayMode?
     
     
@@ -72,7 +73,9 @@ public struct MessagesView: View {
         switch self.typingIndicator {
         case .automatic:
             switch self.chat.last?.role {
-            case .user, .hidden: true
+            case .user: true
+            // Ensure that the typing indicator is not shown when the chat is empty (only hidden messages present)
+            case .hidden: (self.chat.contains(where: { $0.role == .user || $0.role == .assistant }))
             default: false
             }
         case .manual(let shouldDisplay):
@@ -87,7 +90,7 @@ public struct MessagesView: View {
             ScrollView {
                 VStack {
                     ForEach(Array(chat.enumerated()), id: \.offset) { _, message in
-                        MessageView(message, hideMessagesWithRoles: hideMessagesWithRoles)
+                        MessageView(message, hideMessages: hideMessages)
                     }
                     if shouldDisplayTypingIndicator {
                         TypingIndicator()
@@ -115,34 +118,34 @@ public struct MessagesView: View {
     
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
+    ///   - hideMessages: Types of ``ChatEntity/Role-swift.enum/hidden(type:)`` messages that should be hidden from the user.
     ///   - bottomPadding: A fixed bottom padding for the messages view.
     ///   - typingIndicator: Indicates whether a  "three dots" animation should be automatically or manually shown; default value of `nil` will result in no indicator being shown under any condition.
-    ///   - hideMessagesWithRoles: The ``ChatEntity/Role/hidden(type:)`` role messages are hidden from message view
     public init(
         _ chat: Chat,
-        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
+        hideMessages: MessageView.HiddenMessages = .all,
         typingIndicator: TypingIndicatorDisplayMode? = nil,
         bottomPadding: CGFloat = 0
     ) {
         self._chat = .constant(chat)
-        self.hideMessagesWithRoles = hideMessagesWithRoles
+        self.hideMessages = hideMessages
         self.typingIndicator = typingIndicator
         self._bottomPadding = .constant(bottomPadding)
     }
 
     /// - Parameters:
     ///   - chat: The chat messages that should be displayed.
+    ///   - hideMessages: Types of ``ChatEntity/Role-swift.enum/hidden(type:)`` messages that should be hidden from the user.
     ///   - bottomPadding: A bottom padding for the messages view.
     ///   - typingIndicator: Indicates whether a  "three dots" animation should be automatically or manually shown; default value of `nil` will result in no indicator being shown under any condition.
-    ///   - hideMessagesWithRoles: Defines which messages should be hidden based on the passed in message roles.
     public init(
         _ chat: Binding<Chat>,
-        hideMessagesWithRoles: Set<ChatEntity.Role> = MessageView.Defaults.hideMessagesWithRoles,
+        hideMessages: MessageView.HiddenMessages = .all,
         typingIndicator: TypingIndicatorDisplayMode? = nil,
         bottomPadding: Binding<CGFloat> = .constant(0)
     ) {
         self._chat = chat
-        self.hideMessagesWithRoles = hideMessagesWithRoles
+        self.hideMessages = hideMessages
         self.typingIndicator = typingIndicator
         self._bottomPadding = bottomPadding
     }
@@ -157,13 +160,24 @@ public struct MessagesView: View {
 
 
 #if DEBUG
-#Preview {
+#Preview("Regular Message View") {
     MessagesView(
         [
             ChatEntity(role: .user, content: "User Message!"),
-            ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"),
+            ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
+    )
+}
+
+#Preview("Unhidden Message View") {
+    MessagesView(
+        [
+            ChatEntity(role: .user, content: "User Message!"),
+            ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message (but still visible)!"),
+            ChatEntity(role: .assistant, content: "Assistant Message!")
+        ],
+        hideMessages: .custom(hiddenMessageTypes: [])
     )
 }
 #endif

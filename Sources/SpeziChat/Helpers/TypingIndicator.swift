@@ -64,8 +64,14 @@ public struct TypingIndicator: View {
         VStack {
             MessageView(ChatEntity(role: .user, content: "User Message!"))
             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
-            MessageView(ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"))
-            MessageView(ChatEntity(role: .hidden(type: "test"), content: "Hidden Message! (still visible)"), hideMessagesWithRoles: [])
+            MessageView(ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"))
+            MessageView(
+                ChatEntity(
+                    role: .hidden(type: .unknown),
+                    content: "Hidden message! (visible)"
+                ),
+                hideMessages: .custom(hiddenMessageTypes: [])
+            )
             TypingIndicator()
         }
         .padding()

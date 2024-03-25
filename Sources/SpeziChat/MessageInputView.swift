@@ -227,7 +227,7 @@ public struct MessageInputView: View {
 #Preview {
     @State var chat = [
         ChatEntity(role: .user, content: "User Message!"),
-        ChatEntity(role: .hidden(type: "test"), content: "Hidden Message!"),
+        ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
         ChatEntity(role: .assistant, content: "Assistant Message!")
     ]
     

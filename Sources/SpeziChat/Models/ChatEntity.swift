@@ -19,17 +19,18 @@ public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
     public enum Role: Codable, Equatable, Hashable {
         case user
         case assistant
-        case hidden(type: String)
+        case hidden(type: ChatEntity.HiddenMessageType)
         
         
         var rawValue: String {
             switch self {
             case .user: "user"
             case .assistant: "assistant"
-            case .hidden: "hidden"
+            case .hidden(let type): "hidden_\(type.name)"
             }
         }
     }
+    
     
     /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
     public let role: Role
