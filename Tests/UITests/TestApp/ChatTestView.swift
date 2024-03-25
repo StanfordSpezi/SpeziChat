@@ -12,7 +12,7 @@ import SwiftUI
 
 struct ChatTestView: View {
     @State private var chat: Chat = [
-        ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!")
+        ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
         ChatEntity(role: .assistant, content: "**Assistant** Message!")
     ]
     @State private var muted = true
