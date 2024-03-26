@@ -19,11 +19,19 @@ extension ChatEntity {
     /// }
     /// ```
     public struct HiddenMessageType: Codable, Equatable, Hashable {
+        /// Default ``HiddenMessageType``.
+        public static let unknown = HiddenMessageType(name: "unknown")
+        
+        
         /// The name of the type of the ``HiddenMessageType``.
         public let name: String
         
         
-        /// Default ``HiddenMessageType``.
-        public static let unknown = HiddenMessageType(name: "unknown")
+        /// Initializer of the ``ChatEntity/HiddenMessageType``
+        /// - Parameters:
+        ///     - name: The name of the hidden message type
+        public init(name: String) {
+            self.name = name
+        }
     }
 }
