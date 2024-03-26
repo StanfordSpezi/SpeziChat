@@ -48,9 +48,15 @@ extension ChatView {
                                 .chatMessageStyle(alignment: chatEntity.alignment, backgroundColorUserChat: .blue)
                                 #endif
                             
-                            Text("\(chatEntity.role.rawValue.capitalized): \(chatEntity.date.formatted())")
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                            if case .hidden(let type) = chatEntity.role {
+                                Text("\(type.name.capitalized) (hidden): \(chatEntity.date.formatted())")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            } else {
+                                Text("\(chatEntity.role.rawValue.capitalized): \(chatEntity.date.formatted())")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
                         }
                         if chatEntity.alignment == .leading {
                             Spacer(minLength: 32)

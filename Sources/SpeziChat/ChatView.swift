@@ -37,7 +37,7 @@ import SwiftUI
 ///
 /// The ``ChatView`` provides speech-to-text (recognition) as well as text-to-speech (synthesize) capabilities out of the box via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module, facilitating seamless interaction with the content of the ``ChatView``.
 /// 
-/// Speech-to-text capabilities can be activated via the `speechToText` `Bool` parameter in ``init(_:disableInput:speechToText:exportFormat:messagePlaceholder:messagePendingAnimation:)``. By default, this capability is activated and therefore a small microphone button is shown next to the text input field.
+/// Speech-to-text capabilities can be activated via the `speechToText` `Bool` parameter in ``init(_:disableInput:speechToText:exportFormat:messagePlaceholder:messagePendingAnimation:hideMessages:)``. By default, this capability is activated and therefore a small microphone button is shown next to the text input field.
 ///
 /// Text-to-speech capabilities can be configured via the `View/speak(_:muted:)` `ViewModifier`. If present, the latest ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/assistant`` message in the ``Chat`` will be synthesized to natural language speech.
 /// In addition, the `View/speechToolbarButton(enabled:muted:)` `ViewModifier` automatically adds a toolbar `Button` to mute or unmute the speech synthesizer, if not disabled via the `enabled` parameter.
@@ -82,11 +82,12 @@ import SwiftUI
 /// ```
 public struct ChatView: View {
     @Binding var chat: Chat
-    private var disableInput: Bool
+    private let disableInput: Bool
     private let speechToText: Bool
     let exportFormat: ChatExportFormat?
     private let messagePlaceholder: String?
     private let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
+    private let hideMessages: MessageView.HiddenMessages
     
     @State private var messageInputHeight: CGFloat = 0
     @State private var showShareSheet = false
@@ -95,7 +96,7 @@ public struct ChatView: View {
     public var body: some View {
         ZStack {
             VStack {
-                MessagesView($chat, typingIndicator: messagePendingAnimation, bottomPadding: $messageInputHeight)
+                MessagesView($chat, hideMessages: hideMessages, typingIndicator: messagePendingAnimation, bottomPadding: $messageInputHeight)
                     #if !os(macOS)
                     .gesture(
                         TapGesture().onEnded {
@@ -177,19 +178,22 @@ public struct ChatView: View {
     ///   - exportFormat: If specified, enables the export of the ``Chat`` displayed in the ``ChatView`` via a share sheet in various formats defined in ``ChatView/ChatExportFormat``.
     ///   - messagePlaceholder: Placeholder text that should be added in the input field.
     ///   - messagePendingAnimation: Parameter to control whether a chat bubble animation is shown.
+    ///   - hideMessages: Types of ``ChatEntity/Role-swift.enum/hidden(type:)`` messages that should be hidden from the user.
     public init(
         _ chat: Binding<Chat>,
         disableInput: Bool = false,
         speechToText: Bool = true,
         exportFormat: ChatExportFormat? = nil,
         messagePlaceholder: String? = nil,
-        messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode? = nil
+        messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode? = nil,
+        hideMessages: MessageView.HiddenMessages = .all
     ) {
         self._chat = chat
         self.disableInput = disableInput
         self.speechToText = speechToText
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
+        self.hideMessages = hideMessages
         self.messagePendingAnimation = messagePendingAnimation
     }
 }
@@ -201,11 +205,9 @@ public struct ChatView: View {
         ChatView(
             .constant(
                 [
-                    ChatEntity(role: .system, content: "System Message!"),
-                    ChatEntity(role: .system, content: "System Message (hidden)!"),
                     ChatEntity(role: .user, content: "User Message!"),
-                    ChatEntity(role: .assistant, content: "Assistant Message!"),
-                    ChatEntity(role: .function(name: "test_function"), content: "Function Message!")
+                    ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
+                    ChatEntity(role: .assistant, content: "Assistant Message!")
                 ]
             ),
             exportFormat: .pdf

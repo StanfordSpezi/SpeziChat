@@ -12,6 +12,7 @@ import SwiftUI
 
 struct ChatTestView: View {
     @State private var chat: Chat = [
+        ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
         ChatEntity(role: .assistant, content: "**Assistant** Message!")
     ]
     @State private var muted = true
@@ -28,7 +29,7 @@ struct ChatTestView: View {
             .navigationTitle("SpeziChat")
             .padding(.top, 16)
             .onChange(of: chat) { _, newValue in
-                /// Append a new assistant message to the chat after sleeping for 5 seconds.
+                // Append a new assistant message to the chat after sleeping for 5 seconds.
                 if newValue.last?.role == .user {
                     Task {
                         try await Task.sleep(for: .seconds(5))

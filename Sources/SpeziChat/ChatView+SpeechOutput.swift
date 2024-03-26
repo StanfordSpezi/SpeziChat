@@ -19,6 +19,12 @@ private struct ChatViewSpeechModifier: ViewModifier {
     @State private var speechSynthesizer = SpeechSynthesizer()
     
     
+    init(chat: Chat, muted: Bool) {
+        self.chat = chat
+        self.muted = muted
+    }
+    
+    
     func body(content: Content) -> some View {
         content
             // Output speech when new complete assistant message is the last message
@@ -36,12 +42,14 @@ private struct ChatViewSpeechModifier: ViewModifier {
                     speechSynthesizer.stop()
                 }
             }
+             
             // Cancel speech output when muted button is tapped in the toolbar
             .onChange(of: muted) { _, newValue in
                 if newValue {
                     speechSynthesizer.stop()
                 }
             }
+            
             // Cancel speech output when view disappears
             .onChange(of: scenePhase) { _, newValue in
                 switch newValue {
@@ -109,11 +117,9 @@ extension View {
 #Preview("ChatView") {
     @State var chat: Chat = .init(
         [
-            ChatEntity(role: .system, content: "System Message!"),
-            ChatEntity(role: .system, content: "System Message (hidden)!"),
             ChatEntity(role: .user, content: "User Message!"),
-            ChatEntity(role: .assistant, content: "Assistant Message!"),
-            ChatEntity(role: .function(name: "test_function"), content: "Function Message!")
+            ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
+            ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
     )
     
