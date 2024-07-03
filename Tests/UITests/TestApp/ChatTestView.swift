@@ -6,7 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
+import AVFAudio
 import SpeziChat
+import SpeziSpeechSynthesizer
 import SwiftUI
 
 
@@ -17,6 +19,7 @@ struct ChatTestView: View {
     ]
     @State private var muted = true
     
+    let speechSynthesizer = SpeechSynthesizer()
     
     var body: some View {
         ChatView(
@@ -24,7 +27,7 @@ struct ChatTestView: View {
             exportFormat: .pdf,
             messagePendingAnimation: .automatic
         )
-            .speak(chat, muted: muted)
+            .speak(chat, muted: muted, voice: speechSynthesizer.voices[5])
             .speechToolbarButton(muted: $muted)
             .navigationTitle("SpeziChat")
             .padding(.top, 16)

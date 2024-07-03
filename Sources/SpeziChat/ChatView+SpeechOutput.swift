@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import AVFoundation
 import SpeziSpeechSynthesizer
 import SwiftUI
 
@@ -14,14 +15,16 @@ import SwiftUI
 private struct ChatViewSpeechModifier: ViewModifier {
     let chat: Chat
     let muted: Bool
+    let voice: AVSpeechSynthesisVoice?
     
     @Environment(\.scenePhase) private var scenePhase
     @State private var speechSynthesizer = SpeechSynthesizer()
     
     
-    init(chat: Chat, muted: Bool) {
+    init(chat: Chat, muted: Bool, voice: AVSpeechSynthesisVoice? = nil) {
         self.chat = chat
         self.muted = muted
+        self.voice = voice
     }
     
     
@@ -37,7 +40,11 @@ private struct ChatViewSpeechModifier: ViewModifier {
                 }
                 
                 if lastChatEntity.role == .assistant {
-                    speechSynthesizer.speak(lastChatEntity.content)
+                    if let voice {
+                        speechSynthesizer.speak(lastChatEntity.content, voice: voice)
+                    } else {
+                        speechSynthesizer.speak(lastChatEntity.content)
+                    }
                 } else if lastChatEntity.role == .user {
                     speechSynthesizer.stop()
                 }
@@ -99,14 +106,17 @@ extension View {
     /// - Parameters:
     ///    - chat: The ``Chat`` which should be used for generating the speech output.
     ///    - muted: Indicates if the speech output is currently muted, defaults to `false`.
+    ///    - voice: An optional voice selection.
     public func speak(
         _ chat: Chat,
-        muted: Bool = false
+        muted: Bool = false,
+        voice: AVSpeechSynthesisVoice? = nil
     ) -> some View {
         modifier(
             ChatViewSpeechModifier(
                 chat: chat,
-                muted: muted
+                muted: muted,
+                voice: voice
             )
         )
     }
