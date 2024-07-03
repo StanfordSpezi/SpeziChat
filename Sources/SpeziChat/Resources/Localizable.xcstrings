@@ -75,6 +75,9 @@
         }
       }
     },
+    "Select Voice" : {
+
+    },
     "SEND_MESSAGE" : {
       "localizations" : {
         "de" : {

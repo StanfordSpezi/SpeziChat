@@ -6,13 +6,17 @@
 // SPDX-License-Identifier: MIT
 //
 
+import AVFoundation
+import SpeziSpeechSynthesizer
 import SwiftUI
 
 
 /// The underlying `ViewModifier` of `View/speechToolbarButton(enabled:muted:)`.
 private struct ChatViewSpeechButtonModifier: ViewModifier {
     @Binding var muted: Bool
-    
+    @Binding var selectedVoice: String
+    @State private var isSheetPresented = false
+    @State var speechSynthesizer = SpeechSynthesizer()
     
     func body(content: Content) -> some View {
         content
@@ -29,6 +33,26 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
                             Image(systemName: "speaker.slash")
                                 .accessibilityIdentifier("Speaker strikethrough")
                                 .accessibilityLabel(Text("Text to speech is disabled, press to enable text to speech.", bundle: .module))
+                        }
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isSheetPresented.toggle()
+                    }) {
+                        Image(systemName: "gear")
+                    }
+                    .sheet(isPresented: $isSheetPresented) {
+                        NavigationView {
+                            Form {
+                                Picker("Select Voice", selection: $selectedVoice) {
+                                    ForEach(speechSynthesizer.voices, id: \.self) { voice in
+                                        Text(voice.name)
+                                            .tag(voice.identifier)
+                                    }
+                                }
+                            }
+                            .navigationBarTitle("Select Voice", displayMode: .inline)
                         }
                     }
                 }
@@ -73,11 +97,13 @@ extension View {
     /// - Parameters:
     ///    - muted: A SwiftUI `Binding` that indicates if the speech output is currently muted. The `Binding` enables the adjustment of the muted status by both the caller and the toolbar `Button`.
     public func speechToolbarButton(
-        muted: Binding<Bool>
+        muted: Binding<Bool>,
+        selectedVoice: Binding<String>
     ) -> some View {
         modifier(
             ChatViewSpeechButtonModifier(
-                muted: muted
+                muted: muted,
+                selectedVoice: selectedVoice
             )
         )
     }
@@ -94,12 +120,13 @@ extension View {
         ]
     )
     @State var muted = true
+    @State var selectedVoice = "Fred"
     
     
     return NavigationStack {
         ChatView($chat)
             .speak(chat, muted: muted)
-            .speechToolbarButton(muted: $muted)
+            .speechToolbarButton(muted: $muted, selectedVoice: $selectedVoice)
     }
 }
 #endif

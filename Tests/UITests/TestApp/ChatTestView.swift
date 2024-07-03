@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import AVFAudio
+import AVFoundation
 import SpeziChat
 import SpeziSpeechSynthesizer
 import SwiftUI
@@ -18,8 +18,8 @@ struct ChatTestView: View {
         ChatEntity(role: .assistant, content: "**Assistant** Message!")
     ]
     @State private var muted = true
+    @State var selectedVoice = "com.apple.speech.synthesis.voice.Fred"
     
-    let speechSynthesizer = SpeechSynthesizer()
     
     var body: some View {
         ChatView(
@@ -27,8 +27,8 @@ struct ChatTestView: View {
             exportFormat: .pdf,
             messagePendingAnimation: .automatic
         )
-            .speak(chat, muted: muted, voice: speechSynthesizer.voices[5])
-            .speechToolbarButton(muted: $muted)
+            .speak(chat, muted: muted, voice: AVSpeechSynthesisVoice(identifier: selectedVoice))
+            .speechToolbarButton(muted: $muted, selectedVoice: $selectedVoice)
             .navigationTitle("SpeziChat")
             .padding(.top, 16)
             .onChange(of: chat) { _, newValue in

@@ -106,7 +106,6 @@ extension View {
     /// - Parameters:
     ///    - chat: The ``Chat`` which should be used for generating the speech output.
     ///    - muted: Indicates if the speech output is currently muted, defaults to `false`.
-    ///    - voice: An optional voice selection.
     public func speak(
         _ chat: Chat,
         muted: Bool = false,
