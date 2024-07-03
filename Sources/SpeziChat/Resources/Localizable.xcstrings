@@ -21,6 +21,9 @@
         }
       }
     },
+    "Done" : {
+
+    },
     "EXPORT_CHAT_BUTTON" : {
       "localizations" : {
         "en" : {
@@ -115,6 +118,9 @@
           }
         }
       }
+    },
+    "Voice" : {
+
     }
   },
   "version" : "1.0"

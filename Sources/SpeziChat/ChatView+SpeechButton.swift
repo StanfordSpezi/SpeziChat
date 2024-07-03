@@ -15,7 +15,7 @@ import SwiftUI
 private struct ChatViewSpeechButtonModifier: ViewModifier {
     @Binding var muted: Bool
     @Binding var selectedVoice: String
-    @State private var isSheetPresented = false
+    @State private var isVoiceSelectionSheetPresented = false
     @State var speechSynthesizer = SpeechSynthesizer()
     
     func body(content: Content) -> some View {
@@ -23,7 +23,7 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
-                        muted.toggle()
+                        // handled by simultaneous gesture modifier
                     }) {
                         if !muted {
                             Image(systemName: "speaker")
@@ -35,24 +35,31 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
                                 .accessibilityLabel(Text("Text to speech is disabled, press to enable text to speech.", bundle: .module))
                         }
                     }
+                    .simultaneousGesture(LongPressGesture().onEnded { _ in
+                        isVoiceSelectionSheetPresented.toggle()
+                    })
+                    .simultaneousGesture(TapGesture().onEnded { _ in
+                        muted.toggle()
+                    })
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        isSheetPresented.toggle()
-                    }) {
-                        Image(systemName: "gear")
-                    }
-                    .sheet(isPresented: $isSheetPresented) {
-                        NavigationView {
-                            Form {
-                                Picker("Select Voice", selection: $selectedVoice) {
-                                    ForEach(speechSynthesizer.voices, id: \.self) { voice in
-                                        Text(voice.name)
-                                            .tag(voice.identifier)
-                                    }
-                                }
+            }
+            .sheet(isPresented: $isVoiceSelectionSheetPresented) {
+                NavigationView {
+                    Form {
+                        Picker("Select Voice", selection: $selectedVoice) {
+                            ForEach(speechSynthesizer.voices, id: \.self) { voice in
+                                Text(voice.name)
+                                    .tag(voice.identifier)
                             }
-                            .navigationBarTitle("Select Voice", displayMode: .inline)
+                        }
+                        .pickerStyle(.inline)
+                    }
+                    .navigationBarTitle("Voice", displayMode: .inline)
+                    .toolbar {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button("Done") {
+                                isVoiceSelectionSheetPresented = false
+                            }
                         }
                     }
                 }
@@ -120,7 +127,7 @@ extension View {
         ]
     )
     @State var muted = true
-    @State var selectedVoice = "Fred"
+    @State var selectedVoice = "com.apple.speech.synthesis.voice.Fred"
     
     
     return NavigationStack {
