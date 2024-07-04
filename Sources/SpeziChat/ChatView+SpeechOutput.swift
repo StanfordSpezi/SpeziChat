@@ -109,13 +109,13 @@ extension View {
     public func speak(
         _ chat: Chat,
         muted: Bool = false,
-        voice: AVSpeechSynthesisVoice? = nil
+        voice: String = ""
     ) -> some View {
         modifier(
             ChatViewSpeechModifier(
                 chat: chat,
                 muted: muted,
-                voice: voice
+                voice: AVSpeechSynthesisVoice(identifier: voice)
             )
         )
     }

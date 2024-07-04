@@ -22,9 +22,7 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
         content
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
-                        // handled by simultaneous gesture modifier
-                    }) {
+                    Button(action: {}) {
                         if !muted {
                             Image(systemName: "speaker")
                                 .accessibilityIdentifier("Speaker")
@@ -37,6 +35,7 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
                     }
                     .simultaneousGesture(LongPressGesture().onEnded { _ in
                         isVoiceSelectionSheetPresented.toggle()
+                        muted = false
                     })
                     .simultaneousGesture(TapGesture().onEnded { _ in
                         muted.toggle()
@@ -54,7 +53,7 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
                         }
                         .pickerStyle(.inline)
                     }
-                    .navigationBarTitle("Voice", displayMode: .inline)
+                    .navigationBarTitle("Voice")
                     .toolbar {
                         ToolbarItem(placement: .primaryAction) {
                             Button("Done") {

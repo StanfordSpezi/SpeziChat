@@ -150,4 +150,21 @@ class TestAppUITests: XCTestCase {
         XCTAssert(!app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
         XCTAssert(app.buttons["Speaker"].waitForExistence(timeout: 2))
     }
+    
+    func testSelectVoice() throws {
+        let app = XCUIApplication()
+        
+        XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
+        XCTAssert(app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
+        XCTAssert(!app.buttons["Speaker"].waitForExistence(timeout: 2))
+        
+        app.buttons["Speaker strikethrough"].press(forDuration: 3)
+        
+        XCTAssert(app.staticTexts["Voice"].waitForExistence(timeout: 2))
+        
+        app.buttons["Albert"].tap()
+        app.swipeDown()
+        
+        XCTAssert(app.buttons["Speaker"].waitForExistence(timeout: 2))
+    }
 }
