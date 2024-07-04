@@ -6,21 +6,23 @@
 // SPDX-License-Identifier: MIT
 //
 
+import AVFoundation
+import SpeziSpeechSynthesizer
 import SwiftUI
 
 
 /// The underlying `ViewModifier` of `View/speechToolbarButton(enabled:muted:)`.
 private struct ChatViewSpeechButtonModifier: ViewModifier {
     @Binding var muted: Bool
-    
+    @Binding var selectedVoice: String
+    @State private var isVoiceSelectionSheetPresented = false
+    @State var speechSynthesizer = SpeechSynthesizer()
     
     func body(content: Content) -> some View {
         content
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
-                        muted.toggle()
-                    }) {
+                    Button(action: {}) {
                         if !muted {
                             Image(systemName: "speaker")
                                 .accessibilityIdentifier("Speaker")
@@ -29,6 +31,34 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
                             Image(systemName: "speaker.slash")
                                 .accessibilityIdentifier("Speaker strikethrough")
                                 .accessibilityLabel(Text("Text to speech is disabled, press to enable text to speech.", bundle: .module))
+                        }
+                    }
+                    .simultaneousGesture(LongPressGesture().onEnded { _ in
+                        isVoiceSelectionSheetPresented.toggle()
+                        muted = false
+                    })
+                    .simultaneousGesture(TapGesture().onEnded { _ in
+                        muted.toggle()
+                    })
+                }
+            }
+            .sheet(isPresented: $isVoiceSelectionSheetPresented) {
+                NavigationView {
+                    Form {
+                        Picker("Select Voice", selection: $selectedVoice) {
+                            ForEach(speechSynthesizer.voices, id: \.self) { voice in
+                                Text(voice.name)
+                                    .tag(voice.identifier)
+                            }
+                        }
+                        .pickerStyle(.inline)
+                    }
+                    .navigationTitle("Voice")
+                    .toolbar {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button("Done") {
+                                isVoiceSelectionSheetPresented = false
+                            }
                         }
                     }
                 }
@@ -72,12 +102,15 @@ extension View {
     ///
     /// - Parameters:
     ///    - muted: A SwiftUI `Binding` that indicates if the speech output is currently muted. The `Binding` enables the adjustment of the muted status by both the caller and the toolbar `Button`.
+    ///    - selectedVoice: A SwiftUI `Binding` that contains the identifier of an `AVSpeechSynthesisVoice` to use.
     public func speechToolbarButton(
-        muted: Binding<Bool>
+        muted: Binding<Bool>,
+        selectedVoice: Binding<String>
     ) -> some View {
         modifier(
             ChatViewSpeechButtonModifier(
-                muted: muted
+                muted: muted,
+                selectedVoice: selectedVoice
             )
         )
     }
@@ -94,12 +127,13 @@ extension View {
         ]
     )
     @State var muted = true
+    @State var selectedVoice = "com.apple.speech.synthesis.voice.Fred"
     
     
     return NavigationStack {
         ChatView($chat)
             .speak(chat, muted: muted)
-            .speechToolbarButton(muted: $muted)
+            .speechToolbarButton(muted: $muted, selectedVoice: $selectedVoice)
     }
 }
 #endif

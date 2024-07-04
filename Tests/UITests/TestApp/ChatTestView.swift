@@ -16,6 +16,7 @@ struct ChatTestView: View {
         ChatEntity(role: .assistant, content: "**Assistant** Message!")
     ]
     @State private var muted = true
+    @State var selectedVoice = ""
     
     
     var body: some View {
@@ -24,8 +25,8 @@ struct ChatTestView: View {
             exportFormat: .pdf,
             messagePendingAnimation: .automatic
         )
-            .speak(chat, muted: muted)
-            .speechToolbarButton(muted: $muted)
+            .speak(chat, muted: muted, voice: selectedVoice)
+            .speechToolbarButton(muted: $muted, selectedVoice: $selectedVoice)
             .navigationTitle("SpeziChat")
             .padding(.top, 16)
             .onChange(of: chat) { _, newValue in

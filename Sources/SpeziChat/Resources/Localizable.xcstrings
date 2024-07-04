@@ -21,6 +21,9 @@
         }
       }
     },
+    "Done" : {
+
+    },
     "EXPORT_CHAT_BUTTON" : {
       "localizations" : {
         "en" : {
@@ -75,6 +78,9 @@
         }
       }
     },
+    "Select Voice" : {
+
+    },
     "SEND_MESSAGE" : {
       "localizations" : {
         "de" : {
@@ -112,6 +118,9 @@
           }
         }
       }
+    },
+    "Voice" : {
+
     }
   },
   "version" : "1.0"
