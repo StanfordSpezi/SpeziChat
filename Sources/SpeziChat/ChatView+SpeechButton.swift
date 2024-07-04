@@ -53,7 +53,7 @@ private struct ChatViewSpeechButtonModifier: ViewModifier {
                         }
                         .pickerStyle(.inline)
                     }
-                    .navigationBarTitle("Voice")
+                    .navigationTitle("Voice")
                     .toolbar {
                         ToolbarItem(placement: .primaryAction) {
                             Button("Done") {
@@ -102,6 +102,7 @@ extension View {
     ///
     /// - Parameters:
     ///    - muted: A SwiftUI `Binding` that indicates if the speech output is currently muted. The `Binding` enables the adjustment of the muted status by both the caller and the toolbar `Button`.
+    ///    - selectedVoice: A SwiftUI `Binding` that contains the identifier of an `AVSpeechSynthesisVoice` to use.
     public func speechToolbarButton(
         muted: Binding<Bool>,
         selectedVoice: Binding<String>

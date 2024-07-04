@@ -16,7 +16,7 @@ struct ChatTestView: View {
         ChatEntity(role: .assistant, content: "**Assistant** Message!")
     ]
     @State private var muted = true
-    @State var selectedVoice = "com.apple.speech.synthesis.voice.Fred"
+    @State var selectedVoice = ""
     
     
     var body: some View {
