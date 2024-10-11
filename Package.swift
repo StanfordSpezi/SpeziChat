@@ -23,7 +23,7 @@ let package = Package(
         .library(name: "SpeziChat", targets: ["SpeziChat"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "1.0.3"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0-beta.3"),
         .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.0.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.3.1")
     ],
