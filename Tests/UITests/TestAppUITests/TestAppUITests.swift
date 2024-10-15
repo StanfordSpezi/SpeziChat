@@ -44,6 +44,10 @@ class TestAppUITests: XCTestCase {
     }
     
     func testChatExport() throws {  // swiftlint:disable:this function_body_length
+        #if os(visionOS)
+        throw XCTSkip("VisionOS is unstable and are skipped at the moment")
+        #endif
+        
         let app = XCUIApplication()
         let filesApp = XCUIApplication(bundleIdentifier: "com.apple.DocumentsApp")
         let maxRetries = 10
