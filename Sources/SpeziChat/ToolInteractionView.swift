@@ -11,7 +11,7 @@ import SwiftUI
 /// The view that is represented when a tool call or tool reponse based on the ``ChatEntity/Role``.
 struct ToolInteractionView: View {
     let entity: ChatEntity
-    @State private var isExpanded: Bool = false
+    @State private var isExpanded = false
     
     var body: some View {
         switch entity.role {
@@ -27,6 +27,7 @@ struct ToolInteractionView: View {
     private func toolCallView(content: String) -> some View {
         HStack {
             Image(systemName: "function")
+                .accessibilityLabel("Function F of X")
                 .frame(width: 20)
             Text(content)
                 .foregroundStyle(.secondary)
@@ -45,6 +46,7 @@ struct ToolInteractionView: View {
     private func toolResponseView(content: String) -> some View {
         HStack {
             Image(systemName: "equal")
+                .accessibilityLabel("Equal sign")
                 .frame(width: 20)
             
             Group {
@@ -58,7 +60,6 @@ struct ToolInteractionView: View {
             .foregroundStyle(.secondary)
             .font(.footnote)
             .lineLimit(isExpanded ? nil : 0)
-            
         }
         .padding(.horizontal, 10)
         .padding(.top, 8)
@@ -69,13 +70,4 @@ struct ToolInteractionView: View {
             }
         }
     }
-}
-
-#Preview {
-    ToolInteractionView(entity: .init(role: .assistantToolCall, content: "foo(bar: baz) This is a very long text that should be truncated"))
-    ToolInteractionView(entity: .init(role: .assistantToolResponse, content: """
-    {
-        "some": "response"
-    }
-    """))
 }
