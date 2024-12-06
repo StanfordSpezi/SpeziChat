@@ -21,6 +21,9 @@
         }
       }
     },
+    "Equal sign" : {
+
+    },
     "EXPORT_CHAT_BUTTON" : {
       "localizations" : {
         "en" : {
@@ -30,6 +33,9 @@
           }
         }
       }
+    },
+    "Function F of X" : {
+
     },
     "MESSAGE_INPUT_TEXTFIELD" : {
       "localizations" : {
