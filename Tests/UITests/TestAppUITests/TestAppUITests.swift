@@ -154,4 +154,21 @@ class TestAppUITests: XCTestCase {
         XCTAssert(!app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
         XCTAssert(app.buttons["Speaker"].waitForExistence(timeout: 2))
     }
+    
+    func testFunctionCallAndResponse() throws {
+        let app = XCUIApplication()
+        
+        XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
+        XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
+        
+        try app.textFields["Message Input Textfield"].enter(value: "Call some function", dismissKeyboard: false)
+        XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
+        app.buttons["Send Message"].tap()
+        
+        sleep(5)
+        
+        XCTAssert(app.staticTexts["call_test_func({ test: true })"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["{ some: response }"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 2))
+    }
 }

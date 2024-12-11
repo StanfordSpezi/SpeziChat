@@ -58,9 +58,9 @@ public struct MessageView: View {
     private var isToolInteraction: Bool {
         switch chat.role {
         case .assistantToolCall, .assistantToolResponse:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
     

@@ -22,18 +22,18 @@ extension ChatEntity {
     var alignment: Alignment {
         switch self.role {
         case .user:
-            return .trailing
+            .trailing
         default:
-            return .leading
+            .leading
         }
     }
     
     var horziontalAlignment: HorizontalAlignment {
         switch self.alignment {
         case .leading:
-            return .leading
+            .leading
         case .trailing:
-            return .trailing
+            .trailing
         }
     }
 }

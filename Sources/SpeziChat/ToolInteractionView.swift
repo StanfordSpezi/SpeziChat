@@ -27,7 +27,7 @@ struct ToolInteractionView: View {
     private func toolCallView(content: String) -> some View {
         HStack {
             Image(systemName: "function")
-                .accessibilityLabel("Function F of X")
+                .accessibilityLabel("FUNCTION_F_OF_X")
                 .frame(width: 20)
             Text(content)
                 .foregroundStyle(.secondary)
@@ -46,7 +46,7 @@ struct ToolInteractionView: View {
     private func toolResponseView(content: String) -> some View {
         HStack {
             Image(systemName: "equal")
-                .accessibilityLabel("Equal sign")
+                .accessibilityLabel("EQUAL_SIGN")
                 .frame(width: 20)
             
             Group {
