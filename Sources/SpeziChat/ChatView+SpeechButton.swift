@@ -86,14 +86,14 @@ extension View {
 
 #if DEBUG
 #Preview {
-    @State var chat: Chat = .init(
+    @Previewable @State var chat: Chat = .init(
         [
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ]
     )
-    @State var muted = true
+    @Previewable @State var muted = true
     
     
     return NavigationStack {
