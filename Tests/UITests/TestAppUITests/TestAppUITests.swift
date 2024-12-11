@@ -34,13 +34,9 @@ class TestAppUITests: XCTestCase {
         
         XCTAssert(app.staticTexts["User Message!"].waitForExistence(timeout: 5))
         
-        sleep(1)
+        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 3))
         
-        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 2))
-        
-        sleep(4)
-        
-        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 5))
+        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 9))
     }
     
     func testChatExport() throws {  // swiftlint:disable:this function_body_length

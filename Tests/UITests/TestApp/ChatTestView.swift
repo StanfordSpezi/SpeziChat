@@ -34,15 +34,17 @@ struct ChatTestView: View {
                     Task {
                         try await Task.sleep(for: .seconds(3))
                         
-                        await MainActor.run {
-                            chat.append(.init(role: .assistantToolCall, content: "call_test_func({ test: true })"))
+                        if newValue.last?.content == "Call some function" {
+                            await MainActor.run {
+                                chat.append(.init(role: .assistantToolCall, content: "call_test_func({ test: true })"))
+                            }
+                            try await Task.sleep(for: .seconds(1))
+                            
+                            await MainActor.run {
+                                chat.append(.init(role: .assistantToolResponse, content: "{ some: response }"))
+                            }
+                            try await Task.sleep(for: .seconds(1))
                         }
-                        try await Task.sleep(for: .seconds(1))
-                        
-                        await MainActor.run {
-                            chat.append(.init(role: .assistantToolResponse, content: "{ some: response }"))
-                        }
-                        try await Task.sleep(for: .seconds(1))
                         
                         await MainActor.run {
                             chat.append(.init(role: .assistant, content: "**Assistant** Message Response!"))
