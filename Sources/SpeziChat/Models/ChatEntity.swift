@@ -19,6 +19,8 @@ public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
     public enum Role: Codable, Equatable, Hashable {
         case user
         case assistant
+        case assistantToolCall
+        case assistantToolResponse
         case hidden(type: ChatEntity.HiddenMessageType)
         
         
@@ -26,6 +28,8 @@ public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
             switch self {
             case .user: "user"
             case .assistant: "assistant"
+            case .assistantToolCall: "assistant_tool_call"
+            case .assistantToolResponse: "assistant_tool_response"
             case .hidden(let type): "hidden_\(type.name)"
             }
         }

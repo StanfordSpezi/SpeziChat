@@ -175,6 +175,8 @@ public struct MessagesView: View {
         [
             ChatEntity(role: .user, content: "User Message!"),
             ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message (but still visible)!"),
+            ChatEntity(role: .assistantToolCall, content: "Assistant Message!"),
+            ChatEntity(role: .assistantToolResponse, content: "Assistant Message!f jiodsjfiods \n fudshfdusi"),
             ChatEntity(role: .assistant, content: "Assistant Message!")
         ],
         hideMessages: .custom(hiddenMessageTypes: [])

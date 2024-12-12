@@ -45,7 +45,7 @@ public struct MessageView: View {
     
     private var shouldDisplayMessage: Bool {
         switch chat.role {
-        case .user, .assistant: return true
+        case .user, .assistant, .assistantToolCall, .assistantToolResponse: return true
         case .hidden(let type):
             if case .custom(let hiddenMessageTypes) = hideMessages {
                 return !hiddenMessageTypes.contains(type)
@@ -55,14 +55,30 @@ public struct MessageView: View {
         }
     }
     
+    private var isToolInteraction: Bool {
+        switch chat.role {
+        case .assistantToolCall, .assistantToolResponse:
+            true
+        default:
+            false
+        }
+    }
+    
     public var body: some View {
         if shouldDisplayMessage {
             HStack {
                 if chat.alignment == .trailing {
                     Spacer(minLength: 32)
                 }
-                Text(chat.attributedContent)
-                    .chatMessageStyle(alignment: chat.alignment)
+                VStack(alignment: chat.horziontalAlignment) {
+                    if isToolInteraction {
+                        ToolInteractionView(entity: chat)
+                    } else {
+                        Text(chat.attributedContent)
+                            .chatMessageStyle(alignment: chat.alignment)
+                    }
+                }
+                
                 if chat.alignment == .leading {
                     Spacer(minLength: 32)
                 }
@@ -89,6 +105,12 @@ public struct MessageView: View {
             MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
             MessageView(ChatEntity(role: .user, content: "Long User Message that spans over two lines!"))
             MessageView(ChatEntity(role: .assistant, content: "Long Assistant Message that spans over two lines!"))
+            MessageView(ChatEntity(role: .assistantToolCall, content: "assistent_too_call(parameter: value)"))
+            MessageView(ChatEntity(role: .assistantToolResponse, content: """
+            {
+                "some": "response"
+            }
+            """))
             MessageView(ChatEntity(role: .hidden(type: .unknown), content: "Hidden message! (invisible)"))
             MessageView(
                 ChatEntity(

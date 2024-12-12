@@ -32,7 +32,19 @@ struct ChatTestView: View {
                 // Append a new assistant message to the chat after sleeping for 5 seconds.
                 if newValue.last?.role == .user {
                     Task {
-                        try await Task.sleep(for: .seconds(5))
+                        try await Task.sleep(for: .seconds(3))
+                        
+                        if newValue.last?.content == "Call some function" {
+                            await MainActor.run {
+                                chat.append(.init(role: .assistantToolCall, content: "call_test_func({ test: true })"))
+                            }
+                            try await Task.sleep(for: .seconds(1))
+                            
+                            await MainActor.run {
+                                chat.append(.init(role: .assistantToolResponse, content: "{ some: response }"))
+                            }
+                            try await Task.sleep(for: .seconds(1))
+                        }
                         
                         await MainActor.run {
                             chat.append(.init(role: .assistant, content: "**Assistant** Message Response!"))

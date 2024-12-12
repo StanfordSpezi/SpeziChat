@@ -21,12 +21,68 @@
         }
       }
     },
+    "EQUAL_SIGN" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleichzeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equal Sign"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signo igual"
+          }
+        }
+      }
+    },
     "EXPORT_CHAT_BUTTON" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat exportieren"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Export the Chat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar el chat"
+          }
+        }
+      }
+    },
+    "FUNCTION_F_OF_X" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funktion F von X"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Function F of X"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Función F de X"
           }
         }
       }
@@ -75,6 +131,28 @@
         }
       }
     },
+    "SEE_MORE" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Details"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver detalles"
+          }
+        }
+      }
+    },
     "SEND_MESSAGE" : {
       "localizations" : {
         "de" : {
@@ -98,17 +176,55 @@
       }
     },
     "Text to speech is disabled, press to enable text to speech." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Spracheingabe ist deaktiviert, tippe um die Eingabe zu aktivieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La función de texto a voz está desactivada, pulse para activarla."
+          }
+        }
+      }
     },
     "Text to speech is enabled, press to disable text to speech." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Spracheingabe is aktiviert, tippe um die Eingabe zu dekativieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La función de texto a voz está activada, pulse para desactivarla."
+          }
+        }
+      }
     },
     "TYPING_INDICATOR" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreibanzeige"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Typing Indicator"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador de mecanografía"
           }
         }
       }

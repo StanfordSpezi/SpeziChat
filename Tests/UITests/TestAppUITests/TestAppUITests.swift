@@ -28,19 +28,15 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
         
-        try app.textViews["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
+        try app.textFields["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
         XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
         app.buttons["Send Message"].tap()
         
         XCTAssert(app.staticTexts["User Message!"].waitForExistence(timeout: 5))
         
-        sleep(1)
+        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 3))
         
-        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 2))
-        
-        sleep(4)
-        
-        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 5))
+        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 9))
     }
     
     func testChatExport() throws {  // swiftlint:disable:this function_body_length
@@ -60,7 +56,7 @@ class TestAppUITests: XCTestCase {
             
             // Entering dummy chat value
             XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
-            try app.textViews["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
+            try app.textFields["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
             XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
             app.buttons["Send Message"].tap()
             
@@ -153,5 +149,22 @@ class TestAppUITests: XCTestCase {
         
         XCTAssert(!app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
         XCTAssert(app.buttons["Speaker"].waitForExistence(timeout: 2))
+    }
+    
+    func testFunctionCallAndResponse() throws {
+        let app = XCUIApplication()
+        
+        XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
+        XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
+        
+        try app.textFields["Message Input Textfield"].enter(value: "Call some function", dismissKeyboard: false)
+        XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
+        app.buttons["Send Message"].tap()
+        
+        sleep(5)
+        
+        XCTAssert(app.staticTexts["call_test_func({ test: true })"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["{ some: response }"].waitForExistence(timeout: 2))
+        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 2))
     }
 }
