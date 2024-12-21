@@ -12,7 +12,7 @@ import SwiftUI
 /// A SwiftUI `PreferenceKey` that is used by the ``MessageInputView`` to propagate the height of the view up the view hierarchy.
 public struct MessageInputViewHeightKey: PreferenceKey {
     /// Default height of 0.
-    public static var defaultValue: CGFloat = 0
+    public static let defaultValue: CGFloat = 0
 
     
     /// Writes the received value to the `PreferenceKey`.
