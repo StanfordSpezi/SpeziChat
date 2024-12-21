@@ -24,8 +24,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0"),
-        // .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.1.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", branch: "feat/swift-6-language-mode"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.1.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.8.0")
     ],
     targets: [
