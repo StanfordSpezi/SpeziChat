@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 
 //
 // This source file is part of the Stanford Spezi open source project
@@ -23,9 +23,10 @@ let package = Package(
         .library(name: "SpeziChat", targets: ["SpeziChat"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0-beta.3"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.0.1"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.3.1")
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0"),
+        // .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.1.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", branch: "feat/swift-6-language-mode"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.8.0")
     ],
     targets: [
         .target(
