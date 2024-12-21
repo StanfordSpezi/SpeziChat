@@ -41,7 +41,7 @@ extension ChatView {
         func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
     }
     #else
-    @MainActor
+    @MainActor  // On non-macOS SDKs, `UIViewControllerRepresentable` enforces the `MainActor` isolation
     struct ShareSheet {
         let sharedItem: Data
         let sharedItemType: ChatExportFormat
