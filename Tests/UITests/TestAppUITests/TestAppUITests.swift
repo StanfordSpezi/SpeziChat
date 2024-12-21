@@ -78,7 +78,13 @@ class TestAppUITests: XCTestCase {
             #endif
 
             sleep(3)
-            XCTAssert(app.buttons["Save"].waitForExistence(timeout: 2))
+
+            // Select "On My iPhone / iPad" directory, if necessary
+            let predicate = NSPredicate(format: "label BEGINSWITH[c] %@", "On My")
+            let matchingStaticTexts = app.staticTexts.containing(predicate)
+            matchingStaticTexts.allElementsBoundByIndex.first?.tap()
+
+            XCTAssert(app.buttons["Save"].waitForExistence(timeout: 5))
             app.buttons["Save"].tap()
             sleep(10)    // Wait until file is saved
             
