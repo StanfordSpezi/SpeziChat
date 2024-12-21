@@ -40,10 +40,13 @@ class TestAppUITests: XCTestCase {
     }
     
     func testChatExport() throws {  // swiftlint:disable:this function_body_length
+        // Skip chat export test on visionOS and macOS
         #if os(visionOS)
         throw XCTSkip("VisionOS is unstable and are skipped at the moment")
+        #elseif os(macOS)
+        throw XCTSkip("macOS export to a file is not possible (regular sharesheet is)")
         #endif
-        
+
         let app = XCUIApplication()
         let filesApp = XCUIApplication(bundleIdentifier: "com.apple.DocumentsApp")
         let maxRetries = 10
@@ -150,8 +153,12 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
         XCTAssert(!app.buttons["Speaker"].waitForExistence(timeout: 2))
-        
+
+        #if os(macOS)
+        app.buttons["Speaker strikethrough"].firstMatch.tap()   // on macOS, need to match for first speaker that is found
+        #else
         app.buttons["Speaker strikethrough"].tap()
+        #endif
         
         XCTAssert(!app.buttons["Speaker strikethrough"].waitForExistence(timeout: 2))
         XCTAssert(app.buttons["Speaker"].waitForExistence(timeout: 2))
