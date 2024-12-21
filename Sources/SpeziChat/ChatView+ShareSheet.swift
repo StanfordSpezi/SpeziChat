@@ -41,6 +41,7 @@ extension ChatView {
         func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
     }
     #else
+    @MainActor
     struct ShareSheet {
         let sharedItem: Data
         let sharedItemType: ChatExportFormat
