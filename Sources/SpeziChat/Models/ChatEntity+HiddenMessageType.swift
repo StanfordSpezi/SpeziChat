@@ -18,7 +18,7 @@ extension ChatEntity {
     ///     static let testType = HiddenMessageType(name: "testType")
     /// }
     /// ```
-    public struct HiddenMessageType: Codable, Equatable, Hashable {
+    public struct HiddenMessageType: Codable, Equatable, Hashable, Sendable {
         /// Default ``HiddenMessageType``.
         public static let unknown = HiddenMessageType(name: "unknown")
         

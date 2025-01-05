@@ -107,7 +107,7 @@ jobs:
       runsonlabels: '["macOS", "self-hosted"]'
       path: 'Tests/UITests'
       scheme: TestApp
-      destination: 'platform=iOS Simulator,name=iPad Air (5th generation)'
+      destination: 'platform=iOS Simulator,name=iPad Air 11-inch (M2)'
       buildConfig: ${{ matrix.buildConfig }}
       resultBundle: ${{ matrix.resultBundle }}
       artifactname: ${{ matrix.artifactname }}
@@ -137,3 +137,5 @@ jobs:
     uses: StanfordSpezi/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
       coveragereports: 'SpeziChat-iOS.xcresult SpeziChat-visionOS.xcresult SpeziChat-macOS.xcresult TestApp-iOS.xcresult TestApp-iPad.xcresult TestApp-visionOS.xcresult'
+    secrets:
+      token: ${{ secrets.CODECOV_TOKEN }}

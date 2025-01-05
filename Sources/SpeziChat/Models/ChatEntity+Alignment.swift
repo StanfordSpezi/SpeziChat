@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 
 extension ChatEntity {
@@ -21,9 +22,18 @@ extension ChatEntity {
     var alignment: Alignment {
         switch self.role {
         case .user:
-            return .trailing
+            .trailing
         default:
-            return .leading
+            .leading
+        }
+    }
+    
+    var horziontalAlignment: HorizontalAlignment {
+        switch self.alignment {
+        case .leading:
+            .leading
+        case .trailing:
+            .trailing
         }
     }
 }
