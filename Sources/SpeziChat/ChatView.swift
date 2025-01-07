@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziFoundation
 import SpeziSpeechSynthesizer
 import SwiftUI
 
@@ -115,18 +116,8 @@ public struct ChatView: View {
                 MessageInputView($chat, messagePlaceholder: messagePlaceholder, speechToText: speechToText)
                     .disabled(disableInput)
                     .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-                        // The `onPreferenceChange` view modfier now takes a `@Sendable` closure, therefore we cannot capture `@MainActor` isolated properties
-                        // on the `View` directly anymore: https://developer.apple.com/documentation/swiftui/view/onpreferencechange(_:perform:)?changes=latest_minor
-                        // However, as the `@Sendable` closure is still run on the MainActor (at least in my testing on 18.2 RC SDKs), we can use `MainActor.assumeIsolated`
-                        // to avoid scheduling a `MainActor` `Task`, which could delay execution and cause unexpected UI behavior
-                        if Thread.isMainThread {
-                            MainActor.assumeIsolated {
-                                messageInputHeight = newValue + 12
-                            }
-                        } else {
-                            Task { @MainActor in
-                                messageInputHeight = newValue + 12
-                            }
+                        runOrScheduleOnMainActor {
+                            self.messageInputHeight = newValue + 12
                         }
                     }
             }

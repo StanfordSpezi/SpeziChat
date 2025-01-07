@@ -127,7 +127,6 @@ The [`MessageInputView`](https://swiftpackageindex.com/stanfordspezi/spezichat/d
 struct MessageInputTestView: View {
     @State private var chat: Chat = []
     @State private var disableInput = false
-    @State private var messageInputHeight: CGFloat = 0
     
     
     var body: some View {
@@ -137,7 +136,8 @@ struct MessageInputTestView: View {
                 .disabled(disableInput)
                 /// Get the height of the `MessageInputView` via a SwiftUI `PreferenceKey`
                 .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-                    messageInputHeight = newValue
+                    let messageInputHeight: CGFloat = newValue
+                    // ...
                 }
         }
     }

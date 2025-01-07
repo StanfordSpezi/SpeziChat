@@ -128,7 +128,6 @@ The ``MessageInputView`` is a reusable SwiftUI `View` to handle text-based or sp
 struct MessageInputTestView: View {
     @State private var chat: Chat = []
     @State private var disableInput = false
-    @State private var messageInputHeight: CGFloat = 0
     
     
     var body: some View {
@@ -137,8 +136,10 @@ struct MessageInputTestView: View {
             MessageInputView($chat, messagePlaceholder: "TestMessage")
                 .disabled(disableInput)
                 /// Get the height of the `MessageInputView` via a SwiftUI `PreferenceKey`
+                /// Indicates the height of the input message field, necessary for properly shifting other view content.
                 .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-                    messageInputHeight = newValue
+                    let messageInputHeight: CGFloat = newValue
+                    // ...
                 }
         }
     }
