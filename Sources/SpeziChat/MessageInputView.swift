@@ -27,9 +27,7 @@ import SwiftUI
 /// struct MessageInputTestView: View {
 ///     @State private var chat: Chat = []
 ///     @State private var disableInput = false
-///     /// Indicates the height of the input message field, necessary for properly shifting
-///     /// other view content.
-///     @State private var messageInputHeight: CGFloat = 0
+///
 ///
 ///     var body: some View {
 ///         VStack {
@@ -37,8 +35,10 @@ import SwiftUI
 ///             MessageInputView($chat, messagePlaceholder: "TestMessage")
 ///                 .disabled(disableInput)
 ///                 /// Get the height of the `MessageInputView` via a SwiftUI `PreferenceKey`
+///                 /// Indicates the height of the input message field, necessary for properly shifting other view content.
 ///                 .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-///                     messageInputHeight = newValue
+///                     let messageInputHeight: CGFloat = newValue
+///                     // ...
 ///                 }
 ///         }
 ///     }
