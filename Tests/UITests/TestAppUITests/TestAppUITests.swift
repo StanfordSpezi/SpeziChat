@@ -10,15 +10,18 @@ import XCTest
 import XCTestExtensions
 
 
+@MainActor
 class TestAppUITests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         
         continueAfterFailure = false
-        
-        let app = XCUIApplication()
-        app.launchArguments = ["--testMode"]
-        app.launch()
+
+        Task { @MainActor in
+            let app = XCUIApplication()
+            app.launchArguments = ["--testMode"]
+            app.launch()
+        }
     }
     
     
