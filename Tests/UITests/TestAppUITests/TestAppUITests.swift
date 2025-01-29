@@ -12,16 +12,15 @@ import XCTestExtensions
 
 @MainActor
 class TestAppUITests: XCTestCase {
-    override func setUpWithError() throws {
+    @MainActor
+    override func setUp() async throws {
         try super.setUpWithError()
         
         continueAfterFailure = false
 
-        Task { @MainActor in
-            let app = XCUIApplication()
-            app.launchArguments = ["--testMode"]
-            app.launch()
-        }
+        let app = XCUIApplication()
+        app.launchArguments = ["--testMode"]
+        app.launch()
     }
     
     
