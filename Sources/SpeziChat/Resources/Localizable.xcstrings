@@ -21,6 +21,9 @@
         }
       }
     },
+    "Copy" : {
+
+    },
     "EQUAL_SIGN" : {
       "localizations" : {
         "de" : {
@@ -174,6 +177,9 @@
           }
         }
       }
+    },
+    "Speak" : {
+
     },
     "Text to speech is disabled, press to enable text to speech." : {
       "localizations" : {
