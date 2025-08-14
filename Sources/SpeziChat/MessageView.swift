@@ -8,6 +8,16 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+
+#if canImport(AVFoundation)
+import AVFoundation
+#endif
+
 
 /// A reusable SwiftUI `View` to display the contents of a ``ChatEntity`` within a typical chat message bubble. This bubble is properly aligned according to the associated ``ChatEntity/Role``.
 ///
@@ -64,6 +74,13 @@ public struct MessageView: View {
         }
     }
     
+    // exposes copyable text for “normal” messages and hides it for tool interactions
+        private var copyText: String? {
+            guard !isToolInteraction else { return nil }
+            let raw = chat.content            // ChatEntity is initialized with `content: String`
+            return raw.isEmpty ? nil : raw
+        }
+    
     public var body: some View {
         if shouldDisplayMessage {
             HStack {
@@ -76,6 +93,41 @@ public struct MessageView: View {
                     } else {
                         Text(chat.attributedContent)
                             .chatMessageStyle(alignment: chat.alignment)
+                             //This is the bubble rendering—the Text(chat.attributedContent)
+                            //Attach a context menu to that Text so a long press shows Copy.
+                            .contextMenu {
+                                if let t = copyText {
+                                    Button(String(localized: "Copy")) {
+                                        #if canImport(UIKit)
+                                        UIPasteboard.general.string = t
+                                        #elseif canImport(AppKit)
+                                        NSPasteboard.general.clearContents()
+                                        NSPasteboard.general.setString(t, forType: .string)
+                                        #endif
+                                    }
+                                    Button(String(localized: "Speak")) {   // <- no #if around this button
+                                        Speech.shared.speak(t)
+                                    }
+                                }
+                            }
+                        //voiceover rotor action goes here
+                            .accessibilityAction(named: Text(String(localized: "Copy"))) {
+                                guard let t = copyText else { return }
+                                #if canImport(UIKit)
+                                UIPasteboard.general.string = t
+                                #elseif canImport(AppKit)
+                                NSPasteboard.general.clearContents()
+                                NSPasteboard.general.setString(t, forType: .string)
+                                #endif
+                            }
+                        //voiceover option for long press
+                        #if canImport(AVFoundation)
+                            .accessibilityAction(named: Text(String(localized: "Speak"))) {
+                                guard let t = copyText else { return }
+                                Speech.shared.speak(t)
+                            }
+                            #endif
+                        
                     }
                 }
                 
@@ -96,6 +148,31 @@ public struct MessageView: View {
     }
 }
 
+//speech helper function for playback of text in long press
+#if canImport(AVFoundation)
+import AVFoundation
+
+@MainActor                 // <— key line: confine everything to the main actor
+final class Speech {
+    static let shared = Speech()
+    private let synth = AVSpeechSynthesizer()
+
+    func speak(_ text: String,
+               language: String? = nil,
+               rate: Float = AVSpeechUtteranceDefaultSpeechRate) {
+        if synth.isSpeaking { synth.stopSpeaking(at: .immediate) }
+        let u = AVSpeechUtterance(string: text)
+        if let lang = language, let voice = AVSpeechSynthesisVoice(language: lang) {
+            u.voice = voice
+        }
+        u.rate = rate
+        synth.speak(u)
+    }
+
+    func stop() { synth.stopSpeaking(at: .immediate) }
+    var isSpeaking: Bool { synth.isSpeaking }
+}
+#endif
 
 #if DEBUG
 #Preview {
