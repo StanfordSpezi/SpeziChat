@@ -81,6 +81,9 @@ public struct MessageView: View {
             return raw.isEmpty ? nil : raw
         }
     
+    //the following controls whether text is selectable; true if message is long-pressed and 'select' is selected
+    @Binding private var selectionMode: Bool
+    
     public var body: some View {
         if shouldDisplayMessage {
             HStack {
@@ -91,25 +94,47 @@ public struct MessageView: View {
                     if isToolInteraction {
                         ToolInteractionView(entity: chat)
                     } else {
-                        Text(chat.attributedContent)
-                            .chatMessageStyle(alignment: chat.alignment)
-                             //This is the bubble rendering—the Text(chat.attributedContent)
-                            //Attach a context menu to that Text so a long press shows Copy.
-                            .contextMenu {
-                                if let t = copyText {
-                                    Button(String(localized: "Copy")) {
-                                        #if canImport(UIKit)
-                                        UIPasteboard.general.string = t
-                                        #elseif canImport(AppKit)
-                                        NSPasteboard.general.clearContents()
-                                        NSPasteboard.general.setString(t, forType: .string)
-                                        #endif
+                        // build the bubble once
+                            let bubble = Text(chat.attributedContent)
+                                .chatMessageStyle(alignment: chat.alignment)
+
+                            // choose the concrete variant via ViewBuilder, not a ternary
+                        Group {
+                            if selectionMode {
+                                bubble
+                                    .textSelection(.enabled)
+                                    .background(           // publish bubble frame in a named space
+                                        GeometryReader { proxy in
+                                            Color.clear.preference(
+                                                key: SelectedBubbleFrameKey.self,
+                                                value: proxy.frame(in: .named("ChatSpace"))
+                                            )
+                                        }
+                                    )
+                                    .zIndex(2)
+                            } else {
+                                bubble
+                                    .textSelection(.disabled)
+                                //Attach a context menu to that Text so a long press shows Copy.
+                                    .contextMenu {
+                                        if let t = copyText {
+                                            Button(String(localized: "Copy")) {
+                                                #if canImport(UIKit)
+                                                UIPasteboard.general.string = t
+                                                #elseif canImport(AppKit)
+                                                NSPasteboard.general.clearContents()
+                                                NSPasteboard.general.setString(t, forType: .string)
+                                                #endif
+                                            }
+                                            //Select option goes here
+                                            Button(String(localized: "Select")) {
+                                                selectionMode = true
+                                            }
+                                        }
+                                        
                                     }
-                                    Button(String(localized: "Speak")) {   // <- no #if around this button
-                                        Speech.shared.speak(t)
-                                    }
-                                }
                             }
+                        }
                         //voiceover rotor action goes here
                             .accessibilityAction(named: Text(String(localized: "Copy"))) {
                                 guard let t = copyText else { return }
@@ -120,13 +145,6 @@ public struct MessageView: View {
                                 NSPasteboard.general.setString(t, forType: .string)
                                 #endif
                             }
-                        //voiceover option for long press
-                        #if canImport(AVFoundation)
-                            .accessibilityAction(named: Text(String(localized: "Speak"))) {
-                                guard let t = copyText else { return }
-                                Speech.shared.speak(t)
-                            }
-                            #endif
                         
                     }
                 }
@@ -142,11 +160,22 @@ public struct MessageView: View {
     /// - Parameters:
     ///   - chat: The chat message that should be displayed.
     ///   - hideMessages: Types of ``ChatEntity/Role-swift.enum/hidden(type:)`` messages that should be hidden from the user.
-    public init(_ chat: ChatEntity, hideMessages: HiddenMessages = .all) {
+    ///   - selectionMode: boolean determining if we are in 'select' mode, which we enter when a user presses 'select' buttton in a chat's context menu
+    public init(_ chat: ChatEntity, hideMessages: HiddenMessages = .all, selectionMode: Binding<Bool> = .constant(false)) {
         self.chat = chat
         self.hideMessages = hideMessages
+        self._selectionMode = selectionMode
     }
 }
+
+//for select option in context menu
+struct SelectedBubbleFrameKey: PreferenceKey {
+    static let defaultValue: CGRect? = nil
+    static func reduce(value: inout CGRect?, nextValue: () -> CGRect?) {
+        value = nextValue() ?? value
+    }
+}
+
 
 //speech helper function for playback of text in long press
 #if canImport(AVFoundation)
