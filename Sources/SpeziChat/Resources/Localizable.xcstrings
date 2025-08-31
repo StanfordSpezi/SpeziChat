@@ -24,9 +24,6 @@
     "Copy" : {
 
     },
-    "Done" : {
-
-    },
     "EQUAL_SIGN" : {
       "localizations" : {
         "de" : {
@@ -48,9 +45,6 @@
           }
         }
       }
-    },
-    "Exit selection mode" : {
-
     },
     "EXPORT_CHAT_BUTTON" : {
       "localizations" : {
@@ -162,9 +156,6 @@
         }
       }
     },
-    "Select" : {
-
-    },
     "SEND_MESSAGE" : {
       "localizations" : {
         "de" : {
@@ -186,6 +177,12 @@
           }
         }
       }
+    },
+    "Speak" : {
+
+    },
+    "Test Speech" : {
+
     },
     "Text to speech is disabled, press to enable text to speech." : {
       "localizations" : {

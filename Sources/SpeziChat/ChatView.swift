@@ -37,7 +37,7 @@ import SwiftUI
 /// ### Accessibility
 ///
 /// The ``ChatView`` provides speech-to-text (recognition) as well as text-to-speech (synthesize) capabilities out of the box via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module, facilitating seamless interaction with the content of the ``ChatView``.
-/// 
+///
 /// Speech-to-text capabilities can be activated via the `speechToText` `Bool` parameter in ``init(_:disableInput:speechToText:exportFormat:messagePlaceholder:messagePendingAnimation:hideMessages:)``. By default, this capability is activated and therefore a small microphone button is shown next to the text input field.
 ///
 /// Text-to-speech capabilities can be configured via the `View/speak(_:muted:)` `ViewModifier`. If present, the latest ``ChatEntity/complete`` ``ChatEntity/Role-swift.enum/assistant`` message in the ``Chat`` will be synthesized to natural language speech.
@@ -92,20 +92,12 @@ public struct ChatView: View {
     
     @State private var messageInputHeight: CGFloat = 0
     @State private var showShareSheet = false
-    @State private var selectingMessageIndex: Int? = nil
     
-    //TODO: add edit button states
     
     public var body: some View {
         ZStack {
             VStack {
-                MessagesView(
-                    $chat,
-                    hideMessages: hideMessages,
-                    typingIndicator: messagePendingAnimation,
-                    bottomPadding: $messageInputHeight,
-                    selectingMessageIndex: $selectingMessageIndex
-                )
+                MessagesView($chat, hideMessages: hideMessages, typingIndicator: messagePendingAnimation, bottomPadding: $messageInputHeight)
                     #if !os(macOS)
                     .gesture(
                         TapGesture().onEnded {
@@ -122,7 +114,7 @@ public struct ChatView: View {
             VStack {
                 Spacer()
                 MessageInputView($chat, messagePlaceholder: messagePlaceholder, speechToText: speechToText)
-                    .disabled(disableInput || selectingMessageIndex != nil)
+                    .disabled(disableInput)
                     .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
                         runOrScheduleOnMainActor {
                             self.messageInputHeight = newValue + 12
@@ -130,7 +122,7 @@ public struct ChatView: View {
                     }
             }
         }
-    .toolbar {
+            .toolbar {
                 if exportEnabled {
                     ToolbarItem(placement: .primaryAction) {
                         Button(action: {
@@ -141,28 +133,19 @@ public struct ChatView: View {
                         }
                     }
                 }
-                if selectingMessageIndex != nil {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Done") {
-                            selectingMessageIndex = nil
-                            }
-                        // looks like the default iOS nav button (no extra styling needed)
-                        .accessibilityLabel("Exit selection mode")
-                        }
-                    }
-    }
-    .sheet(isPresented: $showShareSheet) {
-        if let exportedChatData, let exportFormat {
-        #if !os(macOS)
-            ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
-                .presentationDetents([.medium])
-        #endif
-        } else {
-            ProgressView()
-                .padding()
-                .presentationDetents([.medium])
-        }
-    }
+            }
+            .sheet(isPresented: $showShareSheet) {
+                if let exportedChatData, let exportFormat {
+                    #if !os(macOS)
+                    ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
+                        .presentationDetents([.medium])
+                    #endif
+                } else {
+                    ProgressView()
+                        .padding()
+                        .presentationDetents([.medium])
+                }
+            }
             #if os(macOS)
             .onChange(of: showShareSheet) { _, isPresented in
                 if isPresented, let exportedChatData, let exportFormat {
