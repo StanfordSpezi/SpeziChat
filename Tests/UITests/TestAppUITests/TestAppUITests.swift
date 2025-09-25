@@ -132,20 +132,22 @@ class TestAppUITests: XCTestCase {
         
         sleep(3)    // Wait until file is opened
         
-        #if os(visionOS)
-        let fileView = XCUIApplication(bundleIdentifier: "com.apple.MRQuickLook")
-        #else
-        let fileView = filesApp
-        #endif
-        
         // Check if PDF contains certain chat message
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", "User Message!")
-        XCTAssert(fileView.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
-        
-        #if os(iOS)
-        // Close File
-        XCTAssert(fileView.buttons["Done"].waitForExistence(timeout: 2))
-        fileView.buttons["Done"].tap()
+        #if os(visionOS)
+        let fileView = XCUIApplication(bundleIdentifier: "com.apple.MRQuickLook")
+        #elseif os(iOS)
+        if #available(iOS 26, *) {
+            let preview = XCUIApplication(bundleIdentifier: "com.apple.Preview")
+            XCTAssert(preview.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
+        } else {
+            XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
+            // Close File in Files App
+            XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
+            filesApp.buttons["Done"].tap()
+        }
+        #else
+        return
         #endif
     }
     
@@ -183,3 +185,4 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 2))
     }
 }
+
