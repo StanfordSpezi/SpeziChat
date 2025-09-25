@@ -130,24 +130,25 @@ class TestAppUITests: XCTestCase {
         XCTAssert(filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.waitForExistence(timeout: 2))
         filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.tap()
         
-        sleep(3)    // Wait until file is opened
-        
         // Check if PDF contains certain chat message
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", "User Message!")
         #if os(visionOS)
         let fileView = XCUIApplication(bundleIdentifier: "com.apple.MRQuickLook")
+        XCTAssert(fileView.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 5))
         #elseif os(iOS)
         if #available(iOS 26, *) {
             let preview = XCUIApplication(bundleIdentifier: "com.apple.Preview")
+            guard preview.wait(for: .runningForeground, timeout: 3.0) else {
+                throw XCTSkip("The Preview App seems to fail on iOS 26 simulators; please double-check with furhter updates and re-activate.")
+            }
+            
             XCTAssert(preview.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
         } else {
-            XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
+            XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 5))
             // Close File in Files App
             XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
             filesApp.buttons["Done"].tap()
         }
-        #else
-        return
         #endif
     }
     
