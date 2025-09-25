@@ -185,4 +185,3 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 2))
     }
 }
-
