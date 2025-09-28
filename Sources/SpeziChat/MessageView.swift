@@ -7,6 +7,15 @@
 //
 
 import SwiftUI
+import SpeziSpeechSynthesizer
+
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+
+import AVFoundation
 
 
 /// A reusable SwiftUI `View` to display the contents of a ``ChatEntity`` within a typical chat message bubble. This bubble is properly aligned according to the associated ``ChatEntity/Role``.
@@ -41,6 +50,7 @@ public struct MessageView: View {
     
     private let chat: ChatEntity
     private let hideMessages: HiddenMessages
+    @State private var speechSynthesizer = SpeechSynthesizer()
     
     
     private var shouldDisplayMessage: Bool {
@@ -64,6 +74,13 @@ public struct MessageView: View {
         }
     }
     
+    // exposes copyable text for “normal” messages and hides it for tool interactions
+        private var copyText: String? {
+            guard !isToolInteraction else { return nil }
+            let raw = chat.content            // ChatEntity is initialized with `content: String`
+            return raw.isEmpty ? nil : raw
+        }
+    
     public var body: some View {
         if shouldDisplayMessage {
             HStack {
@@ -76,6 +93,43 @@ public struct MessageView: View {
                     } else {
                         Text(chat.attributedContent)
                             .chatMessageStyle(alignment: chat.alignment)
+                             //This is the bubble rendering—the Text(chat.attributedContent)
+                            //Attach a context menu to that Text so a long press shows Copy.
+                            .contextMenu {
+                                if let t = copyText {
+                                    Button {
+                                        #if canImport(UIKit)
+                                        UIPasteboard.general.string = t
+                                        #elseif canImport(AppKit)
+                                        NSPasteboard.general.clearContents()
+                                        NSPasteboard.general.setString(t, forType: .string)
+                                        #endif
+                                    } label: {
+                                        Label("Copy", systemImage: "doc.on.doc")
+                                    }
+                                    Button {
+                                        speechSynthesizer.speak(t)
+                                    } label: {
+                                        Label("Speak", systemImage: "speaker.wave.3")
+                                    }
+                                }
+                            }
+                        //voiceover rotor action goes here
+                            .accessibilityAction(named: Text(String(localized: "Copy"))) {
+                                guard let t = copyText else { return }
+                                #if canImport(UIKit)
+                                UIPasteboard.general.string = t
+                                #elseif canImport(AppKit)
+                                NSPasteboard.general.clearContents()
+                                NSPasteboard.general.setString(t, forType: .string)
+                                #endif
+                            }
+                            //voiceover option for long press
+                            .accessibilityAction(named: Text(String(localized: "Speak"))) {
+                                guard let t = copyText else { return }
+                                speechSynthesizer.speak(t)
+                            }
+                        
                     }
                 }
                 
@@ -97,30 +151,46 @@ public struct MessageView: View {
 }
 
 
+
+
 #if DEBUG
-#Preview {
-    ScrollView {
-        VStack {
-            MessageView(ChatEntity(role: .user, content: "User Message!"))
-            MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
-            MessageView(ChatEntity(role: .user, content: "Long User Message that spans over two lines!"))
-            MessageView(ChatEntity(role: .assistant, content: "Long Assistant Message that spans over two lines!"))
-            MessageView(ChatEntity(role: .assistantToolCall, content: "assistent_too_call(parameter: value)"))
-            MessageView(ChatEntity(role: .assistantToolResponse, content: """
-            {
-                "some": "response"
+struct MessageViewPreview: View {
+    @State private var speechSynthesizer = SpeechSynthesizer()
+    
+    var body: some View {
+        ScrollView {
+            VStack {
+                // Test button for speech
+                Button("Test Speech") {
+                    speechSynthesizer.speak("Hello! This is a test of the speech synthesizer.")
+                }
+                .padding()
+                
+                MessageView(ChatEntity(role: .user, content: "User Message!"))
+                MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
+                MessageView(ChatEntity(role: .user, content: "Long User Message that spans over two lines!"))
+                MessageView(ChatEntity(role: .assistant, content: "Long Assistant Message that spans over two lines!"))
+                MessageView(ChatEntity(role: .assistantToolCall, content: "assistent_too_call(parameter: value)"))
+                MessageView(ChatEntity(role: .assistantToolResponse, content: """
+                {
+                    "some": "response"
+                }
+                """))
+                MessageView(ChatEntity(role: .hidden(type: .unknown), content: "Hidden message! (invisible)"))
+                MessageView(
+                    ChatEntity(
+                        role: .hidden(type: .unknown),
+                        content: "Hidden message! (visible)"
+                    ),
+                    hideMessages: .custom(hiddenMessageTypes: [])
+                )
             }
-            """))
-            MessageView(ChatEntity(role: .hidden(type: .unknown), content: "Hidden message! (invisible)"))
-            MessageView(
-                ChatEntity(
-                    role: .hidden(type: .unknown),
-                    content: "Hidden message! (visible)"
-                ),
-                hideMessages: .custom(hiddenMessageTypes: [])
-            )
-        }
             .padding()
+        }
     }
+}
+
+#Preview {
+    MessageViewPreview()
 }
 #endif
