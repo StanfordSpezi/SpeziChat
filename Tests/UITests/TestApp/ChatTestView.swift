@@ -49,7 +49,7 @@ struct ChatTestView: View {
         } else if userMessage.content.localizedCaseInsensitiveContains("weather") {
             chat.append(.init(role: .assistant, content: """
                 Here's the current weather snapshot:
-
+                
                 | City | Temp | Condition |
                 |------|------|-----------|
                 | 🇩🇪 Munich | 41°F / 5°C | ❄️ Snow |
@@ -62,8 +62,19 @@ struct ChatTestView: View {
                 | 🇯🇵 Tokyo | — | ⚠️ Data unavailable |
                 | 🇨🇦 Toronto | 33°F / 1°C | ☁️ Cloudy |
                 | 🇫🇷 Paris | 56°F / 13°C | ☁️ Cloudy |
-
+                
                 Tokyo's weather data returned an error — you may want to check a weather service directly for that one.
+                """))
+        } else if userMessage.content.localizedCaseInsensitiveContains("fib") {
+            chat.append(.init(role: .assistant, content: """
+                ```rust
+                fn fib(n: u64) -> u64 {
+                    match n {
+                        0 | 1 => n,
+                        _ => fib(n - 1) + fib(n - 2)
+                    }
+                }
+                ```
                 """))
         } else {
             chat.append(.init(role: .assistant, content: "**Assistant** Message Response!"))
