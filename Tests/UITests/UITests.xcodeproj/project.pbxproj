@@ -3,14 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
-		2F8A431329130A8C005D2B8F /* TestAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F8A431229130A8C005D2B8F /* TestAppUITests.swift */; };
-		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
-		971D0E1D2B005DED003AD89E /* ChatTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971D0E1C2B005DED003AD89E /* ChatTestView.swift */; };
 		971D0E1F2B005E9C003AD89E /* SpeziChat in Frameworks */ = {isa = PBXBuildFile; productRef = 971D0E1E2B005E9C003AD89E /* SpeziChat */; };
 		97911AFB2B01A27D003AEEF5 /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 97911AFA2B01A27D003AEEF5 /* XCTestExtensions */; };
 /* End PBXBuildFile section */
@@ -41,14 +37,15 @@
 /* Begin PBXFileReference section */
 		2F68C3C6292E9F8F00B3E12C /* SpeziChat */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SpeziChat; path = ../..; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F6D139928F5F386007C25D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F8A431229130A8C005D2B8F /* TestAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppUITests.swift; sourceTree = "<group>"; };
-		2FA7382B290ADFAA007ACEB9 /* TestApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
 		2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
-		971D0E1C2B005DED003AD89E /* ChatTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTestView.swift; sourceTree = "<group>"; };
 		9794D9552B01BC2200DC02FB /* Speech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Speech.framework; path = System/Library/Frameworks/Speech.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		80A516762F49D9F1002AB920 /* TestAppUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestAppUITests; sourceTree = "<group>"; };
+		80A5167B2F49D9F4002AB920 /* TestApp */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TestApp; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2F6D138F28F5F384007C25D6 /* Frameworks */ = {
@@ -75,8 +72,8 @@
 			children = (
 				2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */,
 				2F68C3C6292E9F8F00B3E12C /* SpeziChat */,
-				2F6D139428F5F384007C25D6 /* TestApp */,
-				2F6D13AF28F5F386007C25D6 /* TestAppUITests */,
+				80A5167B2F49D9F4002AB920 /* TestApp */,
+				80A516762F49D9F1002AB920 /* TestAppUITests */,
 				2F6D139328F5F384007C25D6 /* Products */,
 				2F6D13C228F5F3BE007C25D6 /* Frameworks */,
 			);
@@ -89,24 +86,6 @@
 				2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		2F6D139428F5F384007C25D6 /* TestApp */ = {
-			isa = PBXGroup;
-			children = (
-				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
-				971D0E1C2B005DED003AD89E /* ChatTestView.swift */,
-				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
-			);
-			path = TestApp;
-			sourceTree = "<group>";
-		};
-		2F6D13AF28F5F386007C25D6 /* TestAppUITests */ = {
-			isa = PBXGroup;
-			children = (
-				2F8A431229130A8C005D2B8F /* TestAppUITests.swift */,
-			);
-			path = TestAppUITests;
 			sourceTree = "<group>";
 		};
 		2F6D13C228F5F3BE007C25D6 /* Frameworks */ = {
@@ -133,6 +112,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				80A5167B2F49D9F4002AB920 /* TestApp */,
+			);
 			name = TestApp;
 			packageProductDependencies = (
 				971D0E1E2B005E9C003AD89E /* SpeziChat */,
@@ -153,6 +135,9 @@
 			);
 			dependencies = (
 				2F6D13AE28F5F386007C25D6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				80A516762F49D9F1002AB920 /* TestAppUITests */,
 			);
 			name = TestAppUITests;
 			packageProductDependencies = (
@@ -208,7 +193,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,8 +210,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				971D0E1D2B005DED003AD89E /* ChatTestView.swift in Sources */,
-				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,7 +217,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F8A431329130A8C005D2B8F /* TestAppUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
