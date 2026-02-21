@@ -28,7 +28,6 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/SpeziSpeech.git", from: "1.1.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.8.0"),
         .package(url: "https://github.com/gonzalezreal/textual.git", from: "0.3.1")
-        
     ],
     targets: [
         .target(
