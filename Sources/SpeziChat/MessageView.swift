@@ -80,7 +80,6 @@ public struct MessageView: View {
                             .chatMessageStyle(alignment: chat.alignment)
                     }
                 }
-                
                 if chat.alignment == .leading {
                     Spacer(minLength: 32)
                 }

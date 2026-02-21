@@ -39,13 +39,13 @@ struct ChatTestView: View {
     }
     
     private func generateAssistantMessage(for userMessage: ChatEntity) async throws {
-        // Append a new assistant message to the chat after sleeping for 5 seconds.
-        try await Task.sleep(for: .seconds(3))
-        if userMessage.content == "Call some function" {
+        try await Task.sleep(for: .seconds(2))
+        if userMessage.content.localizedCaseInsensitiveContains("call") {
             chat.append(.init(role: .assistantToolCall, content: "call_test_func({ test: true })"))
             try await Task.sleep(for: .seconds(1))
             chat.append(.init(role: .assistantToolResponse, content: "{ some: response }"))
             try await Task.sleep(for: .seconds(1))
+            chat.append(.init(role: .assistant, content: "**Assistant** Message Response!"))
         } else if userMessage.content.localizedCaseInsensitiveContains("weather") {
             chat.append(.init(role: .assistant, content: """
                 Here's the current weather snapshot:

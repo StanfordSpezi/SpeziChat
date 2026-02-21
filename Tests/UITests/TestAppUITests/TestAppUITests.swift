@@ -128,7 +128,7 @@ class TestAppUITests: XCTestCase {
         XCTAssert(filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].waitForExistence(timeout: 2))
         
         XCTAssert(filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.waitForExistence(timeout: 2))
-        filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.tap()
+        filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].tap()
         
         // Check if PDF contains certain chat message
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", "User Message!")
