@@ -29,7 +29,6 @@ extension ChatView {
     private struct ChatExportPDFView: View {
         let chat: Chat
         
-        
         var body: some View {
             VStack(spacing: 8) {    // The SwiftUI `ImageRenderer` doesn't support SwiftUI `List`s
                 ForEach(chat, id: \.self) { chatEntity in
@@ -38,6 +37,8 @@ extension ChatView {
                             Spacer(minLength: 32)
                         }
                         VStack(alignment: chatEntity.alignment == .leading ? .leading : .trailing) {
+                            // NOTE: we intentionally use a `Text` with an `AttributedString` here, instead of using `StructuredText` like in the MessageView,
+                            // the reason being that the `StructuredText` doesn't render properly during the PDF export.
                             Text(chatEntity.attributedContent)
                                 .fixedSize(horizontal: false, vertical: true)
                                 #if !os(visionOS)
