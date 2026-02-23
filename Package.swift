@@ -16,17 +16,18 @@ let package = Package(
     name: "SpeziChat",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v17),
-        .visionOS(.v1),
-        .macOS(.v14)
+        .iOS(.v18),
+        .visionOS(.v2),
+        .macOS(.v15)
     ],
     products: [
         .library(name: "SpeziChat", targets: ["SpeziChat"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.1"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech", from: "1.1.1"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.8.0")
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.1"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziSpeech.git", from: "1.1.1"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.8.0"),
+        .package(url: "https://github.com/gonzalezreal/textual.git", from: "0.3.1")
     ],
     targets: [
         .target(
@@ -35,7 +36,8 @@ let package = Package(
                 .product(name: "SpeziFoundation", package: "SpeziFoundation"),
                 .product(name: "SpeziSpeechRecognizer", package: "SpeziSpeech"),
                 .product(name: "SpeziSpeechSynthesizer", package: "SpeziSpeech"),
-                .product(name: "SpeziViews", package: "SpeziViews")
+                .product(name: "SpeziViews", package: "SpeziViews"),
+                .product(name: "Textual", package: "textual")
             ],
             resources: [
                 .process("Resources")

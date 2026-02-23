@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Textual
 
 
 /// A reusable SwiftUI `View` to display the contents of a ``ChatEntity`` within a typical chat message bubble. This bubble is properly aligned according to the associated ``ChatEntity/Role``.
@@ -74,11 +75,11 @@ public struct MessageView: View {
                     if isToolInteraction {
                         ToolInteractionView(entity: chat)
                     } else {
-                        Text(chat.attributedContent)
+                        StructuredText(markdown: chat.content)
+                            .textual.structuredTextStyle(.gitHub)
                             .chatMessageStyle(alignment: chat.alignment)
                     }
                 }
-                
                 if chat.alignment == .leading {
                     Spacer(minLength: 32)
                 }

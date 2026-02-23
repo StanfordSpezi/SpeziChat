@@ -116,7 +116,8 @@ public struct ChatView: View {
                 MessageInputView($chat, messagePlaceholder: messagePlaceholder, speechToText: speechToText)
                     .disabled(disableInput)
                     .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-                        runOrScheduleOnMainActor {
+                        Task { @MainActor in
+                            await Task.yield()
                             self.messageInputHeight = newValue + 12
                         }
                     }

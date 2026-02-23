@@ -15,9 +15,7 @@ class TestAppUITests: XCTestCase {
     @MainActor
     override func setUp() async throws {
         try super.setUpWithError()
-        
         continueAfterFailure = false
-
         let app = XCUIApplication()
         app.launchArguments = ["--testMode"]
         app.launch()
@@ -30,16 +28,15 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
         
-        try app.textFields["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
-        XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
+        try app.textFields["Message Input Textfield"].enter(value: "User Message!", options: [.disableKeyboardDismiss])
+        XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 2))
         app.buttons["Send Message"].tap()
-        
-        XCTAssert(app.staticTexts["User Message!"].waitForExistence(timeout: 5))
-        
-        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 3))
-        
-        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 9))
+        XCTAssert(app.staticTexts["User Message!"].waitForExistence(timeout: 2))
+        XCTAssert(app.otherElements["Typing Indicator"].waitForExistence(timeout: 2))
+        XCTAssert(app.otherElements["Typing Indicator"].waitForNonExistence(timeout: 9))
+        XCTAssert(app.staticTexts["Assistant Message Response!"].waitForExistence(timeout: 2))
     }
+    
     
     func testChatExport() throws {  // swiftlint:disable:this function_body_length
         // Skip chat export test on visionOS and macOS
@@ -61,7 +58,7 @@ class TestAppUITests: XCTestCase {
             
             // Entering dummy chat value
             XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
-            try app.textFields["Message Input Textfield"].enter(value: "User Message!", dismissKeyboard: false)
+            try app.textFields["Message Input Textfield"].enter(value: "User Message!", options: [.disableKeyboardDismiss])
             XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
             app.buttons["Send Message"].tap()
             
@@ -79,6 +76,8 @@ class TestAppUITests: XCTestCase {
             app.cells["XCElementSnapshotPrivilegedValuePlaceholder"].tap()
             #else
             XCTAssert(app.staticTexts["Save to Files"].waitForExistence(timeout: 10))
+            sleep(1) // we need to wait a little, since the check above will already resolve while the button is still being
+            // animated into position. if we tap too early it'll sometimes miss.
             app.staticTexts["Save to Files"].tap()
             #endif
 
@@ -128,7 +127,7 @@ class TestAppUITests: XCTestCase {
         XCTAssert(filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].waitForExistence(timeout: 2))
         
         XCTAssert(filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.waitForExistence(timeout: 2))
-        filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].images.firstMatch.tap()
+        filesApp.collectionViews["File View"].cells["Exported Chat, pdf"].tap()
         
         // Check if PDF contains certain chat message
         let predicate = NSPredicate(format: "label CONTAINS[c] %@", "User Message!")
@@ -141,10 +140,9 @@ class TestAppUITests: XCTestCase {
             guard preview.wait(for: .runningForeground, timeout: 3.0) else {
                 throw XCTSkip("The Preview App seems to fail on iOS 26 simulators; please double-check with furhter updates and re-activate.")
             }
-            
-            XCTAssert(preview.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 2))
+            XCTAssert(preview.staticTexts.matching(predicate).firstMatch.waitForExistence(timeout: 10))
         } else {
-            XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 5))
+            XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 10))
             // Close File in Files App
             XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
             filesApp.buttons["Done"].tap()
@@ -175,7 +173,7 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.staticTexts["SpeziChat"].waitForExistence(timeout: 1))
         XCTAssert(app.staticTexts["Assistant Message!"].waitForExistence(timeout: 1))
         
-        try app.textFields["Message Input Textfield"].enter(value: "Call some function", dismissKeyboard: false)
+        try app.textFields["Message Input Textfield"].enter(value: "Call some function", options: [.disableKeyboardDismiss])
         XCTAssert(app.buttons["Send Message"].waitForExistence(timeout: 5))
         app.buttons["Send Message"].tap()
         
