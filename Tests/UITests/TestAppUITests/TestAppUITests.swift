@@ -76,6 +76,8 @@ class TestAppUITests: XCTestCase {
             app.cells["XCElementSnapshotPrivilegedValuePlaceholder"].tap()
             #else
             XCTAssert(app.staticTexts["Save to Files"].waitForExistence(timeout: 10))
+            sleep(1) // we need to wait a little, since the check above will already resolve while the button is still being
+            // animated into position. if we tap too early it'll sometimes miss.
             app.staticTexts["Save to Files"].tap()
             #endif
 
