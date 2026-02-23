@@ -39,7 +39,7 @@ struct ChatTestView: View {
     }
     
     private func generateAssistantMessage(for userMessage: ChatEntity) async throws {
-        try await Task.sleep(for: .seconds(2))
+        try await Task.sleep(for: .seconds(3))
         if userMessage.content.localizedCaseInsensitiveContains("call") {
             chat.append(.init(role: .assistantToolCall, content: "call_test_func({ test: true })"))
             try await Task.sleep(for: .seconds(1))

@@ -43,17 +43,17 @@ public struct TypingIndicator: View {
                         )
                         .frame(width: 10)
                 }
-                    .accessibilityIdentifier(String(localized: "TYPING_INDICATOR", bundle: .module))
             }
-                .frame(width: 42, height: 12, alignment: .center)
-                .padding(.vertical, 4)
-                .chatMessageStyle(alignment: .leading)
-                .task {
-                    isAnimating = true
-                }
-            
+            .frame(width: 42, height: 12, alignment: .center)
+            .padding(.vertical, 4)
+            .chatMessageStyle(alignment: .leading)
+            .task {
+                isAnimating = true
+            }
             Spacer(minLength: 32)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("TYPING_INDICATOR", bundle: .module))
     }
 }
 
