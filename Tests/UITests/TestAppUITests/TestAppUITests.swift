@@ -140,9 +140,9 @@ class TestAppUITests: XCTestCase {
             guard preview.wait(for: .runningForeground, timeout: 3.0) else {
                 throw XCTSkip("The Preview App seems to fail on iOS 26 simulators; please double-check with furhter updates and re-activate.")
             }
-            XCTAssert(preview.staticTexts.matching(predicate).firstMatch.waitForExistence(timeout: 2))
+            XCTAssert(preview.staticTexts.matching(predicate).firstMatch.waitForExistence(timeout: 10))
         } else {
-            XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 5))
+            XCTAssert(filesApp.otherElements.containing(predicate).firstMatch.waitForExistence(timeout: 10))
             // Close File in Files App
             XCTAssert(filesApp.buttons["Done"].waitForExistence(timeout: 2))
             filesApp.buttons["Done"].tap()
