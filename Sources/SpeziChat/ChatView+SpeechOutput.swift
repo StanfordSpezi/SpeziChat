@@ -41,7 +41,6 @@ private struct ChatViewSpeechModifier: ViewModifier {
                     case .text(let text):
                         speechSynthesizer.speak(text)
                     case .image:
-                        // TODO???
                         break
                     }
                 } else if lastChatEntity.role == .user {

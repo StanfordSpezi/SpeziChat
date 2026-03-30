@@ -82,45 +82,37 @@ import SwiftUI
 /// }
 /// ```
 public struct ChatView: View {
+    private enum ExportAvailability {
+        /// The export functionality is wholly unavailable
+        case unavailable
+        /// The export functionality is available, and might or might not be enabled.
+        case available(enabled: Bool)
+    }
+    
     @Environment(\.chatViewInsets) private var insets
-    @Binding var chat: Chat
+    @Binding private var chat: Chat
     private let disableInput: Bool
     private let speechToText: Bool
-    let exportFormat: ChatExportFormat?
+    private let exportFormat: ChatExportFormat?
     private let messagePlaceholder: LocalizedStringResource?
     private let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
-    private let hideMessages: MessagesView.HiddenMessages
+    private let hiddenMessages: MessagesView.HiddenMessages
     
     @State private var showShareSheet = false
-    
     @FocusState private var inputTextFieldIsFocused
     
-    
     public var body: some View {
-//        ZStack {
-//            chatView
-//            inputView
-//        }
         chatView
             .safeAreaInset(edge: .bottom) {
                 inputView
             }
         .toolbar {
-            if exportEnabled {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showShareSheet = true
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
-                    }
-                }
-            }
+            toolbar
         }
         .sheet(isPresented: $showShareSheet) {
-            if let exportedChatData, let exportFormat {
+            if let exportFormat, let exportedData = Self.export(chat, as: exportFormat) {
                 #if !os(macOS)
-                ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
+                ShareSheet(sharedItem: exportedData, sharedItemType: exportFormat)
                     .presentationDetents([.medium])
                 #endif
             } else {
@@ -131,10 +123,9 @@ public struct ChatView: View {
         }
         #if os(macOS)
         .onChange(of: showShareSheet) { _, isPresented in
-            if isPresented, let exportedChatData, let exportFormat {
-                let shareSheet = ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
+            if isPresented, let exportFormat, let exportedData = Self.export(chat, as: exportFormat) {
+                let shareSheet = ShareSheet(sharedItem: exportedData, sharedItemType: exportFormat)
                 shareSheet.show()
-                
                 showShareSheet = false
             }
         }
@@ -150,22 +141,26 @@ public struct ChatView: View {
         #endif
     }
     
-    private var exportEnabled: Bool {
-        exportFormat != nil && chat.contains(where: {
-            $0.role == .assistant || $0.role == .user   // Only show export toolbar item if there are visible messages
+    private var exportAvailability: ExportAvailability {
+        guard exportFormat != nil else {
+            return .unavailable
+        }
+        return .available(enabled: chat.contains {
+            // only enable the export toolbar item if there are visible messages
+            $0.role == .assistant || $0.role == .user
         })
     }
     
     private var chatView: some View {
         MessagesView(
             $chat,
-            insets: EdgeInsets( // TODO WTF
+            insets: EdgeInsets(
                 top: insets.top,
                 leading: insets.leading,
-                bottom: insets.bottom + 8,
+                bottom: insets.bottom + 8, // TODO???
                 trailing: insets.trailing
             ),
-            hideMessages: hideMessages,
+            hiddenMessages: hiddenMessages,
             typingIndicator: messagePendingAnimation
         )
         #if !os(macOS)
@@ -175,13 +170,34 @@ public struct ChatView: View {
         #endif
     }
     
-    @ViewBuilder
-    private var inputView: some View {
-        if #available(iOS 26, visionOS 26, *) {
+    @ToolbarContentBuilder private var toolbar: some ToolbarContent {
+        switch exportAvailability {
+        case .unavailable:
+            ToolbarItem { EmptyView() }
+        case .available(let enabled):
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showShareSheet = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
+                }
+                .disabled(!enabled)
+            }
+        }
+    }
+    
+    @ViewBuilder private var inputView: some View {
+        let isMacOS = {
+            #if os(macOS)
+            true
+            #else
+            false
+            #endif
+        }()
+        if !isMacOS, #available(iOS 26, visionOS 26, *) {
             MessageInputView($chat, placeholder: messagePlaceholder, isFocused: $inputTextFieldIsFocused, speechToText: speechToText)
                 .disabled(disableInput)
-//                .padding(.horizontal, inputTextFieldIsFocused ? 12 : 6)
-//                .padding(inputTextFieldIsFocused ? .bottom : [])
         } else {
             LegacyMessageInputView(
                 $chat,
@@ -209,14 +225,14 @@ public struct ChatView: View {
         exportFormat: ChatExportFormat? = nil,
         messagePlaceholder: LocalizedStringResource? = nil,
         messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode? = nil,
-        hideMessages: MessagesView.HiddenMessages = .all
+        hiddenMessages: MessagesView.HiddenMessages = .all
     ) {
         self._chat = chat
         self.disableInput = disableInput
         self.speechToText = speechToText
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
-        self.hideMessages = hideMessages
+        self.hiddenMessages = hiddenMessages
         self.messagePendingAnimation = messagePendingAnimation
     }
 }

@@ -6,15 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
+// swiftlint:disable line_length
+
 import SpeziChat
 import SwiftUI
 
 
 struct ChatTestView: View {
     @State private var chat: Chat = [
-//        ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
-//        ChatEntity(role: .assistantToolCall, text: "Tool Call?"),
-//        ChatEntity(role: .assistantToolResponse, text: "Tool Response?"),
         ChatEntity(role: .assistant, text: "**Assistant** Message!"),
         ChatEntity(role: .user, text: "Can you tell me a short story?"),
         .shortStoryResponse,
@@ -80,8 +79,7 @@ extension ChatEntity {
         "It's not wrong. It's gone." She folded the map carefully. "That's why we draw them."
 
         The apprentice looked at the blank parchment waiting for him and understood: maps weren't just about what *is*. They were about what someone, someday, might need to find again.
-        """
-    )
+        """)
     
     fileprivate static let fibResponse = Self(role: .assistant, text: """
         ```rust
@@ -92,8 +90,7 @@ extension ChatEntity {
             }
         }
         ```
-        """
-    )
+        """)
     
     fileprivate static let weatherResponse = Self(role: .assistant, text: """
         Here's the current weather snapshot:
@@ -112,12 +109,11 @@ extension ChatEntity {
         | 🇫🇷 Paris | 56°F / 13°C | ☁️ Cloudy |
         
         Tokyo's weather data returned an error — you may want to check a weather service directly for that one.
-        """
-    )
+        """)
     
     fileprivate static let imageResponse: Self = {
         guard let url = Bundle.main.url(forResource: "PM5544", withExtension: "png"),
-              let image = UIImage(contentsOfFile: url.path) else {
+              let image = PlatformImage(contentsOfFile: url.path) else {
             return Self(role: .assistant, text: "Unable to find image")
         }
         return Self(role: .assistant, image: image)

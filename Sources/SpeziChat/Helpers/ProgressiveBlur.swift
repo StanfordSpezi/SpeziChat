@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if canImport(UIKit)
+
 import SwiftUI
 
 
@@ -27,7 +29,7 @@ struct ProgressiveBlur: UIViewRepresentable {
     
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
         uiView.effect = UIBlurEffect(style: style)
-        (uiView as! ProgressiveBlurUIView).locations = locations
+        (uiView as? ProgressiveBlurUIView)?.locations = locations // will never be nil
     }
 }
 
@@ -52,6 +54,7 @@ extension ProgressiveBlur {
             layer.mask = gradient
         }
         
+        @available(*, unavailable)
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
@@ -62,3 +65,5 @@ extension ProgressiveBlur {
         }
     }
 }
+
+#endif

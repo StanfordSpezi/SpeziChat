@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-// swiftlint:disable file_type_contents
+// swiftlint:disable file_types_order
 
 import Foundation
 import os
@@ -35,17 +35,20 @@ extension ChatView {
     
 
     /// Chat exported as `Data` in the format specified by ``ChatView/ChatExportFormat``
-    @MainActor var exportedChatData: Data? {
-        switch exportFormat {
-        case .json: jsonChatData
-        case .text: textChatData
-        case .pdf: pdfChatData
-        case .none: nil
+    @MainActor
+    static func export(_ chat: Chat, as format: ChatExportFormat) -> Data? {
+        switch format {
+        case .json:
+            exportToJson(chat)
+        case .text:
+            exportToText(chat)
+        case .pdf:
+            exportToPDF(chat)
         }
     }
     
     /// Exported chat encoded as JSON
-    private var jsonChatData: Data? {
+    private static func exportToJson(_ chat: Chat) -> Data? {
         guard let jsonData = try? Self.encoder.encode(chat) else {
             Self.logger.error("The to be exported chat couldn't be encoded to JSON format!")
             return nil
@@ -54,7 +57,7 @@ extension ChatView {
     }
     
     /// Exported chat encoded as a textual UTF-8
-    private var textChatData: Data? {
+    private static func exportToText(_ chat: Chat) -> Data? {
         let textData = chat.map {
             // Format: <ROLE> (<DATE>): <CONTENT>
             "\($0.role.rawValue.capitalized) (\($0.date.formatted())): \($0.content)"
@@ -69,7 +72,8 @@ extension ChatView {
     }
     
     /// Exported chat rendered as a PDF
-    @MainActor private var pdfChatData: Data? {
+    @MainActor
+    private static func exportToPDF(_ chat: Chat) -> Data? {
         let renderer = ImageRenderer(content: PDFExportChatView(chat: chat))
         #if !os(macOS)
         var proposedHeightOptional = renderer.uiImage?.size.height
@@ -203,6 +207,7 @@ private struct PDFExportChatMessageView: View {
         switch image {
         case .image(let image):
             Image(platformImage: image)
+                .accessibilityHidden(true)
         case .url(let url):
             AsyncImage(url: url)
         }

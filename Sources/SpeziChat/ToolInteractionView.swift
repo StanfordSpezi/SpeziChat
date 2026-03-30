@@ -36,7 +36,7 @@ struct ToolInteractionView: View {
                     .font(.footnote)
                     .lineLimit(isExpanded ? nil : 0)
             case .image:
-                EmptyView() // TODO???
+                EmptyView() // ???
             }
         }
         .padding(.horizontal, 10)
@@ -53,7 +53,6 @@ struct ToolInteractionView: View {
             Image(systemName: "equal")
                 .accessibilityLabel("EQUAL_SIGN")
                 .frame(width: 20)
-            
             Group {
                 switch content {
                 case .text(let text):
@@ -64,7 +63,7 @@ struct ToolInteractionView: View {
                         Text(text)
                     }
                 case .image:
-                    EmptyView() // TODO???
+                    EmptyView() // ???
                 }
             }
             .foregroundStyle(.secondary)

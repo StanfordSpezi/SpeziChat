@@ -55,15 +55,20 @@ public struct MessagesView: View {
         /// Hide all messages with ``ChatEntity/Role-swift.enum/hidden(type:)`` roles (regardless of the specific hidden message type).
         case all
         /// Adjust which types of ``ChatEntity/Role-swift.enum/hidden(type:)`` messages should be hidden.
-        case custom(hiddenMessageTypes: Set<ChatEntity.HiddenMessageType>)
+        case custom(Set<ChatEntity.HiddenMessageType>)
+        
+        /// No messages should be hidden.
+        public static var none: Self {
+            .custom([])
+        }
     }
     
     
     private static let bottomSpacerIdentifier = "Bottom Spacer"
     
-    @Binding var chat: Chat
+    @Binding private var chat: Chat
     private let insets: EdgeInsets
-    private let hideMessages: HiddenMessages
+    private let hiddenMessages: HiddenMessages
     private let typingIndicator: TypingIndicatorDisplayMode?
     
     
@@ -88,11 +93,14 @@ public struct MessagesView: View {
     private var shouldDisplayTypingIndicator: Bool {
         switch self.typingIndicator {
         case .automatic:
-            switch self.chat.last?.role {
-            case .user: true
+            switch chat.last?.role {
+            case .user:
+                true
             // Ensure that the typing indicator is not shown when the chat is empty (only hidden messages present)
-            case .hidden: (self.chat.contains(where: { $0.role == .user || $0.role == .assistant }))
-            default: false
+            case .hidden:
+                chat.contains { $0.role == .user || $0.role == .assistant }
+            default:
+                false
             }
         case .manual(let shouldDisplay):
             shouldDisplay
@@ -106,7 +114,9 @@ public struct MessagesView: View {
             ScrollView {
                 scrollViewContent(for: proxy)
             }
+            #if !os(visionOS)
             .scrollDismissesKeyboard(.interactively)
+            #endif
             // TODO for some reason the view initially is scrolled a bit too far, and the first user interaction makes it jump into place.
             // FIX!!!! SOMEHOW!!!!!
             .defaultScrollAnchor(.bottom)
@@ -123,12 +133,12 @@ public struct MessagesView: View {
     public init(
         _ chat: Binding<Chat>,
         insets: EdgeInsets = EdgeInsets(),
-        hideMessages: HiddenMessages = .all,
+        hiddenMessages: HiddenMessages = .all,
         typingIndicator: TypingIndicatorDisplayMode? = nil
     ) {
         self._chat = chat
         self.insets = insets
-        self.hideMessages = hideMessages
+        self.hiddenMessages = hiddenMessages
         self.typingIndicator = typingIndicator
     }
     
@@ -141,10 +151,15 @@ public struct MessagesView: View {
     public init(
         _ chat: Chat,
         insets: EdgeInsets = EdgeInsets(),
-        hideMessages: HiddenMessages = .all,
+        hiddenMessages: HiddenMessages = .all,
         typingIndicator: TypingIndicatorDisplayMode? = nil
     ) {
-        self.init(.constant(chat), insets: insets, hideMessages: hideMessages, typingIndicator: typingIndicator)
+        self.init(
+            .constant(chat),
+            insets: insets,
+            hiddenMessages: hiddenMessages,
+            typingIndicator: typingIndicator
+        )
     }
 
     
@@ -189,7 +204,7 @@ public struct MessagesView: View {
         case .user, .assistant, .assistantToolCall, .assistantToolResponse:
             false
         case .hidden(let type):
-            switch hideMessages {
+            switch hiddenMessages {
             case .all:
                 true
             case .custom(let hiddenMessageTypes):
@@ -218,7 +233,7 @@ public struct MessagesView: View {
             ChatEntity(role: .assistantToolResponse, text: "Assistant Message!f jiodsjfiods \n fudshfdusi"),
             ChatEntity(role: .assistant, text: "Assistant Message!")
         ],
-        hideMessages: .custom(hiddenMessageTypes: [])
+        hiddenMessages: .none
     )
 }
 #endif

@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+// swiftlint:disable file_types_order missing_docs
+
 import SwiftUI
 
 
@@ -29,14 +31,30 @@ extension Image {
 }
 
 
-public protocol _PlatformImageProtocol: AnyObject {
+/// Common operations we want to have available across `UIImage` and `NSImage`.
+public protocol _PlatformImageProtocol: AnyObject { // swiftlint:disable:this type_name
     init?(data: Data)
     init?(contentsOfFile: String)
     func pngData() -> Data?
 }
 
+
 #if canImport(UIKit)
+
 extension UIImage: _PlatformImageProtocol {}
+
 #elseif canImport(AppKit)
-extension NSImage: _PlatformImageProtocol {}
+
+extension NSImage: _PlatformImageProtocol {
+    public func pngData() -> Data? {
+        guard let tiff = tiffRepresentation else {
+            return nil
+        }
+        guard let bitmapRep = NSBitmapImageRep(data: tiff) else {
+            return nil
+        }
+        return bitmapRep.representation(using: .png, properties: [:])
+    }
+}
+
 #endif

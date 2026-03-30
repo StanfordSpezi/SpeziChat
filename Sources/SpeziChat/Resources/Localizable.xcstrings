@@ -21,6 +21,9 @@
         }
       }
     },
+    "Attach Files" : {
+
+    },
     "Copy" : {
 
     },
@@ -89,6 +92,9 @@
           }
         }
       }
+    },
+    "Image" : {
+
     },
     "MESSAGE_INPUT_TEXTFIELD" : {
       "localizations" : {
@@ -179,9 +185,6 @@
       }
     },
     "Share" : {
-
-    },
-    "Show More" : {
 
     },
     "Speak" : {

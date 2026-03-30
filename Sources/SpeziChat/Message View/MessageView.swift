@@ -76,14 +76,31 @@ private struct AssistantMessageView: View {
     }
     
     private var actions: some View {
-        HStack {
+        HStack { // swiftlint:disable:this closure_body_length
             makeAction("Copy", symbolName: "document.on.document") {
                 switch message.content {
                 case .text(let text):
+                    #if canImport(UIKit)
                     UIPasteboard.general.string = text
-                case .image:
-                    // TODO!
-                    break
+                    #elseif canImport(AppKit)
+                    let pasteboard = NSPasteboard.general
+                    pasteboard.clearContents()
+                    pasteboard.setString(text, forType: .string)
+                    #endif
+                case .image(let image):
+                    switch image {
+                    case .image(let image):
+                        #if canImport(UIKit)
+                        UIPasteboard.general.image = image
+                        #elseif canImport(AppKit)
+                        let pasteboard = NSPasteboard.general
+                        pasteboard.clearContents()
+                        pasteboard.writeObjects([image])
+                        #endif
+                    case .url(let url):
+                        // TODO
+                        break
+                    }
                 }
             }
             makeAction("Share", symbolName: "square.and.arrow.up") {

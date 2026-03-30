@@ -9,7 +9,7 @@
 import AVFoundation
 import PhotosUI
 import Speech
-@_spi(TestingSupport) import SpeziFoundation
+import SpeziFoundation
 import SpeziSpeechRecognizer
 import SpeziViews
 import SwiftUI
@@ -30,7 +30,7 @@ import SwiftUI
 ///     var body: some View {
 ///         VStack {
 ///             Spacer()
-///             MessageInputView($chat, messagePlaceholder: "TestMessage")
+///             MessageInputView($chat, placeholder: "TestMessage")
 ///                 .disabled(disableInput)
 ///         }
 ///     }
@@ -47,13 +47,17 @@ struct MessageInputView: View {
     
     @FocusState<Bool>.Binding private var textFieldIsFocused: Bool
     
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 12) {
             inputTextField
             controls
         }
         .padding()
+        #if os(iOS)
         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 24))
+        #elseif os(visionOS)
+        .glassBackgroundEffect(in: RoundedRectangle(cornerRadius: 24))
+        #endif
         .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.75), radius: 0)
         // we want the entire thing to act as a big button where, regardless of where you tap, it always makes the text field first responder.
         .contentShape(Rectangle())
@@ -62,6 +66,7 @@ struct MessageInputView: View {
         }
         .padding(.horizontal, textFieldIsFocused ? 12 : 6)
         .padding(textFieldIsFocused ? .bottom : [])
+        #if canImport(UIKit)
         .background {
             // blur out the scroll view content, as it disappears behind the input overlay.
             // needed bc there is some spacing between the bottom edge of the overlay and the bottom edge of the screen.
@@ -69,6 +74,7 @@ struct MessageInputView: View {
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
         }
+        #endif
     }
     
     
@@ -77,18 +83,6 @@ struct MessageInputView: View {
             .accessibilityLabel(String(localized: "MESSAGE_INPUT_TEXTFIELD", bundle: .module))
             .frame(maxWidth: .infinity)
             .focused($textFieldIsFocused)
-            .onSubmit(of: .text) {
-                sendMessageButtonPressed()
-            }
-//            #if os(visionOS)
-//            // Workaround on visionOS as UI tests are not able to properly set focus on `TextField`
-//            .if(RuntimeConfig.testMode) { view in
-//                view
-//                    .onTapGesture {
-//                        inputFieldFocus = true
-//                    }
-//            }
-//            #endif
     }
     
     
@@ -103,14 +97,14 @@ struct MessageInputView: View {
     }
     
     private var attachResourceButton: some View {
-        // NOTE: We have a `FilePicker` Button/API in SpeziQuestionnaire, which might be useful here?!
         _FilePicker([.image], allowMultipleSelection: true) { items in
             // TODO
         } label: { _ in
-            Image(systemName: "plus")
+            SwiftUI.Label("Attach Files", systemImage: "plus")
         }
         .buttonStyle(.bordered)
         .buttonBorderShape(.circle)
+        .labelStyle(.iconOnly)
         .disabled(true)
     }
     
@@ -124,6 +118,7 @@ struct MessageInputView: View {
                 .foregroundColor(sendButtonForegroundColor)
         }
         .disabled(message.isEmpty)
+        .keyboardShortcut(.return, modifiers: .command)
     }
     
     private var microphoneButton: some View {
@@ -165,7 +160,7 @@ struct MessageInputView: View {
     ///   - speechToText: Enables speech-to-text (recognition) capabilities of the input field.
     init(
         _ chat: Binding<Chat>,
-        placeholder: LocalizedStringResource? = nil,
+        placeholder: LocalizedStringResource? = nil, // swiftlint:disable:this function_default_parameter_at_end
         isFocused: FocusState<Bool>.Binding,
         speechToText: Bool = true
     ) {
@@ -219,7 +214,7 @@ struct MessageInputView: View {
         #endif
         VStack {
             MessagesView($chat)
-            if #available(iOS 26, *) {
+            if #available(iOS 26, visionOS 26, *) {
                 MessageInputView($chat, isFocused: $isFocused)
             }
         }

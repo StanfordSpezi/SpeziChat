@@ -25,8 +25,7 @@ struct LegacyMessageInputView: View {
     @State private var message: String = ""
     @FocusState<Bool>.Binding private var textFieldIsFocused: Bool
     
-    
-    public var body: some View {
+    var body: some View {
         HStack(alignment: .bottom) {    // swiftlint:disable:this closure_body_length
             TextField(messagePlaceholder, text: $message, axis: .vertical)
                 .focused($textFieldIsFocused)
@@ -63,7 +62,7 @@ struct LegacyMessageInputView: View {
                 .if(RuntimeConfig.testMode) { view in
                     view
                         .onTapGesture {
-                            inputFieldFocus = true
+                            textFieldIsFocused = true
                         }
                 }
                 #endif
@@ -148,7 +147,7 @@ struct LegacyMessageInputView: View {
     ///   - speechToText: Enables speech-to-text (recognition) capabilities of the input field.
     init(
         _ chat: Binding<Chat>,
-        messagePlaceholder: String? = nil,
+        messagePlaceholder: String? = nil, // swiftlint:disable:this function_default_parameter_at_end
         isFocused: FocusState<Bool>.Binding,
         speechToText: Bool = true
     ) {

@@ -41,14 +41,15 @@ public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
         }
     }
     
+    // TODO what about a textual chat message that has images attached to it?
     public enum Content: Hashable, Sendable {
+        case text(String)
+        case image(Image)
+        
         public enum Image: Hashable, Sendable {
             case image(PlatformImage)
             case url(URL)
         }
-        case text(String)
-        // TODO how do we want this represented? the image directly? a URL? smth else entirely?
-        case image(Image)
         
         /// The content's text, if applicable
         public var text: String? {
