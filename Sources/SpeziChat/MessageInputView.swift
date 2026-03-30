@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import PhotosUI
 import Speech
 @_spi(TestingSupport) import SpeziFoundation
 import SpeziSpeechRecognizer
@@ -19,8 +20,6 @@ import SwiftUI
 ///
 /// The input can be either typed out via the iOS keyboard or, if enabled (which is the case by default), provided as voice input and transcribed into written text via the [`SpeziSpeech`](https://github.com/StanfordSpezi/SpeziSpeech) module.
 ///
-/// One can get the size of the typed message, which can vary dependent on the message length, via the ``MessageInputViewHeightKey`` SwiftUI PreferenceKey`.
-///
 /// ### Usage
 ///
 /// ```swift
@@ -28,142 +27,120 @@ import SwiftUI
 ///     @State private var chat: Chat = []
 ///     @State private var disableInput = false
 ///
-///
 ///     var body: some View {
 ///         VStack {
 ///             Spacer()
 ///             MessageInputView($chat, messagePlaceholder: "TestMessage")
 ///                 .disabled(disableInput)
-///                 /// Get the height of the `MessageInputView` via a SwiftUI `PreferenceKey`
-///                 /// Indicates the height of the input message field, necessary for properly shifting other view content.
-///                 .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-///                     let messageInputHeight: CGFloat = newValue
-///                     // ...
-///                 }
 ///         }
 ///     }
 /// }
 /// ```
-public struct MessageInputView: View {
+@available(iOS 26, visionOS 26, *)
+struct MessageInputView: View {
     @Binding private var chat: Chat
-    private let messagePlaceholder: String
+    private let placeholder: LocalizedStringResource
     private let speechToText: Bool
     
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var message: String = ""
-    @State private var messageViewHeight: CGFloat = 0
-    #if os(visionOS)
-    @FocusState private var inputFieldFocus: Bool
-    #endif
     
+    @FocusState<Bool>.Binding private var textFieldIsFocused: Bool
     
     public var body: some View {
-        HStack(alignment: .bottom) {    // swiftlint:disable:this closure_body_length
-            TextField(messagePlaceholder, text: $message, axis: .vertical)
-                .accessibilityLabel(String(localized: "MESSAGE_INPUT_TEXTFIELD", bundle: .module))
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 12)
-                #if !os(visionOS)
-                .padding(.vertical, 8)
-                #else
-                .padding(.vertical, 12)
-                #endif
-                .background {
-                    RoundedRectangle(cornerRadius: 20)
-                        #if !os(macOS)
-                        .stroke(Color(.systemGray2), lineWidth: 0.2)
-                        #else
-                        .stroke(Color(.secondarySystemFill), lineWidth: 0.2)
-                        #endif
-                        .background {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.white.opacity(0.2))
-                        }
-                        #if os(iOS)
-                        // Place speech / send button within message text box on iOS
-                        .padding(.trailing, -42)
-                        #endif
-                }
-                .lineLimit(1...5)
-                #if os(visionOS)
-                // Workaround on visionOS as UI tests are not able to properly set focus on `TextField`
-                .if(RuntimeConfig.testMode) { view in
-                    view
-                        .focused($inputFieldFocus)
-                        .onTapGesture {
-                            inputFieldFocus = true
-                        }
-                }
-                #endif
-            Group {
-                if speechToText,
-                   speechRecognizer.isAvailable,
-                   message.isEmpty || speechRecognizer.isRecording {
-                    microphoneButton
-                } else {
-                    sendButton
-                        .disabled(message.isEmpty)
-                }
-            }
-                .frame(minWidth: 33)
+        VStack(spacing: 12) {
+            inputTextField
+            controls
         }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 6)
-            .background(.thinMaterial)
-            .background {
-                GeometryReader { proxy in
-                    Color.clear
-                        .onAppear {
-                            messageViewHeight = proxy.size.height
-                        }
-                        .onChange(of: message) {
-                            messageViewHeight = proxy.size.height
-                        }
-                }
-            }
-            .messageInputViewHeight(messageViewHeight)
-            #if os(macOS)
-            .onSubmit {
-                sendMessageButtonPressed()
-            }
-            #endif
+        .padding()
+        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 24))
+        .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.75), radius: 0)
+        // we want the entire thing to act as a big button where, regardless of where you tap, it always makes the text field first responder.
+        .contentShape(Rectangle())
+        .onTapGesture {
+            textFieldIsFocused = true
+        }
+        .padding(.horizontal, textFieldIsFocused ? 12 : 6)
+        .padding(textFieldIsFocused ? .bottom : [])
+        .background {
+            // blur out the scroll view content, as it disappears behind the input overlay.
+            // needed bc there is some spacing between the bottom edge of the overlay and the bottom edge of the screen.
+            ProgressiveBlur()
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+        }
     }
     
     
-    private var sendButton: some View {
-        Button(
-            action: {
+    private var inputTextField: some View {
+        TextField(placeholder, text: $message, axis: .vertical)
+            .accessibilityLabel(String(localized: "MESSAGE_INPUT_TEXTFIELD", bundle: .module))
+            .frame(maxWidth: .infinity)
+            .focused($textFieldIsFocused)
+            .onSubmit(of: .text) {
                 sendMessageButtonPressed()
-            },
-            label: {
-                Image(systemName: "arrow.up.circle.fill")
-                    .accessibilityLabel(String(localized: "SEND_MESSAGE", bundle: .module))
-                    .font(.title)
-                    .foregroundColor(sendButtonForegroundColor)
             }
-        )
-            .offset(x: -2, y: -3)
+//            #if os(visionOS)
+//            // Workaround on visionOS as UI tests are not able to properly set focus on `TextField`
+//            .if(RuntimeConfig.testMode) { view in
+//                view
+//                    .onTapGesture {
+//                        inputFieldFocus = true
+//                    }
+//            }
+//            #endif
+    }
+    
+    
+    private var controls: some View {
+        HStack {
+            attachResourceButton
+            Spacer()
+            // TODO only sjow tjos cpnditionlly? (or have it append to the already entered text?)
+            microphoneButton
+            sendButton
+        }
+    }
+    
+    private var attachResourceButton: some View {
+        // NOTE: We have a `FilePicker` Button/API in SpeziQuestionnaire, which might be useful here?!
+        _FilePicker([.image], allowMultipleSelection: true) { items in
+            // TODO
+        } label: { _ in
+            Image(systemName: "plus")
+        }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.circle)
+        .disabled(true)
+    }
+    
+    private var sendButton: some View {
+        Button {
+            sendMessageButtonPressed()
+        } label: {
+            Image(systemName: "arrow.up.circle.fill")
+                .accessibilityLabel(String(localized: "SEND_MESSAGE", bundle: .module))
+                .font(.title)
+                .foregroundColor(sendButtonForegroundColor)
+        }
+        .disabled(message.isEmpty)
     }
     
     private var microphoneButton: some View {
-        Button(
-            action: {
-                microphoneButtonPressed()
-            },
-            label: {
-                Image(systemName: "mic.fill")
-                    .accessibilityLabel(String(localized: "MICROPHONE_BUTTON", bundle: .module))
-                    .font(.title2)
-                    .foregroundColor(microphoneForegroundColor)
-                    .scaleEffect(speechRecognizer.isRecording ? 1.2 : 1.0)
-                    .opacity(speechRecognizer.isRecording ? 0.7 : 1.0)
-                    .animation(
-                        speechRecognizer.isRecording ? .easeInOut(duration: 0.5).repeatForever(autoreverses: true) : .default,
-                        value: speechRecognizer.isRecording
-                    )
-            }
-        )
-            .offset(x: -4, y: -6)
+        Button {
+            microphoneButtonPressed()
+        } label: {
+            Image(systemName: "mic.fill")
+                .accessibilityLabel(String(localized: "MICROPHONE_BUTTON", bundle: .module))
+                .font(.title2)
+                .foregroundColor(microphoneForegroundColor)
+                .scaleEffect(speechRecognizer.isRecording ? 1.2 : 1.0)
+                .opacity(speechRecognizer.isRecording ? 0.7 : 1.0)
+                .animation(
+                    speechRecognizer.isRecording ? .easeInOut(duration: 0.5).repeatForever(autoreverses: true) : .default,
+                    value: speechRecognizer.isRecording
+                )
+        }
     }
     
     private var sendButtonForegroundColor: Color {
@@ -184,38 +161,38 @@ public struct MessageInputView: View {
     
     /// - Parameters:
     ///   - chat: The chat that should be appended to.
-    ///   - messagePlaceholder: Placeholder text that should be added in the input field
+    ///   - placeholder: Placeholder text that should be added in the input field
     ///   - speechToText: Enables speech-to-text (recognition) capabilities of the input field.
-    public init(
+    init(
         _ chat: Binding<Chat>,
-        messagePlaceholder: String? = nil,
+        placeholder: LocalizedStringResource? = nil,
+        isFocused: FocusState<Bool>.Binding,
         speechToText: Bool = true
     ) {
         self._chat = chat
-        self.messagePlaceholder = messagePlaceholder ?? "Message"
+        self.placeholder = placeholder ?? LocalizedStringResource("Type Your Message…", bundle: .module)
+        self._textFieldIsFocused = isFocused
         self.speechToText = speechToText
     }
     
     
     private func sendMessageButtonPressed() {
         speechRecognizer.stop()
-        chat.append(ChatEntity(role: .user, content: message))
+        chat.append(ChatEntity(role: .user, text: message))
         message = ""
     }
     
     private func microphoneButtonPressed() {
-        if speechRecognizer.isRecording {
+        guard !speechRecognizer.isRecording else {
             speechRecognizer.stop()
-        } else {
-            Task {
-                do {
-                    for try await result in speechRecognizer.start() {
-                        if result.bestTranscription.formattedString.contains("send") {
-                            sendMessageButtonPressed()
-                        } else {
-                            message = result.bestTranscription.formattedString
-                        }
-                    }
+            return
+        }
+        Task {
+            for try await result in speechRecognizer.start() {
+                if result.bestTranscription.formattedString.contains("send") {
+                    sendMessageButtonPressed()
+                } else {
+                    message = result.bestTranscription.formattedString
                 }
             }
         }
@@ -226,13 +203,13 @@ public struct MessageInputView: View {
 #if DEBUG
 #Preview {
     @Previewable @State var chat = [
-        ChatEntity(role: .user, content: "User Message!"),
-        ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
-        ChatEntity(role: .assistant, content: "Assistant Message!")
+        ChatEntity(role: .user, text: "User Message!"),
+        ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
+        ChatEntity(role: .assistant, text: "Assistant Message!")
     ]
+    @Previewable @FocusState var isFocused
     
-    
-    return ZStack {
+    ZStack {
         #if !os(macOS)
         Color(.secondarySystemBackground)
             .ignoresSafeArea()
@@ -240,14 +217,12 @@ public struct MessageInputView: View {
         Color(.secondarySystemFill)
             .ignoresSafeArea()
         #endif
-        
         VStack {
             MessagesView($chat)
-            MessageInputView($chat)
-        }
-            .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-                print("New MessageView height: \(newValue)")
+            if #available(iOS 26, *) {
+                MessageInputView($chat, isFocused: $isFocused)
             }
+        }
     }
 }
 #endif

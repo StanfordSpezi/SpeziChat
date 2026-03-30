@@ -22,10 +22,8 @@ extension ChatEntity {
         /// Default ``HiddenMessageType``.
         public static let unknown = HiddenMessageType(name: "unknown")
         
-        
         /// The name of the type of the ``HiddenMessageType``.
         public let name: String
-        
         
         /// Initializer of the ``ChatEntity/HiddenMessageType``
         /// - Parameters:

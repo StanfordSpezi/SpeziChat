@@ -62,15 +62,15 @@ public struct TypingIndicator: View {
 #Preview {
     ScrollView {
         VStack {
-            MessageView(ChatEntity(role: .user, content: "User Message!"))
-            MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
-            MessageView(ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"))
-            MessageView(
+            PlainMessageView(ChatEntity(role: .user, text: "User Message!"))
+            PlainMessageView(ChatEntity(role: .assistant, text: "Assistant Message!"))
+            PlainMessageView(ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"))
+            PlainMessageView(
                 ChatEntity(
                     role: .hidden(type: .unknown),
-                    content: "Hidden message! (visible)"
+                    text: "Hidden message! (visible)"
                 ),
-                hideMessages: .custom(hiddenMessageTypes: [])
+//                hideMessages: .custom(hiddenMessageTypes: [])
             )
             TypingIndicator()
         }

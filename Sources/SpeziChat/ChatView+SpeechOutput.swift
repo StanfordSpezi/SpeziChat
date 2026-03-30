@@ -37,7 +37,13 @@ private struct ChatViewSpeechModifier: ViewModifier {
                 }
                 
                 if lastChatEntity.role == .assistant {
-                    speechSynthesizer.speak(lastChatEntity.content)
+                    switch lastChatEntity.content {
+                    case .text(let text):
+                        speechSynthesizer.speak(text)
+                    case .image:
+                        // TODO???
+                        break
+                    }
                 } else if lastChatEntity.role == .user {
                     speechSynthesizer.stop()
                 }
@@ -117,13 +123,12 @@ extension View {
 #Preview("ChatView") {
     @Previewable @State var chat: Chat = .init(
         [
-            ChatEntity(role: .user, content: "User Message!"),
-            ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
-            ChatEntity(role: .assistant, content: "Assistant Message!")
+            ChatEntity(role: .user, text: "User Message!"),
+            ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
+            ChatEntity(role: .assistant, text: "Assistant Message!")
         ]
     )
-    
-    return NavigationStack {
+    NavigationStack {
         ChatView($chat)
     }
 }
@@ -131,13 +136,12 @@ extension View {
 #Preview("ChatViewSpeechOutput") {
     @Previewable @State var chat: Chat = .init(
         [
-            ChatEntity(role: .assistant, content: "Assistant Message!")
+            ChatEntity(role: .assistant, text: "Assistant Message!")
         ]
     )
     @Previewable @State var muted = false
     
-    
-    return NavigationStack {
+    NavigationStack {
         ChatView($chat)
             .speak(chat, muted: muted)
     }
@@ -146,13 +150,12 @@ extension View {
 #Preview("ChatViewSpeechOutputDisabled") {
     @Previewable @State var chat: Chat = .init(
         [
-            ChatEntity(role: .assistant, content: "Assistant Message!")
+            ChatEntity(role: .assistant, text: "Assistant Message!")
         ]
     )
     @Previewable @State var muted = true
     
-    
-    return NavigationStack {
+    NavigationStack {
         ChatView($chat)
             .speak(chat, muted: muted)
     }
