@@ -88,24 +88,11 @@ struct MessageInputView: View {
     
     private var controls: some View {
         HStack {
-            attachResourceButton
             Spacer()
             // TODO only sjow tjos cpnditionlly? (or have it append to the already entered text?)
             microphoneButton
             sendButton
         }
-    }
-    
-    private var attachResourceButton: some View {
-        _FilePicker([.image], allowMultipleSelection: true) { items in
-            // TODO
-        } label: { _ in
-            SwiftUI.Label("Attach Files", systemImage: "plus")
-        }
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.circle)
-        .labelStyle(.iconOnly)
-        .disabled(true)
     }
     
     private var sendButton: some View {
