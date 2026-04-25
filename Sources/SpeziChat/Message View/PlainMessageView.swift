@@ -48,11 +48,11 @@ extension PlainMessageView {
     ScrollView {
         VStack {
             PlainMessageView(ChatEntity(role: .user, text: "User Message!"))
-            PlainMessageView(ChatEntity(role: .assistant, text: "Assistant Message!"))
+            PlainMessageView(ChatEntity(role: .assistant(.response), text: "Assistant Message!"))
             PlainMessageView(ChatEntity(role: .user, text: "Long User Message that spans over two lines!"))
-            PlainMessageView(ChatEntity(role: .assistant, text: "Long Assistant Message that spans over two lines!"))
-            PlainMessageView(ChatEntity(role: .assistantToolCall, text: "assistent_too_call(parameter: value)"))
-            PlainMessageView(ChatEntity(role: .assistantToolResponse, text: """
+            PlainMessageView(ChatEntity(role: .assistant(.response), text: "Long Assistant Message that spans over two lines!"))
+            PlainMessageView(ChatEntity(role: .assistant(.toolCall), text: "assistent_too_call(parameter: value)"))
+            PlainMessageView(ChatEntity(role: .assistant(.toolResponse), text: """
             {
                 "some": "response"
             }

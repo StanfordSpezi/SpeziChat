@@ -36,7 +36,7 @@ private struct ChatViewSpeechModifier: ViewModifier {
                     return
                 }
                 
-                if lastChatEntity.role == .assistant {
+                if lastChatEntity.role == .assistant(.response) {
                     switch lastChatEntity.content {
                     case .text(let text):
                         speechSynthesizer.speak(text)
@@ -122,7 +122,7 @@ extension View {
         [
             ChatEntity(role: .user, text: "User Message!"),
             ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
-            ChatEntity(role: .assistant, text: "Assistant Message!")
+            ChatEntity(role: .assistant(.response), text: "Assistant Message!")
         ]
     )
     NavigationStack {
@@ -133,7 +133,7 @@ extension View {
 #Preview("ChatViewSpeechOutput") {
     @Previewable @State var chat: Chat = .init(
         [
-            ChatEntity(role: .assistant, text: "Assistant Message!")
+            ChatEntity(role: .assistant(.response), text: "Assistant Message!")
         ]
     )
     @Previewable @State var muted = false
@@ -147,7 +147,7 @@ extension View {
 #Preview("ChatViewSpeechOutputDisabled") {
     @Previewable @State var chat: Chat = .init(
         [
-            ChatEntity(role: .assistant, text: "Assistant Message!")
+            ChatEntity(role: .assistant(.response), text: "Assistant Message!")
         ]
     )
     @Previewable @State var muted = true

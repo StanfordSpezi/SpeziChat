@@ -28,9 +28,9 @@ struct MessageView: View {
                 switch message.role {
                 case .user:
                     UserMessageView(message)
-                case .assistant, .hidden:
+                case .assistant(.response), .hidden:
                     AssistantMessageView(message)
-                case .assistantToolCall, .assistantToolResponse:
+                case .assistant(.toolCall), .assistant(.toolResponse):
                     ToolInteractionView(entity: message)
                 }
             }

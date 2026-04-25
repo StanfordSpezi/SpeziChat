@@ -15,9 +15,9 @@ struct ToolInteractionView: View {
     
     var body: some View {
         switch entity.role {
-        case .assistantToolCall:
+        case .assistant(.toolCall):
             toolCallView(content: entity.content)
-        case .assistantToolResponse:
+        case .assistant(.toolResponse):
             toolResponseView(content: entity.content)
         default:
             EmptyView()

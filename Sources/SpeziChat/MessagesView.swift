@@ -180,6 +180,7 @@ public struct MessagesView: View {
             if shouldDisplayTypingIndicator {
                 TypingIndicator()
             }
+            // TODO need to have a spacer here to push things up when the chat is very short
             Spacer()
                 .frame(height: insets.bottom)
                 .id(MessagesView.bottomSpacerIdentifier)
@@ -200,8 +201,9 @@ public struct MessagesView: View {
     }
     
     private func shouldHide(_ message: ChatEntity) -> Bool {
-        switch message.role {
-        case .user, .assistant, .assistantToolCall, .assistantToolResponse:
+        return false
+        return switch message.role {
+        case .user, .assistant(.response), .assistant(.toolCall), .assistant(.toolResponse):
             false
         case .hidden(let type):
             switch hiddenMessages {
@@ -214,13 +216,12 @@ public struct MessagesView: View {
     }
 }
 
-
 #if DEBUG
 #Preview("Regular Message View") {
     MessagesView([
         ChatEntity(role: .user, text: "User Message!"),
         ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
-        ChatEntity(role: .assistant, text: "Assistant Message!")
+        ChatEntity(role: .assistant(.response), text: "Assistant Message!")
     ])
 }
 
@@ -229,9 +230,9 @@ public struct MessagesView: View {
         [
             ChatEntity(role: .user, text: "User Message!"),
             ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message (but still visible)!"),
-            ChatEntity(role: .assistantToolCall, text: "Assistant Message!"),
-            ChatEntity(role: .assistantToolResponse, text: "Assistant Message!f jiodsjfiods \n fudshfdusi"),
-            ChatEntity(role: .assistant, text: "Assistant Message!")
+            ChatEntity(role: .assistant(.toolCall), text: "Assistant Message!"),
+            ChatEntity(role: .assistant(.toolResponse), text: "Assistant Message!f jiodsjfiods \n fudshfdusi"),
+            ChatEntity(role: .assistant(.response), text: "Assistant Message!")
         ],
         hiddenMessages: .none
     )

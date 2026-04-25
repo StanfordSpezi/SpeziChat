@@ -166,7 +166,7 @@ private struct PDFExportChatMessageView: View {
                     Text("\(type.name.capitalized) (hidden): \(message.date.formatted())")
                         .font(.caption)
                         .foregroundColor(.gray)
-                case .user, .assistant, .assistantToolCall, .assistantToolResponse:
+                case .user, .assistant(.response), .assistant(.toolCall), .assistant(.toolResponse), .assistant(.thinking):
                     Text("\(message.role.rawValue.capitalized): \(message.date.formatted())")
                         .font(.caption)
                         .foregroundColor(.gray)

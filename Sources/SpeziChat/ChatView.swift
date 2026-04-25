@@ -7,7 +7,6 @@
 //
 
 private import SpeziFoundation
-private import SpeziSpeechSynthesizer
 public import SwiftUI
 
 
@@ -147,7 +146,7 @@ public struct ChatView: View {
         }
         return .available(enabled: chat.contains {
             // only enable the export toolbar item if there are visible messages
-            $0.role == .assistant || $0.role == .user
+            $0.role == .assistant(.response) || $0.role == .user
         })
     }
     
@@ -268,7 +267,7 @@ extension View {
                 [
                     ChatEntity(role: .user, text: "User Message!"),
                     ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
-                    ChatEntity(role: .assistant, text: "Assistant Message!")
+                    ChatEntity(role: .assistant(.response), text: "Assistant Message!")
                 ]
             ),
             exportFormat: .pdf

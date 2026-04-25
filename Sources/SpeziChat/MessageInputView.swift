@@ -187,7 +187,7 @@ struct MessageInputView: View {
     @Previewable @State var chat = [
         ChatEntity(role: .user, text: "User Message!"),
         ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
-        ChatEntity(role: .assistant, text: "Assistant Message!")
+        ChatEntity(role: .assistant(.response), text: "Assistant Message!")
     ]
     @Previewable @FocusState var isFocused
     

@@ -23,7 +23,7 @@ extension ChatEntity {
         switch self.role {
         case .user:
             .trailing
-        case .assistant, .assistantToolCall, .assistantToolResponse, .hidden:
+        case .assistant, .hidden:
             .leading
         }
     }

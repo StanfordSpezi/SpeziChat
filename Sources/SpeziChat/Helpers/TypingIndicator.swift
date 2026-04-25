@@ -62,7 +62,7 @@ struct TypingIndicator: View {
     ScrollView {
         VStack {
             PlainMessageView(ChatEntity(role: .user, text: "User Message!"))
-            PlainMessageView(ChatEntity(role: .assistant, text: "Assistant Message!"))
+            PlainMessageView(ChatEntity(role: .assistant(.response), text: "Assistant Message!"))
             PlainMessageView(ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"))
             PlainMessageView(
                 ChatEntity(

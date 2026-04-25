@@ -25,18 +25,40 @@ public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
     public enum Role: Hashable, Codable, Sendable {
         case user
-        case assistant
-        case assistantToolCall
-        case assistantToolResponse
+        case assistant(AssistantMessageKind)
         case hidden(type: ChatEntity.HiddenMessageType)
+        
+        public enum AssistantMessageKind: Hashable, Codable, Sendable {
+            case response
+            case toolCall
+            case toolResponse
+        }
+        
+        @available(*, deprecated, message: "use .assistant(.response) instead!")
+        public static var assistant: Self {
+            .assistant(.response)
+        }
+        @available(*, deprecated, message: "use .assistant(.toolCall) instead!")
+        public static var assistantToolCall: Self {
+            .assistant(.toolCall)
+        }
+        @available(*, deprecated, message: "use .assistant(.toolResponse) instead!")
+        public static var assistantToolResponse: Self {
+            .assistant(.toolResponse)
+        }
         
         var rawValue: String {
             switch self {
-            case .user: "user"
-            case .assistant: "assistant"
-            case .assistantToolCall: "assistant_tool_call"
-            case .assistantToolResponse: "assistant_tool_response"
-            case .hidden(let type): "hidden_\(type.name)"
+            case .user:
+                "user"
+            case .assistant(.response):
+                "assistant"
+            case .assistant(.toolCall):
+                "assistant_tool_call"
+            case .assistant(.toolResponse):
+                "assistant_tool_response"
+            case .hidden(let type):
+                "hidden_\(type.name)"
             }
         }
     }
