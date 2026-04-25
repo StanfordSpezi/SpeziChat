@@ -29,7 +29,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziSpeech.git", from: "1.1.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.12.14"),
-        .package(url: "https://github.com/gonzalezreal/textual.git", from: "0.3.1")
+        .package(url: "https://github.com/gonzalezreal/textual.git", .upToNextMinor(from: "0.3.1"))
     ] + swiftLintPackage,
     targets: [
         .target(
