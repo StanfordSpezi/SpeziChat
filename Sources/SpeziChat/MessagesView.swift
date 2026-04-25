@@ -98,7 +98,7 @@ public struct MessagesView: View {
                 true
             // Ensure that the typing indicator is not shown when the chat is empty (only hidden messages present)
             case .hidden:
-                chat.contains { $0.role == .user || $0.role == .assistant }
+                chat.contains { $0.role == .user || $0.role == .assistant(.response) }
             default:
                 false
             }
@@ -201,9 +201,13 @@ public struct MessagesView: View {
     }
     
     private func shouldHide(_ message: ChatEntity) -> Bool {
-        return false
-        return switch message.role {
+        switch message.role {
         case .user, .assistant(.response), .assistant(.toolCall), .assistant(.toolResponse):
+            false
+        case .assistant(.thinking):
+            // We only show thinking messages while the operation is still active.
+            // Once it completes, the chat entity is no longer displayed.
+//            message.complete
             false
         case .hidden(let type):
             switch hiddenMessages {

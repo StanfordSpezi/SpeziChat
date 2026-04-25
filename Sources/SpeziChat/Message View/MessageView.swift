@@ -30,6 +30,8 @@ struct MessageView: View {
                     UserMessageView(message)
                 case .assistant(.response), .hidden:
                     AssistantMessageView(message)
+                case .assistant(.thinking):
+                    AssistantThinkingIndicator(message: message)
                 case .assistant(.toolCall), .assistant(.toolResponse):
                     ToolInteractionView(entity: message)
                 }
@@ -77,17 +79,17 @@ private struct AssistantMessageView: View {
     
     private var actions: some View {
         HStack { // swiftlint:disable:this closure_body_length
-            makeAction("Copy", symbolName: "document.on.document") {
+            makeAction(LocalizedStringResource("Copy", bundle: .module), symbolName: "document.on.document") {
                 message.content.copyToPasteboard()
             }
-            makeAction("Share", symbolName: "square.and.arrow.up") {
+            makeAction(LocalizedStringResource("Share", bundle: .module), symbolName: "square.and.arrow.up") {
                 switch message.content {
                 case .text(let text):
                     shareSheetInput = .init(text)
                 }
             }
             .shareSheet(item: $shareSheetInput)
-            makeAction("Speak", symbolName: "speaker.wave.2") {
+            makeAction(LocalizedStringResource("Speak", bundle: .module), symbolName: "speaker.wave.2") {
                 // TODO speak!
             }
         }
@@ -109,5 +111,32 @@ private struct AssistantMessageView: View {
         }
         .labelStyle(.iconOnly)
         .buttonStyle(.plain)
+    }
+}
+
+
+private struct AssistantThinkingIndicator: View {
+    let message: ChatEntity
+    
+    var body: some View {
+        switch message.role {
+        case .assistant(.thinking(let startDate)):
+            HStack {
+                Text("Thinking…", bundle: .module)
+                    .foregroundStyle(message.complete ? .green : .red)
+                if let startDate {
+                    timer(withStartDate: startDate)
+                }
+            }
+            .foregroundStyle(.secondary)
+            // NOTE: if, at some point in the future, the OpenAI API also live-exposes the thinking process for reasoning models,
+            // we could display that here.
+        default:
+            EmptyView()
+        }
+    }
+    
+    private func timer(withStartDate startDate: Date) -> some View {
+        Text(timerInterval: startDate...(.distantFuture), pauseTime: nil, countsDown: false, showsHours: false)
     }
 }

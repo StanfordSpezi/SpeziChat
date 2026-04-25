@@ -139,6 +139,7 @@ private struct PDFExportChatView: View {
         // The SwiftUI `ImageRenderer` doesn't support SwiftUI `List`s
         VStack(spacing: 8) {
             ForEach(chat, id: \.self) { chatEntity in
+                // TODO skip empty messages here?
                 PDFExportChatMessageView(message: chatEntity)
             }
             Spacer()

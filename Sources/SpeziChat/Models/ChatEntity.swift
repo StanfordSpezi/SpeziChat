@@ -32,6 +32,7 @@ public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
             case response
             case toolCall
             case toolResponse
+            case thinking(startDate: Date?)
         }
         
         @available(*, deprecated, message: "use .assistant(.response) instead!")
@@ -57,6 +58,8 @@ public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
                 "assistant_tool_call"
             case .assistant(.toolResponse):
                 "assistant_tool_response"
+            case .assistant(.thinking):
+                "assistant_thinking"
             case .hidden(let type):
                 "hidden_\(type.name)"
             }
@@ -68,16 +71,21 @@ public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
     }
     
     
-    /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
-    public let role: Role
-    /// Content of the ``ChatEntity``.
-    public let content: Content
-    /// Indicates if the ``ChatEntity`` is complete and will not receive any additional content.
-    public let complete: Bool
     /// Unique identifier of the ``ChatEntity``.
-    public let id: UUID
+    public var id: UUID
+    
     /// The creation date of the ``ChatEntity``.
-    public let date: Date
+    public var date: Date
+    
+    /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
+    public var role: Role
+    
+    /// Content of the ``ChatEntity``.
+    public var content: Content
+    
+    /// Indicates if the ``ChatEntity`` is complete and will not receive any additional content.
+    public var complete: Bool
+    
     
     /// Creates a ``ChatEntity`` which is the building block of a Spezi ``Chat``.
     ///

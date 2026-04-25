@@ -21,9 +21,6 @@
         }
       }
     },
-    "Attach Files" : {
-
-    },
     "Copy" : {
 
     },
@@ -218,6 +215,9 @@
           }
         }
       }
+    },
+    "Thinking…" : {
+
     },
     "Type Your Message…" : {
 
