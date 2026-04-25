@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SpeziSpeechSynthesizer
-import SwiftUI
+private import SpeziSpeechSynthesizer
+public import SwiftUI
 
 
 /// The underlying `ViewModifier` of `View/speak(_:muted:)`.
@@ -40,8 +40,6 @@ private struct ChatViewSpeechModifier: ViewModifier {
                     switch lastChatEntity.content {
                     case .text(let text):
                         speechSynthesizer.speak(text)
-                    case .image:
-                        break
                     }
                 } else if lastChatEntity.role == .user {
                     speechSynthesizer.stop()

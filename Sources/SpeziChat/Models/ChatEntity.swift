@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
+public import Foundation
 
 
 /// Represents the basic building block of a Spezi ``Chat``.
@@ -41,25 +41,8 @@ public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
         }
     }
     
-    // TODO what about a textual chat message that has images attached to it?
     public enum Content: Hashable, Sendable {
         case text(String)
-        case image(Image)
-        
-        public enum Image: Hashable, Sendable {
-            case image(PlatformImage)
-            case url(URL)
-        }
-        
-        /// The content's text, if applicable
-        public var text: String? {
-            switch self {
-            case .text(let text):
-                text
-            case .image:
-                nil
-            }
-        }
     }
     
     
@@ -120,44 +103,20 @@ extension ChatEntity {
         self.id = id
         self.date = date
     }
-    
-    /// Creates a `ChatEntity` with image content.
-    ///
-    /// - Parameters:
-    ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
-    ///    - content: `String`-based content of the ``ChatEntity``. Can contain Markdown-formatted text.
-    ///    - complete: Indicates if the content of the ``ChatEntity`` is complete and will not receive any additional content. Defaults to `true`.
-    ///    - id: Unique identifier of the ``ChatEntity``, defaults to a randomly assigned id.
-    ///    - date: Timestamp on when the ``ChatEntity`` was originally created, defaults to the current time.
-    public init(
-        role: Role,
-        image: PlatformImage,
-        complete: Bool = true,
-        id: UUID = UUID(),
-        date: Date = .now
-    ) {
-        self.role = role
-        self.content = .image(.image(image))
-        self.complete = complete
-        self.id = id
-        self.date = date
-    }
 }
 
 
 extension ChatEntity.Content: Codable {
     private enum CodingKeys: CodingKey {
-        case text, image
+        case text
     }
     
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let text = try? container.decode(String.self, forKey: .text) {
             self = .text(text)
-        } else if let image = try? container.decode(Image.self, forKey: .image) {
-            self = .image(image)
         } else {
-            throw DecodingError.keyNotFound(CodingKeys.text, .init(codingPath: [], debugDescription: "Found neither a text nor an image."))
+            throw DecodingError.keyNotFound(CodingKeys.text, .init(codingPath: [], debugDescription: "Unable to decode \(Self.self)"))
         }
     }
     
@@ -166,53 +125,6 @@ extension ChatEntity.Content: Codable {
         switch self {
         case .text(let text):
             try container.encode(text, forKey: .text)
-        case .image(let image):
-            try container.encode(image, forKey: .image)
-        }
-    }
-}
-
-
-extension ChatEntity.Content.Image: Codable {
-    private enum CodingKeys: CodingKey, CaseIterable {
-        case data, url
-    }
-    
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let url = try? container.decode(URL.self, forKey: .url) {
-            self = .url(url)
-        } else if let data = try? container.decode(Data.self, forKey: .data) {
-            guard let image = PlatformImage(data: data) else {
-                throw DecodingError.dataCorruptedError(
-                    forKey: .data,
-                    in: container,
-                    debugDescription: "Unable to decode image data into '\(PlatformImage.self)'"
-                )
-//                throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Unable to decode image data into '\(PlatformImage.self)'"))
-            }
-            self = .image(image)
-        } else {
-            throw DecodingError.keyNotFound(
-                ChatEntity.Content.CodingKeys.image,
-                .init(
-                    codingPath: [],
-                    debugDescription: "Expected either of \(CodingKeys.allCases.map { "'\($0)'" }.joined(separator: ", "))"
-                )
-            )
-        }
-    }
-    
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        switch self {
-        case .url(let url):
-            try container.encode(url, forKey: .url)
-        case .image(let image):
-            guard let pngData = image.pngData() else {
-                throw EncodingError.invalidValue(image, .init(codingPath: [], debugDescription: "Unable to obtain PNG data"))
-            }
-            try container.encode(pngData, forKey: .data)
         }
     }
 }

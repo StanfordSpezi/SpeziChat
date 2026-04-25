@@ -45,7 +45,7 @@ struct ChatTestView: View {
     }
     
     private func generateAssistantMessage(for message: ChatEntity) async throws {
-        guard message.role == .user, let message = message.content.text else {
+        guard message.role == .user, case .text(let message) = message.content else {
             return
         }
         try await Task.sleep(for: .seconds(3))
@@ -60,7 +60,7 @@ struct ChatTestView: View {
         } else if message.localizedCaseInsensitiveContains("fib") {
             chat.append(.fibResponse)
         } else if message.localizedCaseInsensitiveContains("image") {
-            chat.append(.imageResponse)
+//            chat.append(.imageResponse)
         } else {
             chat.append(.init(role: .assistant, text: "**Assistant** Message Response!"))
         }
@@ -111,13 +111,13 @@ extension ChatEntity {
         Tokyo's weather data returned an error — you may want to check a weather service directly for that one.
         """)
     
-    fileprivate static let imageResponse: Self = {
-        guard let url = Bundle.main.url(forResource: "PM5544", withExtension: "png"),
-              let image = PlatformImage(contentsOfFile: url.path) else {
-            return Self(role: .assistant, text: "Unable to find image")
-        }
-        return Self(role: .assistant, image: image)
-    }()
+//    fileprivate static let imageResponse: Self = {
+//        guard let url = Bundle.main.url(forResource: "PM5544", withExtension: "png"),
+//              let image = PlatformImage(contentsOfFile: url.path) else {
+//            return Self(role: .assistant, text: "Unable to find image")
+//        }
+//        return Self(role: .assistant, image: image)
+//    }()
 }
 
 

@@ -18,8 +18,6 @@ struct PlainMessageView: View {
         switch message.content {
         case .text(let text):
             MarkdownView(text: text)
-        case .image(let image):
-            ImageView(image: image)
         }
     }
     
@@ -30,22 +28,6 @@ struct PlainMessageView: View {
 
 
 extension PlainMessageView {
-    private struct ImageView: View {
-        let image: ChatEntity.Content.Image
-        
-        var body: some View {
-            switch image {
-            case .image(let image):
-                Image(platformImage: image)
-                    .accessibilityLabel("Image")
-            case .url(let url):
-                AsyncImage(url: url)
-            }
-            // TODO sizing etc!!!
-        }
-    }
-    
-    
     private struct MarkdownView: View {
         let text: String
         

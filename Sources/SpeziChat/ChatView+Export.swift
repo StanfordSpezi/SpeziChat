@@ -160,8 +160,6 @@ private struct PDFExportChatMessageView: View {
                 switch message.content {
                 case .text(let text):
                     contentView(for: text)
-                case .image(let image):
-                    contentView(for: image)
                 }
                 switch message.role {
                 case .hidden(let type):
@@ -200,17 +198,5 @@ private struct PDFExportChatMessageView: View {
             // for visionOS as .accentColor isn't properly set during export with the `ImageRenderer`
             .chatMessageStyle(alignment: message.alignment, backgroundColorUserChat: .blue)
             #endif
-    }
-    
-    @ViewBuilder
-    private func contentView(for image: ChatEntity.Content.Image) -> some View {
-        switch image {
-        case .image(let image):
-            Image(platformImage: image)
-                .accessibilityHidden(true)
-        case .url(let url):
-            AsyncImage(url: url)
-        }
-        // TODO size/etc!!!
     }
 }

@@ -11,6 +11,8 @@
 import class Foundation.ProcessInfo
 import PackageDescription
 
+let enableSwiftLintPlugin = false
+
 
 let package = Package(
     name: "SpeziChat",
@@ -28,7 +30,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/SpeziSpeech.git", from: "1.1.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", branch: "lukas/FilePicker"),
         .package(url: "https://github.com/gonzalezreal/textual.git", from: "0.3.1")
-    ],
+    ] + swiftLintPackage,
     targets: [
         .target(
             name: "SpeziChat",
@@ -43,9 +45,10 @@ let package = Package(
                 .process("Resources")
             ],
             swiftSettings: [
-                .enableUpcomingFeature("ExistentialAny")
+                .enableUpcomingFeature("ExistentialAny"),
+                .enableUpcomingFeature("InternalImportsByDefault")
             ],
-            plugins: [] + swiftLintPlugin()
+            plugins: [] + swiftLintPlugin
         ),
         .testTarget(
             name: "SpeziChatTests",
@@ -57,18 +60,19 @@ let package = Package(
 )
 
 
-func swiftLintPlugin() -> [Target.PluginUsage] {
-    // Fully quit Xcode and open again with `open --env SPEZI_DEVELOPMENT_SWIFTLINT /Applications/Xcode.app`
-    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
+// MARK: SwiftLint support
+
+var swiftLintPlugin: [Target.PluginUsage] {
+    if enableSwiftLintPlugin {
+        [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
     } else {
         []
     }
 }
 
-func swiftLintPackage() -> [PackageDescription.Package.Dependency] {
-    if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.55.1")]
+var swiftLintPackage: [PackageDescription.Package.Dependency] {
+    if enableSwiftLintPlugin {
+        [.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", from: "0.63.2")]
     } else {
         []
     }

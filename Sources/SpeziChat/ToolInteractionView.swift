@@ -35,8 +35,6 @@ struct ToolInteractionView: View {
                     .foregroundStyle(.secondary)
                     .font(.footnote)
                     .lineLimit(isExpanded ? nil : 0)
-            case .image:
-                EmptyView() // ???
             }
         }
         .padding(.horizontal, 10)
@@ -62,8 +60,6 @@ struct ToolInteractionView: View {
                     } else {
                         Text(text)
                     }
-                case .image:
-                    EmptyView() // ???
                 }
             }
             .foregroundStyle(.secondary)

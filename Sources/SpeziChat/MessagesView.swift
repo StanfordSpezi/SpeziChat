@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Combine
-import SwiftUI
+private import Combine
+public import SwiftUI
 
 
 /// Displays a ``Chat`` containing multiple ``ChatEntity``s with different ``ChatEntity/Role``s in a typical chat-like fashion.

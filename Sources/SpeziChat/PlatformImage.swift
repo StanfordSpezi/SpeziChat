@@ -8,7 +8,7 @@
 
 // swiftlint:disable file_types_order missing_docs
 
-import SwiftUI
+public import SwiftUI
 
 
 #if canImport(UIKit)
