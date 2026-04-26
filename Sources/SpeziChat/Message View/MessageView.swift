@@ -116,12 +116,24 @@ private struct AssistantMessageView: View {
 
 
 private struct AssistantThinkingIndicator: View {
+    private struct SheetContent: Identifiable {
+        let id = UUID()
+        let text: String
+    }
+    
     let message: ChatEntity
+    
+    @State private var thinkingTextSheetContent: SheetContent?
     
     var body: some View {
         switch message.role {
         case .assistant(.thinking(let startDate)):
-            HStack {
+            Button {
+                switch message.content {
+                case .text(let text):
+                    thinkingTextSheetContent = text.isEmpty ? nil : .init(text: text)
+                }
+            } label: {
                 Text("Thinking…", bundle: .module)
                     .foregroundStyle(message.complete ? .green : .red)
                 if let startDate {
@@ -129,6 +141,9 @@ private struct AssistantThinkingIndicator: View {
                 }
             }
             .foregroundStyle(.secondary)
+            .sheet(item: $thinkingTextSheetContent) { content in
+                sheetContent(for: content)
+            }
             // NOTE: if, at some point in the future, the OpenAI API also live-exposes the thinking process for reasoning models,
             // we could display that here.
         default:
@@ -138,5 +153,24 @@ private struct AssistantThinkingIndicator: View {
     
     private func timer(withStartDate startDate: Date) -> some View {
         Text(timerInterval: startDate...(.distantFuture), pauseTime: nil, countsDown: false, showsHours: false)
+    }
+    
+    private func sheetContent(for content: SheetContent) -> some View {
+        NavigationStack {
+            ScrollView {
+                PlainMessageView.MarkdownView(text: content.text)
+                    .padding(.horizontal)
+            }
+            .navigationTitle("Model Thoughts")
+            #if os(iOS) || os(visionOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    DismissButton()
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }

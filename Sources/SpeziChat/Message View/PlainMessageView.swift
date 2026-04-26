@@ -28,7 +28,7 @@ struct PlainMessageView: View {
 
 
 extension PlainMessageView {
-    private struct MarkdownView: View {
+    struct MarkdownView: View { // TODO move elsewhere!
         let text: String
         
         var body: some View {
