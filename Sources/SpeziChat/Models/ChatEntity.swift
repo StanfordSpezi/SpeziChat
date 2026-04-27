@@ -32,20 +32,7 @@ public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
             case response
             case toolCall
             case toolResponse
-            case thinking(startDate: Date?)
-        }
-        
-        @available(*, deprecated, message: "use .assistant(.response) instead!")
-        public static var assistant: Self {
-            .assistant(.response)
-        }
-        @available(*, deprecated, message: "use .assistant(.toolCall) instead!")
-        public static var assistantToolCall: Self {
-            .assistant(.toolCall)
-        }
-        @available(*, deprecated, message: "use .assistant(.toolResponse) instead!")
-        public static var assistantToolResponse: Self {
-            .assistant(.toolResponse)
+            case thinking(startDate: Date?, endDate: Date?)
         }
         
         var rawValue: String {

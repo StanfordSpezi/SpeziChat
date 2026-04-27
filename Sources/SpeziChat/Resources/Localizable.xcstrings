@@ -11,12 +11,25 @@
         }
       }
     },
+    "%@ sec" : {
+
+    },
     "%@: %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%lld:%@ min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld:%2$@ min"
           }
         }
       }
@@ -187,6 +200,9 @@
     "Speak" : {
 
     },
+    "Still Thinking…" : {
+
+    },
     "Text to speech is disabled, press to enable text to speech." : {
       "localizations" : {
         "de" : {
@@ -220,6 +236,9 @@
       }
     },
     "Thinking…" : {
+
+    },
+    "Thought for %@" : {
 
     },
     "Type Your Message…" : {

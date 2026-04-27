@@ -95,7 +95,7 @@ public struct ChatView: View {
     private let exportFormat: ChatExportFormat?
     private let messagePlaceholder: LocalizedStringResource?
     private let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
-    private let hiddenMessages: MessagesView.HiddenMessages
+    private let messagesVisibility: MessagesView.MessagesVisibility
     
     @State private var showShareSheet = false
     @FocusState private var inputTextFieldIsFocused
@@ -159,7 +159,7 @@ public struct ChatView: View {
                 bottom: insets.bottom + 8, // TODO???
                 trailing: insets.trailing
             ),
-            hiddenMessages: hiddenMessages,
+            messagesVisibility: messagesVisibility,
             typingIndicator: messagePendingAnimation
         )
         #if !os(macOS)
@@ -224,14 +224,14 @@ public struct ChatView: View {
         exportFormat: ChatExportFormat? = nil,
         messagePlaceholder: LocalizedStringResource? = nil,
         messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode? = nil,
-        hiddenMessages: MessagesView.HiddenMessages = .all
+        messagesVisibility: MessagesView.MessagesVisibility = .default
     ) {
         self._chat = chat
         self.disableInput = disableInput
         self.speechToText = speechToText
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
-        self.hiddenMessages = hiddenMessages
+        self.messagesVisibility = messagesVisibility
         self.messagePendingAnimation = messagePendingAnimation
     }
 }

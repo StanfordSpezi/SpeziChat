@@ -48,18 +48,36 @@ public struct MessagesView: View {
         case manual(shouldDisplay: Bool)
     }
     
-    /// Indicates which types of ``ChatEntity/Role-swift.enum/hidden(type:)`` message roles should be hidden and not visualized.
-    ///
-    /// - Important: One is only able to customize which types of ``ChatEntity/Role-swift.enum/hidden(type:)`` message roles can be hidden. All messages with other ``ChatEntity/Role-swift.enum``s are shown to the user.
-    public enum HiddenMessages: Equatable {
-        /// Hide all messages with ``ChatEntity/Role-swift.enum/hidden(type:)`` roles (regardless of the specific hidden message type).
-        case all
-        /// Adjust which types of ``ChatEntity/Role-swift.enum/hidden(type:)`` messages should be hidden.
-        case custom(Set<ChatEntity.HiddenMessageType>)
+    public struct MessagesVisibility {
+        /// Indicates which types of ``ChatEntity/Role-swift.enum/hidden(type:)`` message roles should be hidden from the chat.
+        public enum HiddenMessages: Equatable {
+            /// Hide all messages with a `hidden` role (regardless of the message's ``ChatEntity/HiddenMessageType``).
+            case all
+            /// Displays all hidden messages, except some, based on their ``ChatEntity/HiddenMessageType``.
+            case custom(Set<ChatEntity.HiddenMessageType>)
+            
+            /// No messages should be hidden.
+            public static var none: Self {
+                .custom([])
+            }
+        }
         
-        /// No messages should be hidden.
-        public static var none: Self {
-            .custom([])
+        public static var `default`: Self {
+            .init(hiddenMessages: .all, functionCalls: .hidden)
+        }
+        
+        let hiddenMessages: HiddenMessages
+        let functionCalls: Visibility
+        let thinking: Visibility
+        
+        public init(
+            hiddenMessages: HiddenMessages,
+            functionCalls: Visibility = .automatic,
+            thinking: Visibility = .automatic
+        ) {
+            self.hiddenMessages = hiddenMessages
+            self.functionCalls = functionCalls
+            self.thinking = thinking
         }
     }
     
@@ -68,7 +86,7 @@ public struct MessagesView: View {
     
     @Binding private var chat: Chat
     private let insets: EdgeInsets
-    private let hiddenMessages: HiddenMessages
+    private let messagesVisibility: MessagesVisibility
     private let typingIndicator: TypingIndicatorDisplayMode?
     
     
@@ -133,12 +151,12 @@ public struct MessagesView: View {
     public init(
         _ chat: Binding<Chat>,
         insets: EdgeInsets = EdgeInsets(),
-        hiddenMessages: HiddenMessages = .all,
+        messagesVisibility: MessagesVisibility = .default,
         typingIndicator: TypingIndicatorDisplayMode? = nil
     ) {
         self._chat = chat
         self.insets = insets
-        self.hiddenMessages = hiddenMessages
+        self.messagesVisibility = messagesVisibility
         self.typingIndicator = typingIndicator
     }
     
@@ -151,17 +169,16 @@ public struct MessagesView: View {
     public init(
         _ chat: Chat,
         insets: EdgeInsets = EdgeInsets(),
-        hiddenMessages: HiddenMessages = .all,
+        messagesVisibility: MessagesVisibility = .default,
         typingIndicator: TypingIndicatorDisplayMode? = nil
     ) {
         self.init(
             .constant(chat),
             insets: insets,
-            hiddenMessages: hiddenMessages,
+            messagesVisibility: messagesVisibility,
             typingIndicator: typingIndicator
         )
     }
-
     
     private func scrollToBottom(_ proxy: ScrollViewProxy) {
         withAnimation(.easeOut) {
@@ -205,12 +222,16 @@ public struct MessagesView: View {
         case .user, .assistant(.response), .assistant(.toolCall), .assistant(.toolResponse):
             false
         case .assistant(.thinking):
-            // We only show thinking messages while the operation is still active.
-            // Once it completes, the chat entity is no longer displayed.
-//            message.complete
-            false
+            switch messagesVisibility.thinking {
+            case .automatic, .visible:
+                // We only show thinking messages while the operation is still active.
+                // Once it completes, the chat entity is no longer displayed.
+                false // message.complete
+            case .hidden:
+                true
+            }
         case .hidden(let type):
-            switch hiddenMessages {
+            switch messagesVisibility.hiddenMessages {
             case .all:
                 true
             case .custom(let hiddenMessageTypes):
@@ -238,7 +259,7 @@ public struct MessagesView: View {
             ChatEntity(role: .assistant(.toolResponse), text: "Assistant Message!f jiodsjfiods \n fudshfdusi"),
             ChatEntity(role: .assistant(.response), text: "Assistant Message!")
         ],
-        hiddenMessages: .none
+        messagesVisibility: .init(hiddenMessages: .none, functionCalls: .automatic)
     )
 }
 #endif
