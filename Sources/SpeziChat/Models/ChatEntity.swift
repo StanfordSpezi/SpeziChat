@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
+public import Foundation
 
 
 /// Represents the basic building block of a Spezi ``Chat``.
@@ -14,64 +14,75 @@ import Foundation
 /// A ``ChatEntity`` can be thought of as a single message entity within a ``Chat``
 /// It consists of a ``ChatEntity/Role``, a unique identifier, a timestamp in the form of a `Date` as well as an `String`-based ``ChatEntity/content`` property which can contain Markdown-formatted text.
 /// Furthermore, the ``ChatEntity/complete`` flag indicates if the current state of the ``ChatEntity`` is final and the content will not be updated anymore.
-public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
+///
+/// ## Topics
+///
+/// ### Initializers
+/// - ``init(role:text:complete:id:date:)``
+/// - ``init(role:image:complete:id:date:)``
+/// - ``init(role:content:complete:id:date:)``
+public struct ChatEntity: Hashable, Identifiable, Codable, Sendable {
     /// Indicates which ``ChatEntity/Role`` is associated with a ``ChatEntity``.
-    public enum Role: Codable, Equatable, Hashable {
+    public enum Role: Hashable, Codable, Sendable {
         case user
-        case assistant
-        case assistantToolCall
-        case assistantToolResponse
+        case assistant(AssistantMessageKind)
         case hidden(type: ChatEntity.HiddenMessageType)
         
+        public enum AssistantMessageKind: Hashable, Codable, Sendable {
+            case response
+            case toolCall
+            case toolResponse
+            case thinking(startDate: Date?, endDate: Date?)
+        }
         
         var rawValue: String {
             switch self {
-            case .user: "user"
-            case .assistant: "assistant"
-            case .assistantToolCall: "assistant_tool_call"
-            case .assistantToolResponse: "assistant_tool_response"
-            case .hidden(let type): "hidden_\(type.name)"
+            case .user:
+                "user"
+            case .assistant(.response):
+                "assistant"
+            case .assistant(.toolCall):
+                "assistant_tool_call"
+            case .assistant(.toolResponse):
+                "assistant_tool_response"
+            case .assistant(.thinking):
+                "assistant_thinking"
+            case .hidden(let type):
+                "hidden_\(type.name)"
             }
         }
     }
     
+    public enum Content: Hashable, Sendable {
+        case text(String)
+    }
+    
+    
+    /// Unique identifier of the ``ChatEntity``.
+    public var id: UUID
+    
+    /// The creation date of the ``ChatEntity``.
+    public var date: Date
     
     /// ``ChatEntity/Role`` associated with the ``ChatEntity``.
-    public let role: Role
-    /// `String`-based content of the ``ChatEntity``.
-    public let content: String
+    public var role: Role
+    
+    /// Content of the ``ChatEntity``.
+    public var content: Content
+    
     /// Indicates if the ``ChatEntity`` is complete and will not receive any additional content.
-    public let complete: Bool
-    /// Unique identifier of the ``ChatEntity``.
-    public let id: UUID
-    /// The creation date of the ``ChatEntity``.
-    public let date: Date
+    public var complete: Bool
     
-    
-    /// Markdown-formatted ``ChatEntity/content`` as an `AttributedString`, required to render the text in Markdown-style within the ``MessageView``.
-    var attributedContent: AttributedString {
-        let markdownOptions = AttributedString.MarkdownParsingOptions(
-            interpretedSyntax: .inlineOnlyPreservingWhitespace,
-            failurePolicy: .returnPartiallyParsedIfPossible
-        )
-        
-        if let attributedContent = try? AttributedString(markdown: content, options: markdownOptions) {
-            return attributedContent
-        } else {
-            return AttributedString(stringLiteral: content)
-        }
-    }
-
     
     /// Creates a ``ChatEntity`` which is the building block of a Spezi ``Chat``.
     ///
     /// - Parameters:
     ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
-    ///    - content: `String`-based content of the ``ChatEntity``. Can contain Markdown-formatted text.
+    ///    - content: content of the ``ChatEntity``.
     ///    - complete: Indicates if the content of the ``ChatEntity`` is complete and will not receive any additional content. Defaults to `true`.
     ///    - id: Unique identifier of the ``ChatEntity``, defaults to a randomly assigned id.
     ///    - date: Timestamp on when the ``ChatEntity`` was originally created, defaults to the current time.
-    public init<Content: StringProtocol>(
+    public init(
         role: Role,
         content: Content,
         complete: Bool = true,
@@ -79,9 +90,58 @@ public struct ChatEntity: Codable, Equatable, Hashable, Identifiable {
         date: Date = .now
     ) {
         self.role = role
-        self.content = String(content)
+        self.content = content
         self.complete = complete
         self.id = id
         self.date = date
+    }
+}
+
+
+extension ChatEntity {
+    /// Creates a `ChatEntity` with text content.
+    ///
+    /// - Parameters:
+    ///    - role: ``ChatEntity/Role`` associated with the ``ChatEntity``.
+    ///    - content: `String`-based content of the ``ChatEntity``. Can contain Markdown-formatted text.
+    ///    - complete: Indicates if the content of the ``ChatEntity`` is complete and will not receive any additional content. Defaults to `true`.
+    ///    - id: Unique identifier of the ``ChatEntity``, defaults to a randomly assigned id.
+    ///    - date: Timestamp on when the ``ChatEntity`` was originally created, defaults to the current time.
+    public init(
+        role: Role,
+        text: some StringProtocol,
+        complete: Bool = true,
+        id: UUID = UUID(),
+        date: Date = .now
+    ) {
+        self.role = role
+        self.content = .text(String(text))
+        self.complete = complete
+        self.id = id
+        self.date = date
+    }
+}
+
+
+extension ChatEntity.Content: Codable {
+    private enum CodingKeys: CodingKey {
+        case text
+    }
+    
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let text = try? container.decode(String.self, forKey: .text) {
+            self = .text(text)
+        } else {
+            throw DecodingError.keyNotFound(CodingKeys.text, .init(codingPath: [], debugDescription: "Unable to decode \(Self.self)"))
+        }
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .text(let text):
+            try container.encode(text, forKey: .text)
+        }
     }
 }

@@ -6,9 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SpeziFoundation
-import SpeziSpeechSynthesizer
-import SwiftUI
+private import SpeziFoundation
+public import SwiftUI
 
 
 /// Provides a basic reusable chat view which includes a message input field. The input can be either typed out via the iOS keyboard or provided as voice input and transcribed into written text.
@@ -82,96 +81,131 @@ import SwiftUI
 /// }
 /// ```
 public struct ChatView: View {
-    @Binding var chat: Chat
-    private let disableInput: Bool
-    private let speechToText: Bool
-    let exportFormat: ChatExportFormat?
-    private let messagePlaceholder: String?
-    private let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
-    private let hideMessages: MessageView.HiddenMessages
-    
-    @State private var messageInputHeight: CGFloat = 0
-    @State private var showShareSheet = false
-    
-    
-    public var body: some View {
-        ZStack {
-            VStack {
-                MessagesView($chat, hideMessages: hideMessages, typingIndicator: messagePendingAnimation, bottomPadding: $messageInputHeight)
-                    #if !os(macOS)
-                    .gesture(
-                        TapGesture().onEnded {
-                            UIApplication.shared.sendAction(
-                                #selector(UIResponder.resignFirstResponder),
-                                to: nil,
-                                from: nil,
-                                for: nil
-                            )
-                        }
-                    )
-                    #endif
-            }
-            VStack {
-                Spacer()
-                MessageInputView($chat, messagePlaceholder: messagePlaceholder, speechToText: speechToText)
-                    .disabled(disableInput)
-                    .onPreferenceChange(MessageInputViewHeightKey.self) { newValue in
-                        Task { @MainActor in
-                            await Task.yield()
-                            self.messageInputHeight = newValue + 12
-                        }
-                    }
-            }
-        }
-            .toolbar {
-                if exportEnabled {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button(action: {
-                            showShareSheet = true
-                        }) {
-                            Image(systemName: "square.and.arrow.up")
-                                .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
-                        }
-                    }
-                }
-            }
-            .sheet(isPresented: $showShareSheet) {
-                if let exportedChatData, let exportFormat {
-                    #if !os(macOS)
-                    ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
-                        .presentationDetents([.medium])
-                    #endif
-                } else {
-                    ProgressView()
-                        .padding()
-                        .presentationDetents([.medium])
-                }
-            }
-            #if os(macOS)
-            .onChange(of: showShareSheet) { _, isPresented in
-                if isPresented, let exportedChatData, let exportFormat {
-                    let shareSheet = ShareSheet(sharedItem: exportedChatData, sharedItemType: exportFormat)
-                    shareSheet.show()
-                    
-                    showShareSheet = false
-                }
-            }
-            // `NSSharingServicePicker` doesn't provide a completion handler as `UIActivityViewController` does,
-            // therefore necessitating the deletion of the temporary file on disappearing.
-            .onDisappear {
-                if let exportFormat {
-                    try? FileManager.default.removeItem(
-                        at: Self.temporaryExportFilePath(sharedItemType: exportFormat)
-                    )
-                }
-            }
-            #endif
+    private enum ExportAvailability {
+        /// The export functionality is wholly unavailable
+        case unavailable
+        /// The export functionality is available, and might or might not be enabled.
+        case available(enabled: Bool)
     }
     
-    private var exportEnabled: Bool {
-        exportFormat != nil && chat.contains(where: {
-            $0.role == .assistant || $0.role == .user   // Only show export toolbar item if there are visible messages
+    @Environment(\.chatViewInsets) private var insets
+    @Binding private var chat: Chat
+    private let disableInput: Bool
+    private let speechToText: Bool
+    private let exportFormat: ChatExportFormat?
+    private let messagePlaceholder: LocalizedStringResource?
+    private let messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode?
+    private let messagesVisibility: MessagesView.MessagesVisibility
+    
+    @State private var showShareSheet = false
+    @FocusState private var inputTextFieldIsFocused
+    
+    public var body: some View {
+        chatView
+            .safeAreaInset(edge: .bottom) {
+                inputView
+            }
+        .toolbar {
+            toolbar
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let exportFormat, let exportedData = Self.export(chat, as: exportFormat) {
+                #if !os(macOS)
+                ShareSheet(sharedItem: exportedData, sharedItemType: exportFormat)
+                    .presentationDetents([.medium])
+                #endif
+            } else {
+                ProgressView()
+                    .padding()
+                    .presentationDetents([.medium])
+            }
+        }
+        #if os(macOS)
+        .onChange(of: showShareSheet) { _, isPresented in
+            if isPresented, let exportFormat, let exportedData = Self.export(chat, as: exportFormat) {
+                let shareSheet = ShareSheet(sharedItem: exportedData, sharedItemType: exportFormat)
+                shareSheet.show()
+                showShareSheet = false
+            }
+        }
+        // `NSSharingServicePicker` doesn't provide a completion handler as `UIActivityViewController` does,
+        // therefore necessitating the deletion of the temporary file on disappearing.
+        .onDisappear {
+            if let exportFormat {
+                try? FileManager.default.removeItem(
+                    at: Self.temporaryExportFilePath(sharedItemType: exportFormat)
+                )
+            }
+        }
+        #endif
+    }
+    
+    private var exportAvailability: ExportAvailability {
+        guard exportFormat != nil else {
+            return .unavailable
+        }
+        return .available(enabled: chat.contains {
+            // only enable the export toolbar item if there are visible messages
+            $0.role == .assistant(.response) || $0.role == .user
         })
+    }
+    
+    private var chatView: some View {
+        MessagesView(
+            $chat,
+            insets: EdgeInsets(
+                top: insets.top,
+                leading: insets.leading,
+                bottom: insets.bottom + 8, // TODO???
+                trailing: insets.trailing
+            ),
+            messagesVisibility: messagesVisibility,
+            typingIndicator: messagePendingAnimation
+        )
+        #if !os(macOS)
+        .onTapGesture {
+            inputTextFieldIsFocused = false
+        }
+        #endif
+    }
+    
+    @ToolbarContentBuilder private var toolbar: some ToolbarContent {
+        switch exportAvailability {
+        case .unavailable:
+            ToolbarItem { EmptyView() }
+        case .available(let enabled):
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showShareSheet = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .accessibilityLabel(Text("EXPORT_CHAT_BUTTON", bundle: .module))
+                }
+                .disabled(!enabled)
+            }
+        }
+    }
+    
+    @ViewBuilder private var inputView: some View {
+        let isMacOS = {
+            #if os(macOS)
+            true
+            #else
+            false
+            #endif
+        }()
+        if !isMacOS, #available(iOS 26, visionOS 26, *) {
+            MessageInputView($chat, placeholder: messagePlaceholder, isFocused: $inputTextFieldIsFocused, speechToText: speechToText)
+                .disabled(disableInput)
+        } else {
+            LegacyMessageInputView(
+                $chat,
+                messagePlaceholder: messagePlaceholder.map { String(localized: $0) },
+                isFocused: $inputTextFieldIsFocused,
+                speechToText: speechToText
+            )
+            .disabled(disableInput)
+        }
     }
     
     
@@ -188,17 +222,39 @@ public struct ChatView: View {
         disableInput: Bool = false,
         speechToText: Bool = true,
         exportFormat: ChatExportFormat? = nil,
-        messagePlaceholder: String? = nil,
+        messagePlaceholder: LocalizedStringResource? = nil,
         messagePendingAnimation: MessagesView.TypingIndicatorDisplayMode? = nil,
-        hideMessages: MessageView.HiddenMessages = .all
+        messagesVisibility: MessagesView.MessagesVisibility = .default
     ) {
         self._chat = chat
         self.disableInput = disableInput
         self.speechToText = speechToText
         self.exportFormat = exportFormat
         self.messagePlaceholder = messagePlaceholder
-        self.hideMessages = hideMessages
+        self.messagesVisibility = messagesVisibility
         self.messagePendingAnimation = messagePendingAnimation
+    }
+}
+
+
+extension EnvironmentValues {
+    @Entry fileprivate var chatViewInsets = EdgeInsets()
+}
+
+
+extension View {
+    /// Specifies extra insets that should be added to a ``ChatView``.
+    ///
+    /// - Note: Prefer this modifier over applying a padding to the ``ChatView`` directly.
+    ///     Directly applied padding will cause the `ChatView`'s inner `ScrollView` to no longer extend its contents below the NavigationBar or underneath the system keyboard.
+    ///     This modifier instead applies the insets within the `ScrollView`.
+    public func chatViewInsets(_ insets: EdgeInsets) -> some View {
+        transformEnvironment(\.chatViewInsets) { current in
+            current.top += insets.top
+            current.bottom += insets.bottom
+            current.leading += insets.leading
+            current.trailing += insets.trailing
+        }
     }
 }
 
@@ -209,9 +265,9 @@ public struct ChatView: View {
         ChatView(
             .constant(
                 [
-                    ChatEntity(role: .user, content: "User Message!"),
-                    ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
-                    ChatEntity(role: .assistant, content: "Assistant Message!")
+                    ChatEntity(role: .user, text: "User Message!"),
+                    ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
+                    ChatEntity(role: .assistant(.response), text: "Assistant Message!")
                 ]
             ),
             exportFormat: .pdf

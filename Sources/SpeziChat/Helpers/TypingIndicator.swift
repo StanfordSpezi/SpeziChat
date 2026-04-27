@@ -23,11 +23,10 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-public struct TypingIndicator: View {
-    @State var isAnimating = false
+struct TypingIndicator: View {
+    @State private var isAnimating = false
     
-    
-    public var body: some View {
+    var body: some View {
         HStack {
             HStack(spacing: 3) {
                 ForEach(0..<3) { index in
@@ -47,7 +46,7 @@ public struct TypingIndicator: View {
             .frame(width: 42, height: 12, alignment: .center)
             .padding(.vertical, 4)
             .chatMessageStyle(alignment: .leading)
-            .task {
+            .onAppear {
                 isAnimating = true
             }
             Spacer(minLength: 32)
@@ -62,15 +61,14 @@ public struct TypingIndicator: View {
 #Preview {
     ScrollView {
         VStack {
-            MessageView(ChatEntity(role: .user, content: "User Message!"))
-            MessageView(ChatEntity(role: .assistant, content: "Assistant Message!"))
-            MessageView(ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"))
-            MessageView(
+            PlainMessageView(ChatEntity(role: .user, text: "User Message!"))
+            PlainMessageView(ChatEntity(role: .assistant(.response), text: "Assistant Message!"))
+            PlainMessageView(ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"))
+            PlainMessageView(
                 ChatEntity(
                     role: .hidden(type: .unknown),
-                    content: "Hidden message! (visible)"
-                ),
-                hideMessages: .custom(hiddenMessageTypes: [])
+                    text: "Hidden message! (visible)"
+                )
             )
             TypingIndicator()
         }

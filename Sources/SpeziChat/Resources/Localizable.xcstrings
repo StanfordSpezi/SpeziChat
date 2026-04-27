@@ -11,6 +11,9 @@
         }
       }
     },
+    "%@ sec" : {
+
+    },
     "%@: %@" : {
       "localizations" : {
         "en" : {
@@ -20,6 +23,19 @@
           }
         }
       }
+    },
+    "%lld:%@ min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld:%2$@ min"
+          }
+        }
+      }
+    },
+    "Copy" : {
+
     },
     "EQUAL_SIGN" : {
       "localizations" : {
@@ -131,6 +147,9 @@
         }
       }
     },
+    "Model Thoughts" : {
+
+    },
     "SEE_MORE" : {
       "localizations" : {
         "de" : {
@@ -175,6 +194,15 @@
         }
       }
     },
+    "Share" : {
+
+    },
+    "Speak" : {
+
+    },
+    "Still Thinking…" : {
+
+    },
     "Text to speech is disabled, press to enable text to speech." : {
       "localizations" : {
         "de" : {
@@ -206,6 +234,15 @@
           }
         }
       }
+    },
+    "Thinking…" : {
+
+    },
+    "Thought for %@" : {
+
+    },
+    "Type Your Message…" : {
+
     },
     "TYPING_INDICATOR" : {
       "localizations" : {

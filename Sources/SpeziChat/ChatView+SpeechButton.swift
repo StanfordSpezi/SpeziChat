@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SwiftUI
+public import SwiftUI
 
 
 /// The underlying `ViewModifier` of `View/speechToolbarButton(enabled:muted:)`.
@@ -88,15 +88,14 @@ extension View {
 #Preview {
     @Previewable @State var chat: Chat = .init(
         [
-            ChatEntity(role: .user, content: "User Message!"),
-            ChatEntity(role: .hidden(type: .unknown), content: "Hidden Message!"),
-            ChatEntity(role: .assistant, content: "Assistant Message!")
+            ChatEntity(role: .user, text: "User Message!"),
+            ChatEntity(role: .hidden(type: .unknown), text: "Hidden Message!"),
+            ChatEntity(role: .assistant(.response), text: "Assistant Message!")
         ]
     )
     @Previewable @State var muted = true
     
-    
-    return NavigationStack {
+    NavigationStack {
         ChatView($chat)
             .speak(chat, muted: muted)
             .speechToolbarButton(muted: $muted)
